@@ -1,5 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useGetFilesFromPath} from "../../api/filesApi";
+import FileItem from "./FileItem";
+import {FileTypes} from "./consts/fileTypes";
 
 const FileList = () => {
     const [path, setPath] = useState('')
@@ -18,20 +20,26 @@ const FileList = () => {
     return (
         <div className='w-full h-full flex flex-col'>
             <input value={path} onChange={handleChangePath}/>
-            <div className='w-full  overflow-auto border-2 border-b-amber-950'>
-                {(data && !!data.folders.length) &&
-                    data.folders.map(item=>(<div>
-                        {item}
-                    </div>))
-                }
+            <div>
+                Путь: {data && data.path}
             </div>
-            <div className='w-full  overflow-auto border-2 border-b-amber-950'>
-                {(data && !!data.files.length) &&
-                    data.files.map(item=>(<div>
-                        {item}
-                    </div>))
-                }
+            <div className='w-full overflow-auto border-2 border-b-amber-950'>
+                <div className='grid grid-cols-1 border-2 border-gray-700  '>
+                    {(data && !!data.folders.length) &&
+                        data.folders.map(item => (
+                            <FileItem name={item} fileType={FileTypes.DIR} key={item} />
+                        ))
+
+                    }
+                    {(data && !!data.files.length) &&
+                        data.files.map(item => (
+                            <FileItem name={item} fileType={FileTypes.FILE} key={item} />
+                        ))
+                    }
+                </div>
+
             </div>
+
 
             {isLoading &&
                 <div>

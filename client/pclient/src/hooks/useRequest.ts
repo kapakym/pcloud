@@ -23,7 +23,6 @@ const useRequest = <Res, Req>({url, method, options}: Props<Req>): [Res | null, 
         setIsLoading(true);
         setIsError(false);
         setData(null)
-        console.log(url, method,  options?.params)
         axios({
             method,
             url,
