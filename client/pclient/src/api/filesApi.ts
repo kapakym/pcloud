@@ -1,7 +1,19 @@
 import makeRequest from "../hooks/useRequest";
 
+interface ResponseGetFiles {
+    path: string,
+    folders: string[]
+    files: string[]
+}
+
 const filesApi = {
-    getFilesFromPath: () => makeRequest<string[], unknown>({url: '/api/folders', method: 'post'})
+    getFilesFromPath: (params: { path: string }) => makeRequest<ResponseGetFiles, { path: string }>({
+        url: '/api/files',
+        method: 'post',
+        options: {
+            params
+        }
+    })
 }
 
 export const {

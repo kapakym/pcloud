@@ -1,27 +1,12 @@
-import React, {useEffect, useState} from 'react';
-import axios from "axios";
-import makeRequest from "./hooks/useRequest";
-import {log} from "util";
-import {useGetFilesFromPath} from "./api/filesApi";
+import React from 'react';
+import LeftBar from "./components/LeftBar/LeftBar";
+import Main from "./components/Main/Main";
 
 function App() {
-
-    const [data, {isLoading}] = useGetFilesFromPath()
-
-    if (isLoading) return (
-        <div>
-            Загрузка...
-        </div>
-    )
-
     return (
-
-        <div className="App">
-            {data && data.length && data?.map((item) => (
-                <div key={item}>
-                    {item}
-                </div>
-            ))}
+        <div className="w-[100%] h-[100vh] border-2 border-red-500 flex">
+            <LeftBar/>
+            <Main/>
         </div>
     );
 }

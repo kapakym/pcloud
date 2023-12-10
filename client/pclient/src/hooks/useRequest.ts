@@ -17,16 +17,17 @@ interface Props<Req> {
 
 const useRequest = <Res, Req>({url, method, options}: Props<Req>): [Res | null, Options] => {
     const [isLoading, setIsLoading] = useState(false)
-    const [data, setData] = useState(null)
+    const [data, setData] = useState<Res | null>(null)
     const [isError, setIsError] = useState(false)
     const axiosRequest = () => {
         setIsLoading(true);
         setIsError(false);
         setData(null)
+        console.log(url, method,  options?.params)
         axios({
             method,
             url,
-            params: options?.params
+            data: options?.params
         }).then(response => {
             setData(response.data)
         }).catch(error => {

@@ -11,21 +11,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const fs = require('fs');
+// const path = require('path')
+const router = require('./routes/index');
 const PORT = process.env.PORT || 5001;
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.post('/api/folders', (req, res) => {
-    const items = fs.readdirSync('.', { withFileTypes: true });
-    const folders = items.filter((item) => item.isDirectory).map((item) => item.name);
-    res.status(200).json(folders);
-    // });
-});
+app.use('/api', router);
 const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         app.listen(PORT, () => {
-            console.log('Server is started', PORT);
+            console.log('Server is started 2sa', PORT);
         });
     }
     catch (e) {
