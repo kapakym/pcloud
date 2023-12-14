@@ -1,10 +1,10 @@
 import {useEffect, useState} from 'react';
 import axios from "axios";
 
-interface Options {
+interface Options<Req> {
     isLoading: boolean
     isError: boolean
-    requestFn: () => void;
+    requestFn: (options:Req) => void;
 }
 
 interface Props<Req> {
@@ -15,18 +15,18 @@ interface Props<Req> {
     }
 }
 
-const useRequest = <Res, Req>({url, method, options}: Props<Req>): [Res | null, Options] => {
+const useRequest = <Res, Req>({url, method, options}: Props<Req>): [Res | null, Options<Req>] => {
     const [isLoading, setIsLoading] = useState(false)
     const [data, setData] = useState<Res | null>(null)
     const [isError, setIsError] = useState(false)
-    const axiosRequest = () => {
+    const axiosRequest = (data?:Req) => {
         setIsLoading(true);
         setIsError(false);
         setData(null)
         axios({
             method,
             url,
-            data: options?.params
+            data: data
         }).then(response => {
             setData(response.data)
         }).catch(error => {
@@ -37,7 +37,7 @@ const useRequest = <Res, Req>({url, method, options}: Props<Req>): [Res | null, 
         });
     }
 
-    useEffect(() => axiosRequest(), [])
+    useEffect(() => axiosRequest(options?.params), [])
 
     return [data, {isLoading, isError, requestFn: axiosRequest}]
 };

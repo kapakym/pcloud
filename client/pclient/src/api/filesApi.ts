@@ -1,13 +1,8 @@
-import makeRequest from "../hooks/useRequest";
-
-interface ResponseGetFiles {
-    path: string,
-    folders: string[]
-    files: string[]
-}
+import useRequest from "../hooks/useRequest";
+import {ResponseGetFiles} from "../types/filesTypes";
 
 const filesApi = {
-    getFilesFromPath: (params: { path: string }) => makeRequest<ResponseGetFiles, { path: string }>({
+    getFilesFromPath: (params: { path: string }) => useRequest<ResponseGetFiles, { path: string }>({
         url: '/api/files',
         method: 'post',
         options: {

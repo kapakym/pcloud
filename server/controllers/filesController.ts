@@ -1,5 +1,6 @@
 import fs from "fs";
-import {Request, Response} from "express";
+import {NextFunction, Request, Response} from "express";
+const ApiError = require('../error/ApiError')
 
 interface ResponseGetFiles {
     path: string,
@@ -8,12 +9,13 @@ interface ResponseGetFiles {
 }
 
 class FilesController {
-    async getFiles(req: Request, res: Response<ResponseGetFiles>) {
+    async getFiles(req: Request, res: Response<ResponseGetFiles>, next: NextFunction) {
 
 
         const currPath = req.body.path.replace('..', '')
         try {
-            const items = fs.readdirSync(currPath, {withFileTypes: true})
+            console.log(process.env.CLOUD_PATH)
+            const items = fs.readdirSync(process.env.CLOUD_PATH+currPath, {withFileTypes: true})
             const folders = items.filter((item: any) => item.isDirectory()).map((item: any) => item.name)
             const files = items.filter((item: any) => item.isFile()).map((item: any) => item.name)
             res.status(200).json({
@@ -26,6 +28,7 @@ class FilesController {
                 folders: [],
                 files: []
             })
+            // return next(ApiError.badRequest('Неверный маршрут'))
         }
 
 
