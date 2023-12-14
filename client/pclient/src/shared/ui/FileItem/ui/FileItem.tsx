@@ -1,5 +1,5 @@
 import React from 'react';
-import {FileTypes} from "./consts/fileTypes";
+import {FileTypes} from "../../../consts/fileTypes";
 
 interface Props {
     name: string;
@@ -9,11 +9,11 @@ interface Props {
 
 const FileItem = ({name, fileType, onClick}: Props) => {
     return (
-        <div className='odd:bg-white even:bg-gray-200 grid grid-cols-2 hover:bg-gray-500 hover:text-white cursor-pointer' onClick={onClick}>
-            <div>
+        <div className='odd:bg-white even:bg-gray-200 grid grid-cols-1 sm:grid-cols-5 hover:bg-gray-500 hover:text-white cursor-pointer' onClick={onClick}>
+            <div className='col-span-4'>
                 {name}
             </div>
-            <div>
+            <div className='sm:block hidden'>
                 {fileType}
             </div>
         </div>

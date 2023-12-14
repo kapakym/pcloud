@@ -1,5 +1,5 @@
 import React from 'react';
-import FileList from "../FileList/FileList";
+import FileList from "../../entities/FileList/FileList";
 
 const Main = () => {
     return (

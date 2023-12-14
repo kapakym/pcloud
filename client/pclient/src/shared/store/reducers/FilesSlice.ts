@@ -1,4 +1,4 @@
-import {ResponseGetFiles} from "../../types/filesTypes";
+import {ResponseGetFiles} from "../../../entities/api/filesApi/types/filesTypes";
 import {createSlice} from "@reduxjs/toolkit";
 
 

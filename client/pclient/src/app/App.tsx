@@ -1,6 +1,6 @@
 import React from 'react';
-import LeftBar from "./components/LeftBar/LeftBar";
-import Main from "./components/Main/Main";
+import LeftBar from "../widgets/LeftBar/LeftBar";
+import Main from "../pages/Main/Main";
 
 function App() {
     return (

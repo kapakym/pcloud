@@ -1,5 +1,5 @@
-import useRequest from "../hooks/useRequest";
-import {ResponseGetFiles} from "../types/filesTypes";
+import useRequest from "../../../shared/hooks/useRequest";
+import {ResponseGetFiles} from "./types/filesTypes";
 
 const filesApi = {
     getFilesFromPath: (params: { path: string }) => useRequest<ResponseGetFiles, { path: string }>({
