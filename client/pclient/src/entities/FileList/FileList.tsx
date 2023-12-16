@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useGetFilesFromPath} from "../api/filesApi/filesApi";
 import {FileTypes} from "../../shared/consts/fileTypes";
 import FileItem from "../../shared/ui/FileItem";
+import Input from "../../shared/ui/Input";
 
 const FileList = () => {
     const [path, setPath] = useState('')
@@ -36,8 +37,7 @@ const FileList = () => {
                 Путь: {data && data.path}
             </div>
             <div>
-                Фильтр
-                <input value={filter} onChange={handleChangeFilter}/>
+                <Input label={'Фильтр'} value={filter} onChange={handleChangeFilter}/>
             </div>
             <div className='w-full overflow-auto border-2 border-b-amber-950'>
                 <div className='grid grid-cols-1 border-2 border-gray-700  '>

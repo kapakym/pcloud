@@ -14,6 +14,8 @@ const cors = require('cors');
 // const path = require('path')
 const router = require('./routes/index');
 const errorHandler = require('./middleware/ErrorHandlingMiddleware');
+const sequeilize = require('./db');
+const models = require('./models/models');
 const PORT = process.env.PORT || 5001;
 const app = express();
 app.use(cors());
@@ -22,6 +24,8 @@ app.use('/api', router);
 app.use(errorHandler);
 const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        yield sequeilize.authenticate();
+        yield sequeilize.sync();
         app.listen(PORT, () => {
             console.log('Server is started 2sa', PORT);
         });
