@@ -2,13 +2,13 @@ import {RouteObject} from "react-router-dom";
 import Main from "../../pages/Main/Main";
 import LoginPage from "../../pages/LoginPage";
 
-export const mainRoutes: RouteObject[] = [
+export const mainRoutes: any[] = [
     {
-        element: Main(),
+        element: Main,
         path: '/'
     },
     {
-        element: LoginPage(),
+        element: LoginPage,
         path: '/login'
     }
 ]

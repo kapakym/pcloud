@@ -1,27 +1,29 @@
-import {useEffect, useState} from 'react';
-import { useNavigate } from "react-router-dom";
+import React, {useEffect, useState} from 'react';
+import {useNavigate} from "react-router-dom";
 import axios from "axios";
 
 interface Options<Req> {
     isLoading: boolean
     isError: boolean
-    requestFn: (options:Req) => void;
+    requestFn: (options: Req) => void;
 }
 
 interface Props<Req> {
     url: string
     method?: string
     options?: {
+        isNotRequest?: boolean,
         params?: Req
     }
 }
 
 const useRequest = <Res, Req>({url, method, options}: Props<Req>): [Res | null, Options<Req>] => {
+
     const [isLoading, setIsLoading] = useState(false)
     const [data, setData] = useState<Res | null>(null)
     const [isError, setIsError] = useState(false)
     const navigate = useNavigate()
-    const axiosRequest = (data?:Req) => {
+    const axiosRequest = (data?: Req) => {
         setIsLoading(true);
         setIsError(false);
         setData(null)
@@ -33,9 +35,9 @@ const useRequest = <Res, Req>({url, method, options}: Props<Req>): [Res | null, 
             setData(response.data)
         }).catch(error => {
             setIsError(true)
-            if (error.response.status===401) {
+            if (error.response.status === 401) {
                 navigate({
-                    pathname:'/login'
+                    pathname: '/login'
                 })
             }
             console.log(error)
@@ -44,7 +46,11 @@ const useRequest = <Res, Req>({url, method, options}: Props<Req>): [Res | null, 
         });
     }
 
-    useEffect(() => axiosRequest(options?.params), [])
+    useEffect(() => {
+            if (!options?.isNotRequest)
+                axiosRequest(options?.params)
+        }
+        , [])
 
     return [data, {isLoading, isError, requestFn: axiosRequest}]
 };

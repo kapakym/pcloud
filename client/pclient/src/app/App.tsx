@@ -5,7 +5,10 @@ import {createBrowserRouter, RouterProvider,} from "react-router-dom";
 import {mainRoutes} from "./routes/routes";
 
 function App() {
-    const routes = createBrowserRouter(mainRoutes)
+    const routes = createBrowserRouter(mainRoutes.map(item => ({
+        path: item.path,
+        element: <item.element />
+    })))
     return (
         <div className="w-[100%] h-[100vh] border-2 border-red-500 flex">
             <div className='flex flex-col w-full h-full'>

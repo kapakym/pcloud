@@ -48,12 +48,15 @@ class UserController {
     login(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             const { email, password } = req.body;
-            const user = User.findOne({ where: { email } });
-            console.log(user);
+            const user = yield User.findOne({
+                where: { email }
+            });
+            // console.log('*****',user, req.body)
             if (!user) {
                 return next(ApiError.badRequest('Неверное имя пользователя или пароль'));
             }
             const comparePassword = bcrypt.compareSync(password, user.password);
+            console.log(comparePassword);
             if (!comparePassword) {
                 return next(ApiError.badRequest('Неверное имя пользователя или пароль'));
             }

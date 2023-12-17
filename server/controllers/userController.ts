@@ -56,13 +56,16 @@ class UserController {
 
     async login(req: Request<RequestUser>, res: Response<ResponseLoginUser>, next: NextFunction) {
         const {email, password} = req.body
-        const user = User.findOne({where: {email}});
-        console.log(user)
+        const user = await User.findOne({
+            where: {email}
+        })
+        // console.log('*****',user, req.body)
         if (!user) {
             return next(ApiError.badRequest('Неверное имя пользователя или пароль'))
         }
 
         const comparePassword = bcrypt.compareSync(password, user.password)
+        console.log(comparePassword)
         if (!comparePassword) {
             return next(ApiError.badRequest('Неверное имя пользователя или пароль'))
         }
