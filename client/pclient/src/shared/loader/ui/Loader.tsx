@@ -3,9 +3,10 @@ import '../style/loader.css'
 
 const Loader = () => {
     return (
-        <div className="loadingio-spinner-bars-rmpa9le2pi"><div className="ldio-6ogj3adapod">
-            <div></div><div></div><div></div><div></div>
-        </div></div>
+        <div className='w-full flex justify-center p-2'>
+            <span className="loader"></span>
+        </div>
+
     );
 };
 

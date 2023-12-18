@@ -9,7 +9,7 @@ import {useNavigate} from "react-router-dom";
 const LoginPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("")
-    const [data, {requestFn, isError, isLoading}] = useLoginUser({
+    const [data, {requestFn, isError, isLoading, errorRes}] = useLoginUser({
         password: "",
         email: ""
     })
@@ -22,6 +22,14 @@ const LoginPage = () => {
             navigate({pathname: '/'})
         }
     }, [data]);
+
+    useEffect(() => {
+        if (errorRes?.response?.data?.message) {
+            console.log(errorRes?.response?.data?.message)
+
+        }
+    }, [errorRes]);
+
 
     const handleChangeEmail = (e: React.FormEvent<HTMLInputElement>) => {
         setEmail(e.currentTarget.value)
@@ -50,6 +58,11 @@ const LoginPage = () => {
                         <Input placeholder='Пароль' type='password' value={password} onChange={handleChangePassword}/>
                         <Button onClick={handleLogin}>Вход</Button>
                     </>
+                }
+                {errorRes?.response?.data?.message &&
+                    <div className='text-red-600'>
+                        {errorRes?.response?.data?.message}
+                    </div>
                 }
 
             </div>
