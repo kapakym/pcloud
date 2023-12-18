@@ -6,7 +6,7 @@ interface LoginRequest {
 }
 
 const filesApi = {
-    loginUser: (params: LoginRequest) => useRequest<{ token: string }, LoginRequest>({
+    LoginUser: (params: LoginRequest) => useRequest<{ token: string, role: string }, LoginRequest>({
         url: '/api/user/login',
         method: 'post',
         options: {
@@ -17,5 +17,5 @@ const filesApi = {
 }
 
 export const {
-    loginUser: useLoginUser
+    LoginUser: useLoginUser
 } = filesApi

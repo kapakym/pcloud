@@ -30,7 +30,10 @@ const useRequest = <Res, Req>({url, method, options}: Props<Req>): [Res | null, 
         axios({
             method,
             url,
-            data: data
+            data: data,
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
         }).then(response => {
             setData(response.data)
         }).catch(error => {
