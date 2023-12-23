@@ -23,6 +23,7 @@ module.exports = function (req: RequestToken, res: Response, next: NextFunction)
         next()
     } catch (error) {
         res.status(401).json({message: 'Пользователь не авторизован'})
+        next()
     }
 
 }

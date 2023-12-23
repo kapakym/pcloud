@@ -56,10 +56,15 @@ class UserController {
 
     async login(req: Request<RequestUser>, res: Response<ResponseLoginUser>, next: NextFunction) {
         const {email, password} = req.body
+        const all = await User.count()
+        console.log(all, email, password)
+        if (!password || !email) {
+            return next(ApiError.badRequest('Неверное имя пользователя или пароль'))
+        }
         const user = await User.findOne({
             where: {email}
         })
-        // console.log('*****',user, req.body)
+        console.log('*****', user, req.body)
         if (!user) {
             return next(ApiError.badRequest('Неверное имя пользователя или пароль'))
         }
@@ -83,8 +88,8 @@ class UserController {
 
     async check(req: RequestToken, res: Response<ResponseLoginUser>, next: NextFunction) {
         if (typeof req.user === 'object') {
-            const token =generateJwt(req.user.id, req.user.role, req.user.email)
-            return res.json({token, role:req.user.role})
+            const token = generateJwt(req.user.id, req.user.role, req.user.email)
+            return res.json({token, role: req.user.role})
         }
 
     }

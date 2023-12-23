@@ -30,33 +30,31 @@ const useRequest = <Res, Req>({url, method, options}: Props<Req>): [Res | null, 
         setIsLoading(true);
         setIsError(false);
         setData(null)
-        setTimeout(()=>{
 
-            axios({
-                method,
-                url,
-                data: data,
-                headers: {
-                    Authorization: 'Bearer ' + localStorage.getItem('token')
+        axios({
+            method,
+            url,
+            data: data,
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        }).then(response => {
+            setData(response.data)
+        }).catch((error: Error | AxiosError) => {
+            if (axios.isAxiosError(error)) {
+                console.log(error)
+                setIsError(true)
+                setErrorRes(error);
+                if (error?.response?.status === 401) {
+                    navigate({
+                        pathname: '/login'
+                    })
                 }
-            }).then(response => {
-                setData(response.data)
-            }).catch((error: Error | AxiosError) => {
-                if (axios.isAxiosError(error)) {
-                    console.log(error)
-                    setIsError(true)
-                    setErrorRes(error);
-                    if (error?.response?.status === 401) {
-                        navigate({
-                            pathname: '/login'
-                        })
-                    }
-                }
-                // throw  new Error(error as any)
-            }).finally(() => {
-                setIsLoading(false)
-            });
-        },1000)
+            }
+            // throw  new Error(error as any)
+        }).finally(() => {
+            setIsLoading(false)
+        });
 
     }
 

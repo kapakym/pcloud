@@ -1,14 +1,9 @@
 import React from 'react';
-import LeftBar from "../widgets/LeftBar/ui/LeftBar";
 import Header from "../widgets/Header/ui/Header";
-import {createBrowserRouter, RouterProvider,} from "react-router-dom";
+import {createBrowserRouter, Route, Routes} from "react-router-dom";
 import {mainRoutes} from "./routes/routes";
 
 function App() {
-    const routes = createBrowserRouter(mainRoutes.map(item => ({
-        path: item.path,
-        element: <item.element />
-    })))
     return (
         <div className="w-[100%] h-[100vh] border-2 border-red-500 flex">
             <div className='flex flex-col w-full h-full'>
@@ -16,7 +11,13 @@ function App() {
                 <div className='flex h-full'>
                     {/*<LeftBar/>*/}
                     <div className='h-full w-full border-2 border-amber-400'>
-                        <RouterProvider router={routes}/>
+                        <Routes>
+                            {!!mainRoutes?.length &&
+                                mainRoutes.map(item => (
+                                    <Route path={item.path} key={item.path} element={item.element()}/>
+                                ))
+                            }
+                        </Routes>
                     </div>
                 </div>
             </div>
