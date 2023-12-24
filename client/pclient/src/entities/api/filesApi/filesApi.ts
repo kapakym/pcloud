@@ -6,7 +6,10 @@ const filesApi = {
         url: '/api/files',
         method: 'post',
         options: {
-            params
+            params,
+            headers: {
+                homeFolder: localStorage.getItem('folder') || 'error'
+            }
         }
     })
 }

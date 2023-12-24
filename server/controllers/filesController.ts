@@ -1,5 +1,6 @@
 import fs from "fs";
 import {NextFunction, Request, Response} from "express";
+
 const ApiError = require('../error/ApiError')
 
 interface ResponseGetFiles {
@@ -10,12 +11,20 @@ interface ResponseGetFiles {
 
 class FilesController {
     async getFiles(req: Request, res: Response<ResponseGetFiles>, next: NextFunction) {
+        const currPath = req.body.path.replace('.', '')
+        const homeFolder = typeof req.headers?.homefolder === 'string' ? req.headers.homefolder.replace('.', '') : '';
+        if (!homeFolder || homeFolder === 'error') {
+            res.status(200).json({
+                path: '',
+                folders: [],
+                files: []
+            })
+        }
+        const resPath = process.env.CLOUD_PATH + `/${homeFolder}/` + currPath
 
-
-        const currPath = req.body.path.replace('..', '')
         try {
             console.log(process.env.CLOUD_PATH)
-            const items = fs.readdirSync(process.env.CLOUD_PATH+currPath, {withFileTypes: true})
+            const items = fs.readdirSync(resPath, {withFileTypes: true})
             const folders = items.filter((item: any) => item.isDirectory()).map((item: any) => item.name)
             const files = items.filter((item: any) => item.isFile()).map((item: any) => item.name)
             res.status(200).json({

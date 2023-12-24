@@ -6,7 +6,8 @@ const User = sequelize.define('user', {
     email: {type: DataTypes.STRING, unique: true},
     password: {type: DataTypes.STRING},
     role: {type: DataTypes.STRING, defaultValue: 'user'},
-    approve: {type: DataTypes.BOOLEAN, defaultValue: false}
+    approve: {type: DataTypes.BOOLEAN, defaultValue: false},
+    homeFolder: {type: DataTypes.STRING, unique: true}
 })
 
 module.exports = {

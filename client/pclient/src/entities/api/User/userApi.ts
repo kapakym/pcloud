@@ -5,9 +5,19 @@ interface LoginRequest {
     password: string
 }
 
+type RegisterRequest = Partial<LoginRequest>
+
 const filesApi = {
-    LoginUser: (params: LoginRequest) => useRequest<{ token: string, role: string }, LoginRequest>({
+    LoginUser: (params: LoginRequest) => useRequest<{ token: string, role: string, folder: string }, LoginRequest>({
         url: '/api/user/login',
+        method: 'post',
+        options: {
+            isNotRequest: true,
+            params
+        }
+    }),
+    RegistrationUser: (params: RegisterRequest) => useRequest<{ message: string }, RegisterRequest>({
+        url: '/api/user/registration',
         method: 'post',
         options: {
             isNotRequest: true,
@@ -17,5 +27,6 @@ const filesApi = {
 }
 
 export const {
-    LoginUser: useLoginUser
+    LoginUser: useLoginUser,
+    RegistrationUser: useRegistrationUser
 } = filesApi

@@ -8,7 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const uuid_1 = require("uuid");
+const fs_1 = __importDefault(require("fs"));
 const ApiError = require('../error/ApiError');
 const { User } = require('../models/models');
 const bcrypt = require('bcrypt');
@@ -35,14 +40,26 @@ class UserController {
                 return next(ApiError.badRequest('Пользователь с таким именем уже существует'));
             }
             const hashPassword = yield bcrypt.hash(password, 5);
+            const uuid4Folder = (0, uuid_1.v4)();
             const user = yield User.create({
                 email,
                 password: hashPassword,
                 role: count ? 'user' : 'admin',
-                approve: !count
+                approve: !count,
+                homeFolder: uuid4Folder
             });
-            const token = generateJwt(user.id, user.role, user.email);
-            return res.json({ token });
+            const folderName = process.env.CLOUD_PATH + `/${uuid4Folder}`;
+            try {
+                if (!fs_1.default.existsSync(folderName)) {
+                    fs_1.default.mkdirSync(folderName);
+                }
+            }
+            catch (err) {
+                console.error(err);
+                return next(ApiError.badRequest('Не удалось создать папку для пользователя'));
+            }
+            // const token = generateJwt(user.id, user.role, user.email)
+            return res.json({ message: 'Сформирована заявка на регистрацию' });
         });
     }
     login(req, res, next) {
@@ -71,7 +88,8 @@ class UserController {
             const token = generateJwt(user.id, user.role, user.email);
             return res.json({
                 token,
-                role: user.role
+                role: user.role,
+                folder: user.homeFolder
             });
         });
     }

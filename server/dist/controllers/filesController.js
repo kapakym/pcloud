@@ -16,11 +16,21 @@ const fs_1 = __importDefault(require("fs"));
 const ApiError = require('../error/ApiError');
 class FilesController {
     getFiles(req, res, next) {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            const currPath = req.body.path.replace('..', '');
+            const currPath = req.body.path.replace('.', '');
+            const homeFolder = typeof ((_a = req.headers) === null || _a === void 0 ? void 0 : _a.homefolder) === 'string' ? req.headers.homefolder.replace('.', '') : '';
+            if (!homeFolder || homeFolder === 'error') {
+                res.status(200).json({
+                    path: '',
+                    folders: [],
+                    files: []
+                });
+            }
+            const resPath = process.env.CLOUD_PATH + `/${homeFolder}/` + currPath;
             try {
                 console.log(process.env.CLOUD_PATH);
-                const items = fs_1.default.readdirSync(process.env.CLOUD_PATH + currPath, { withFileTypes: true });
+                const items = fs_1.default.readdirSync(resPath, { withFileTypes: true });
                 const folders = items.filter((item) => item.isDirectory()).map((item) => item.name);
                 const files = items.filter((item) => item.isFile()).map((item) => item.name);
                 res.status(200).json({

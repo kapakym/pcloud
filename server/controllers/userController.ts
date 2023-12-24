@@ -1,5 +1,7 @@
 import {NextFunction, Request, Response} from "express";
 import {RequestToken} from "../middleware/authMiddleware";
+import {v4 as uuidv4} from 'uuid';
+import fs from "fs";
 
 const ApiError = require('../error/ApiError')
 const {User} = require('../models/models')
@@ -7,11 +9,13 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 interface ResponseRegisterUser {
-    token: string
+    message: string
 }
 
-interface ResponseLoginUser extends ResponseRegisterUser {
+interface ResponseLoginUser {
+    token: string
     role: string
+    folder: string
 }
 
 interface RequestUser {
@@ -44,14 +48,25 @@ class UserController {
             return next(ApiError.badRequest('Пользователь с таким именем уже существует'))
         }
         const hashPassword = await bcrypt.hash(password, 5);
+        const uuid4Folder = uuidv4()
         const user = await User.create({
             email,
             password: hashPassword,
             role: count ? 'user' : 'admin',
-            approve: !count
+            approve: !count,
+            homeFolder: uuid4Folder
         })
-        const token = generateJwt(user.id, user.role, user.email)
-        return res.json({token})
+        const folderName = process.env.CLOUD_PATH + `/${uuid4Folder}`;
+        try {
+            if (!fs.existsSync(folderName)) {
+                fs.mkdirSync(folderName);
+            }
+        } catch (err) {
+            console.error(err);
+            return next(ApiError.badRequest('Не удалось создать папку для пользователя'))
+        }
+        // const token = generateJwt(user.id, user.role, user.email)
+        return res.json({message: 'Сформирована заявка на регистрацию'})
     }
 
     async login(req: Request<RequestUser>, res: Response<ResponseLoginUser>, next: NextFunction) {
@@ -82,11 +97,12 @@ class UserController {
         const token = generateJwt(user.id, user.role, user.email);
         return res.json({
             token,
-            role: user.role
+            role: user.role,
+            folder: user.homeFolder
         })
     }
 
-    async check(req: RequestToken, res: Response<ResponseLoginUser>, next: NextFunction) {
+    async check(req: RequestToken, res: Response<Omit<ResponseLoginUser, 'folder'>>, next: NextFunction) {
         if (typeof req.user === 'object') {
             const token = generateJwt(req.user.id, req.user.role, req.user.email)
             return res.json({token, role: req.user.role})

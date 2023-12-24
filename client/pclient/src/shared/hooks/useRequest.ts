@@ -10,12 +10,17 @@ interface Result<Req> {
     requestFn: (options: Req) => void;
 }
 
+type AxiosRequestHeaders = {
+    [x: string]: string | number | boolean;
+}
+
 interface Props<Req> {
     url: string
     method?: string
     options?: {
         isNotRequest?: boolean,
         params?: Req
+        headers?: AxiosRequestHeaders
     }
 }
 
@@ -36,7 +41,8 @@ const useRequest = <Res, Req>({url, method, options}: Props<Req>): [Res | null, 
             url,
             data: data,
             headers: {
-                Authorization: 'Bearer ' + localStorage.getItem('token')
+                Authorization: 'Bearer ' + localStorage.getItem('token'),
+                ...options?.headers
             }
         }).then(response => {
             setData(response.data)
