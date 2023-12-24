@@ -1,6 +1,6 @@
 import React from 'react';
 import {FileTypes} from "../../../consts/fileTypes";
-import {TrashIcon} from '@heroicons/react/24/solid'
+import {TrashIcon, LinkIcon, ShareIcon} from '@heroicons/react/24/solid'
 
 interface Props {
     name: string;
@@ -20,8 +20,16 @@ const FileItem = ({name, fileType, onClick}: Props) => {
                 <div className={'hidden sm:block'}>
                     {fileType}
                 </div>
-                <div>
-                    <TrashIcon className='h-6 w-6 cursor-pointer hover:text-white'/>
+                <div className='flex space-x-2'>
+                    {fileType!==FileTypes.UP_DIR &&
+                        <>
+                            <TrashIcon className='h-6 w-6 cursor-pointer hover:text-white'/>
+                            <ShareIcon className='h-6 w-6 cursor-pointer hover:text-white'/>
+                            <LinkIcon className='h-6 w-6 cursor-pointer hover:text-white'/>
+                        </>
+
+                    }
+
                 </div>
             </div>
 

@@ -1,12 +1,13 @@
 import fs from "fs";
 import {NextFunction, Request, Response} from "express";
+import path from 'path'
 
 const ApiError = require('../error/ApiError')
 
 interface ResponseGetFiles {
     path: string,
     folders: string[]
-    files: string[]
+    files: Array<{ name: string, type: string }>
 }
 
 class FilesController {
@@ -26,7 +27,10 @@ class FilesController {
             console.log(process.env.CLOUD_PATH)
             const items = fs.readdirSync(resPath, {withFileTypes: true})
             const folders = items.filter((item: any) => item.isDirectory()).map((item: any) => item.name)
-            const files = items.filter((item: any) => item.isFile()).map((item: any) => item.name)
+            const files = items.filter((item: any) => item.isFile()).map((item: any) => ({
+                name: item.name,
+                type: path.extname(item.name)
+            }))
             res.status(200).json({
                 path: currPath,
                 folders, files

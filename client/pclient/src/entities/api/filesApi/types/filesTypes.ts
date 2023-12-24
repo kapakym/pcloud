@@ -1,5 +1,5 @@
 export interface ResponseGetFiles {
     path: string,
     folders: string[]
-    files: string[]
+    files: Array<{name:string, type:string}>
 }

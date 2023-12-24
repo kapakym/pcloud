@@ -55,8 +55,8 @@ const FileList = () => {
 
                     }
                     {(data && !!data.files.length) &&
-                        data.files.filter(item => item.includes(filter)).map(item => (
-                            <FileItem name={item} fileType={FileTypes.FILE} key={item}/>
+                        data.files.filter(item => item.name.includes(filter)).map(item => (
+                            <FileItem name={item.name} fileType={FileTypes.FILE} key={item.name}/>
                         ))
                     }
                 </div>

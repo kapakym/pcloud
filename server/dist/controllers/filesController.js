@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
 const ApiError = require('../error/ApiError');
 class FilesController {
     getFiles(req, res, next) {
@@ -32,7 +33,10 @@ class FilesController {
                 console.log(process.env.CLOUD_PATH);
                 const items = fs_1.default.readdirSync(resPath, { withFileTypes: true });
                 const folders = items.filter((item) => item.isDirectory()).map((item) => item.name);
-                const files = items.filter((item) => item.isFile()).map((item) => item.name);
+                const files = items.filter((item) => item.isFile()).map((item) => ({
+                    name: item.name,
+                    type: path_1.default.extname(item.name)
+                }));
                 res.status(200).json({
                     path: currPath,
                     folders, files
