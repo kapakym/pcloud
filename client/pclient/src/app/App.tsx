@@ -8,7 +8,7 @@ import Button from "../shared/ui/Button";
 
 function App() {
     return (
-        <div className="w-[100%] h-[100vh]  flex bg-app-bg-primary text-app-text-primary">
+        <div className="w-[100vw] h-[100vh]  flex bg-app-bg-primary text-app-text-primary">
             <div className='flex flex-col w-full h-full'>
                 <Header/>
                 <div className='flex h-[calc(100%-50px)]'>
