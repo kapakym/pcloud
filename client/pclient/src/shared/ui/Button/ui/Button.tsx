@@ -1,8 +1,8 @@
-import React, {FC, ButtonHTMLAttributes} from 'react';
+import React, {ButtonHTMLAttributes, FC} from 'react';
 
 const Button: FC<ButtonHTMLAttributes<HTMLButtonElement>> = (props, context) => {
     return (
-        <button className='border-[1px] border-black p-2 rounded-xl shadow-xl hover:bg-black hover:text-white transition-all duration-500 transform active:scale-x-75 transition-transform mx-5 flex' {...props}>
+        <button className='border-[1px] border-app-border p-2 rounded-xl shadow-xl bg-app-button-primary hover:bg-app-button-hover  transition-all duration-500 drop-shadow-xl  flex' {...props}>
             {props.children}
         </button>
     );

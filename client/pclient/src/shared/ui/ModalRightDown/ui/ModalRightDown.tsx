@@ -1,5 +1,4 @@
-import React, {HTMLAttributes, InputHTMLAttributes} from 'react';
-import {DivNode} from "tailwindcss/src/value-parser";
+import React, {HTMLAttributes} from 'react';
 import {XMarkIcon} from '@heroicons/react/24/solid'
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
@@ -10,8 +9,8 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
 const ModalRightDown = ({children, title, onClose}: Props) => {
     return (
         <div
-            className='transition-all fixed flex flex-col w-[97%] md:w-[20%] border-[2px] border-solid border-black right-2 bottom-2 h-[90%] bg-white md:h-[20%] shadow-2xl rounded-xl'>
-            <div className='flex justify-between items-center p-2 border-b-black border-b-[1px] border-solid  '>
+            className='transition-all fixed flex flex-col w-[97%] md:w-[20%] right-2 bottom-2 border-[1px] border-b-gray-300 h-[90%] bg-white md:h-[20%] drop-shadow-md rounded-xl'>
+            <div className='flex justify-between items-center p-2 border-b-gray-300 border-b-[1px] border-solid  '>
                 <div>
                     {title}
                 </div>

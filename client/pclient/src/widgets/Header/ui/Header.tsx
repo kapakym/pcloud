@@ -10,7 +10,7 @@ const Header = () => {
         navigate({pathname: '/login'})
     }
     return (
-        <div className='h-[50px] w-full border-2 border-red-500 p-2 flex justify-between items-center'>
+        <div className='h-[50px] w-full border-b-[1px] border-b-solid border-b-app-border p-2 flex justify-between items-center'>
             <div>
                 pCloud
             </div>

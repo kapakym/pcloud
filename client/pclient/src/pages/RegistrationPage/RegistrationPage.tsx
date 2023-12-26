@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import Input from "../../shared/ui/Input";
 import Button from "../../shared/ui/Button";
-import {useLoginUser, useRegistrationUser} from "../../entities/api/User/userApi";
-import * as localforage from "localforage";
+import {useRegistrationUser} from "../../entities/api/User/userApi";
 import Loader from "../../shared/loader";
 import {useNavigate} from "react-router-dom";
 
@@ -37,7 +36,7 @@ const RegistrationPage = () => {
 
     return (
         <div className='w-full h-full justify-center items-center flex'>
-            <div className='w-auto border-black border-[1px] h-auto p-4 space-y-2 rounded-xl shadow-xl'>
+            <div className='w-auto border-app-border drop-shadow-xl border-[1px] h-auto p-4 space-y-2 rounded-xl shadow-xl'>
                 <div className='w-full text-center'>
                     Регистрация в pCloud
                 </div>

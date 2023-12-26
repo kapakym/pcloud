@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import Input from "../../shared/ui/Input";
 import Button from "../../shared/ui/Button";
 import {useLoginUser} from "../../entities/api/User/userApi";
-import * as localforage from "localforage";
 import Loader from "../../shared/loader";
 import {useNavigate} from "react-router-dom";
 
@@ -50,7 +49,8 @@ const LoginPage = () => {
 
     return (
         <div className='w-full h-full justify-center items-center flex'>
-            <div className='w-auto border-black border-[1px] h-auto p-4 space-y-2 rounded-xl shadow-xl'>
+            <div
+                className='w-auto h-auto p-4 space-y-2 rounded-xl shadow-xl drop-shadow-xl border-[1px] border-solid border-app-border'>
                 <div className='w-full text-center'>
                     Авторизация pCloud
                 </div>

@@ -14,11 +14,10 @@ interface ResponseGetFiles {
 class FilesController {
     async getFiles(req: Request, res: Response<ResponseGetFiles>, next: NextFunction) {
         const currPath = req.body.path.replace('.', '')
-        const homeFolder = typeof req.headers?.homefolder === 'string' ? req.headers.homefolder : '';
-        const resPath = FileUtils.buildPath(homeFolder, req.body.path)
+        const resPath = FileUtils.buildPath(req.headers?.homefolder, req.body.path)
 
         if (!resPath) {
-            res.status(200).json({
+            return res.status(200).json({
                 path: '',
                 folders: [],
                 files: []
@@ -34,12 +33,12 @@ class FilesController {
                 type: path.extname(item.name),
                 size: fs.statSync(resPath + '/' + item.name).size
             }))
-            res.status(200).json({
+            return res.status(200).json({
                 path: currPath,
                 folders, files
             })
         } catch (error: any) {
-            res.status(200).json({
+            return res.status(200).json({
                 path: '',
                 folders: [],
                 files: []
@@ -50,11 +49,10 @@ class FilesController {
     async uploadFile(req: any, res: Response, next: NextFunction) {
         try {
             const file = req.files.file
-            const homeFolder = typeof req.headers?.homefolder === 'string' ? req.headers.homefolder : '';
-            const resPath = FileUtils.buildPath(homeFolder, req.body.path)
+            const resPath = FileUtils.buildPath(req.headers?.homefolder, req.body.path)
 
-            if (!homeFolder || homeFolder === 'error') {
-                res.status(400).json({
+            if (!resPath) {
+                return res.status(400).json({
                     message: 'Ошибка загрузки файла'
                 })
             }
@@ -63,10 +61,71 @@ class FilesController {
             }
 
             file.mv(resPath + file.name)
-            res.status(200).json({filename: file.name})
+            return res.status(200).json({filename: file.name})
 
         } catch (error: any) {
-            res.status(400).json({message: 'Ошибка загрузки файла'})
+            return res.status(400).json({message: 'Ошибка загрузки файла'})
+        }
+    }
+
+    async createFolder(req: Request<{ newFolder: string }>, res: Response, next: NextFunction) {
+        const resPath = FileUtils.buildPath(req.headers?.homefolder, req.body.path)
+        const newFolder = req.body.folderName;
+
+        if (!newFolder || !resPath) {
+            return res.status(400).json({
+                message: 'Ошибка создания папки'
+            })
+        }
+        if (fs.existsSync(resPath + newFolder)) {
+            return res.status(400).json({message: 'Папка с таким именем уже существует'})
+        }
+        try {
+            fs.mkdirSync(resPath + newFolder)
+            res.status(200).json({newFolder})
+        } catch (e) {
+            return res.status(400).json({
+                message: 'Ошибка создания папки'
+            })
+        }
+    }
+
+    async deleteFile(req: Request<{ fileName: string }>, res: Response, next: NextFunction) {
+        const resPath = FileUtils.buildPath(req.headers?.homefolder, req.body.path)
+        const deleteFile = req.body.fileName;
+
+        if (!deleteFile || !resPath) {
+            return res.status(400).json({
+                message: 'Ошибка удаления файла'
+            })
+        }
+
+        try {
+            fs.rmSync(resPath + deleteFile)
+            res.status(200).json({deleteFile})
+        } catch (e) {
+            return res.status(400).json({
+                message: 'Ошибка удаления файла'
+            })
+        }
+    }
+
+    async downloadFile(req: Request<{ fileName: string }>, res: Response, next: NextFunction) {
+
+        const resPath = FileUtils.buildPath(req.headers?.homefolder, req.body.path)
+        const downloadFile = req.body.fileName;
+        if (!downloadFile || !resPath) {
+            return res.status(400).json({
+                message: 'Ошибка загрузки файла'
+            })
+        }
+
+        try {
+            if (fs.existsSync(resPath + downloadFile)) {
+                return res.download(resPath + downloadFile, downloadFile)
+            }
+        } catch (e) {
+            return res.status(400).json({message: 'Ошибка загрузки файла'})
         }
     }
 }

@@ -21,10 +21,9 @@ class FilesController {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const currPath = req.body.path.replace('.', '');
-            const homeFolder = typeof ((_a = req.headers) === null || _a === void 0 ? void 0 : _a.homefolder) === 'string' ? req.headers.homefolder : '';
-            const resPath = fileUtils_1.default.buildPath(homeFolder, req.body.path);
+            const resPath = fileUtils_1.default.buildPath((_a = req.headers) === null || _a === void 0 ? void 0 : _a.homefolder, req.body.path);
             if (!resPath) {
-                res.status(200).json({
+                return res.status(200).json({
                     path: '',
                     folders: [],
                     files: []
@@ -39,13 +38,13 @@ class FilesController {
                     type: path_1.default.extname(item.name),
                     size: fs_1.default.statSync(resPath + '/' + item.name).size
                 }));
-                res.status(200).json({
+                return res.status(200).json({
                     path: currPath,
                     folders, files
                 });
             }
             catch (error) {
-                res.status(200).json({
+                return res.status(200).json({
                     path: '',
                     folders: [],
                     files: []
@@ -58,10 +57,9 @@ class FilesController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const file = req.files.file;
-                const homeFolder = typeof ((_a = req.headers) === null || _a === void 0 ? void 0 : _a.homefolder) === 'string' ? req.headers.homefolder : '';
-                const resPath = fileUtils_1.default.buildPath(homeFolder, req.body.path);
-                if (!homeFolder || homeFolder === 'error') {
-                    res.status(400).json({
+                const resPath = fileUtils_1.default.buildPath((_a = req.headers) === null || _a === void 0 ? void 0 : _a.homefolder, req.body.path);
+                if (!resPath) {
+                    return res.status(400).json({
                         message: 'Ошибка загрузки файла'
                     });
                 }
@@ -69,10 +67,75 @@ class FilesController {
                     return res.status(400).json({ message: 'Файл с таким именем уже существует' });
                 }
                 file.mv(resPath + file.name);
-                res.status(200).json({ filename: file.name });
+                return res.status(200).json({ filename: file.name });
             }
             catch (error) {
-                res.status(400).json({ message: 'Ошибка загрузки файла' });
+                return res.status(400).json({ message: 'Ошибка загрузки файла' });
+            }
+        });
+    }
+    createFolder(req, res, next) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            const resPath = fileUtils_1.default.buildPath((_a = req.headers) === null || _a === void 0 ? void 0 : _a.homefolder, req.body.path);
+            const newFolder = req.body.folderName;
+            if (!newFolder || !resPath) {
+                return res.status(400).json({
+                    message: 'Ошибка создания папки'
+                });
+            }
+            if (fs_1.default.existsSync(resPath + newFolder)) {
+                return res.status(400).json({ message: 'Папка с таким именем уже существует' });
+            }
+            try {
+                fs_1.default.mkdirSync(resPath + newFolder);
+                res.status(200).json({ newFolder });
+            }
+            catch (e) {
+                return res.status(400).json({
+                    message: 'Ошибка создания папки'
+                });
+            }
+        });
+    }
+    deleteFile(req, res, next) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            const resPath = fileUtils_1.default.buildPath((_a = req.headers) === null || _a === void 0 ? void 0 : _a.homefolder, req.body.path);
+            const deleteFile = req.body.fileName;
+            if (!deleteFile || !resPath) {
+                return res.status(400).json({
+                    message: 'Ошибка удаления файла'
+                });
+            }
+            try {
+                fs_1.default.rmSync(resPath + deleteFile);
+                res.status(200).json({ deleteFile });
+            }
+            catch (e) {
+                return res.status(400).json({
+                    message: 'Ошибка удаления файла'
+                });
+            }
+        });
+    }
+    downloadFile(req, res, next) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            const resPath = fileUtils_1.default.buildPath((_a = req.headers) === null || _a === void 0 ? void 0 : _a.homefolder, req.body.path);
+            const downloadFile = req.body.fileName;
+            if (!downloadFile || !resPath) {
+                return res.status(400).json({
+                    message: 'Ошибка загрузки файла'
+                });
+            }
+            try {
+                if (fs_1.default.existsSync(resPath + downloadFile)) {
+                    return res.download(resPath + downloadFile, downloadFile);
+                }
+            }
+            catch (e) {
+                return res.status(400).json({ message: 'Ошибка загрузки файла' });
             }
         });
     }

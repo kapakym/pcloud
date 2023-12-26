@@ -3,7 +3,7 @@ import FileList from "../../entities/FileList/FileList";
 
 const Main = () => {
     return (
-        <div className='h-full w-full p-2 border-2 border-amber-400'>
+        <div className='h-full w-full p-2'>
             <FileList />
         </div>
     );
