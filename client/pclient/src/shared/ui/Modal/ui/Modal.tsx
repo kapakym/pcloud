@@ -18,7 +18,7 @@ const Modal = ({title, width = '40%', height = '40%', children, buttons, isVisib
                     <div
                         style={{width: width, height: height}}
                         className={`sm:w-[${width}] h-[${height}]  w-[95%]  flex flex-col rounded-xl fixed top-[50%] left-[50%] bg-app-bg-primary drop-shadow-2xl transform translate-x-[-50%] translate-y-[-50%]  max-h-[90%] z-10`}>
-                        <div className='flex justify-between border-b-app-border border-b-[1px] p-4 justify-center'>
+                        <div className='flex justify-between border-b-app-border border-b-[1px] p-4 '>
                             <div className=''>
                                 {title}
                             </div>
