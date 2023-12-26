@@ -14,28 +14,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
+const fileUtils_1 = __importDefault(require("../utils/fileUtils"));
 const ApiError = require('../error/ApiError');
 class FilesController {
     getFiles(req, res, next) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const currPath = req.body.path.replace('.', '');
-            const homeFolder = typeof ((_a = req.headers) === null || _a === void 0 ? void 0 : _a.homefolder) === 'string' ? req.headers.homefolder.replace('.', '') : '';
-            if (!homeFolder || homeFolder === 'error') {
+            const homeFolder = typeof ((_a = req.headers) === null || _a === void 0 ? void 0 : _a.homefolder) === 'string' ? req.headers.homefolder : '';
+            const resPath = fileUtils_1.default.buildPath(homeFolder, req.body.path);
+            if (!resPath) {
                 res.status(200).json({
                     path: '',
                     folders: [],
                     files: []
                 });
             }
-            const resPath = process.env.CLOUD_PATH + `/${homeFolder}/` + currPath;
             try {
                 console.log(process.env.CLOUD_PATH);
                 const items = fs_1.default.readdirSync(resPath, { withFileTypes: true });
                 const folders = items.filter((item) => item.isDirectory()).map((item) => item.name);
                 const files = items.filter((item) => item.isFile()).map((item) => ({
                     name: item.name,
-                    type: path_1.default.extname(item.name)
+                    type: path_1.default.extname(item.name),
+                    size: fs_1.default.statSync(resPath + '/' + item.name).size
                 }));
                 res.status(200).json({
                     path: currPath,
@@ -48,7 +50,29 @@ class FilesController {
                     folders: [],
                     files: []
                 });
-                // return next(ApiError.badRequest('Неверный маршрут'))
+            }
+        });
+    }
+    uploadFile(req, res, next) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const file = req.files.file;
+                const homeFolder = typeof ((_a = req.headers) === null || _a === void 0 ? void 0 : _a.homefolder) === 'string' ? req.headers.homefolder : '';
+                const resPath = fileUtils_1.default.buildPath(homeFolder, req.body.path);
+                if (!homeFolder || homeFolder === 'error') {
+                    res.status(400).json({
+                        message: 'Ошибка загрузки файла'
+                    });
+                }
+                if (fs_1.default.existsSync(resPath + file.name)) {
+                    return res.status(400).json({ message: 'Файл с таким именем уже существует' });
+                }
+                file.mv(resPath + file.name);
+                res.status(200).json({ filename: file.name });
+            }
+            catch (error) {
+                res.status(400).json({ message: 'Ошибка загрузки файла' });
             }
         });
     }

@@ -1,28 +1,42 @@
 import React from 'react';
 import {FileTypes} from "../../../consts/fileTypes";
-import {TrashIcon, LinkIcon, ShareIcon} from '@heroicons/react/24/solid'
+import {LinkIcon, ShareIcon, TrashIcon, FolderIcon, DocumentIcon} from "@heroicons/react/24/outline";
 
 interface Props {
     name: string;
     fileType: FileTypes
     onClick?: () => void
+    size?: number
 }
 
-const FileItem = ({name, fileType, onClick}: Props) => {
+const FileItem = ({name, fileType, onClick, size}: Props) => {
     return (
         <div
             className='odd:bg-white justify-between even:bg-gray-200 sm:flex flex hover:bg-gray-500 hover:text-white cursor-pointer'
             onClick={onClick}>
-            <div className=''>
-                {name}
+            <div className='flex space-x-2 items-center'>
+                <div>
+                    {fileType === FileTypes.DIR && <FolderIcon className='h-6 w-6 cursor-pointer hover:text-white'/>}
+                    {fileType === FileTypes.FILE && <DocumentIcon className='h-6 w-6 cursor-pointer hover:text-white'/>}
+                </div>
+                <div className=''>
+                    {name}
+                </div>
             </div>
+
             <div className='flex space-x-2 p-1'>
-                <div className={'hidden sm:block'}>
-                    {fileType}
+                <div className='hidden sm:flex space-x-2' >
+                    <div>
+                        {size} Мб
+                    </div>
+                    <div>
+                        {fileType}
+                    </div>
                 </div>
                 <div className='flex space-x-2'>
-                    {fileType!==FileTypes.UP_DIR &&
+                    {fileType !== FileTypes.UP_DIR &&
                         <>
+
                             <TrashIcon className='h-6 w-6 cursor-pointer hover:text-white'/>
                             <ShareIcon className='h-6 w-6 cursor-pointer hover:text-white'/>
                             <LinkIcon className='h-6 w-6 cursor-pointer hover:text-white'/>

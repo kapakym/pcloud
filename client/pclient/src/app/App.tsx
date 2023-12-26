@@ -1,7 +1,8 @@
 import React from 'react';
 import Header from "../widgets/Header/ui/Header";
-import {createBrowserRouter, Route, Routes} from "react-router-dom";
+import {Route, Routes} from "react-router-dom";
 import {mainRoutes} from "./routes/routes";
+import UploadWindow from "../widgets/UploadWindow";
 
 function App() {
     return (
@@ -20,6 +21,7 @@ function App() {
                         </Routes>
                     </div>
                 </div>
+                <UploadWindow/>
             </div>
         </div>
     )

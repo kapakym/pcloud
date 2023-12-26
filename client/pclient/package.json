@@ -58,6 +58,7 @@
     "@types/compose-function": "^0.0.33",
     "@types/react-router": "^5.1.20",
     "@types/react-router-dom": "^5.3.3",
+    "@types/uuid": "^9.0.7",
     "tailwindcss": "^3.3.6"
   }
 }

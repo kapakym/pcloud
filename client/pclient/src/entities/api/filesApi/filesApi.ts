@@ -2,11 +2,23 @@ import useRequest from "../../../shared/hooks/useRequest";
 import {ResponseGetFiles} from "./types/filesTypes";
 
 const filesApi = {
-    getFilesFromPath: (params: { path: string }) => useRequest<ResponseGetFiles, { path: string }>({
+    GetFilesFromPath: (data: { path: string }) => useRequest<ResponseGetFiles, { path: string }>({
         url: '/api/files',
         method: 'post',
         options: {
-            params,
+            data,
+            headers: {
+                homeFolder: localStorage.getItem('folder') || 'error'
+            }
+        }
+    }),
+
+    UploadFile: (data?: FormData) => useRequest<{filename:string}, Partial<FormData>>({
+        url: '/api/files/upload',
+        method: 'post',
+        options: {
+            data,
+            isNotRequest: true,
             headers: {
                 homeFolder: localStorage.getItem('folder') || 'error'
             }
@@ -15,5 +27,6 @@ const filesApi = {
 }
 
 export const {
-    getFilesFromPath: useGetFilesFromPath
+    GetFilesFromPath: useGetFilesFromPath,
+    UploadFile: useUploadFile
 } = filesApi

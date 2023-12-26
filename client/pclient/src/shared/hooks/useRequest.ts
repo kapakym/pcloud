@@ -1,13 +1,20 @@
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import axios, {AxiosError} from "axios";
-import {Simulate} from "react-dom/test-utils";
+
+interface OptionsRequestFn {
+    uuid?: string
+}
 
 interface Result<Req> {
     isLoading: boolean
     isError: boolean
     errorRes: any
-    requestFn: (options: Req) => void;
+    requestFn: (data: Req, optionsFn?: OptionsRequestFn) => void;
+    percentage: {
+        progress: number,
+        uuid: string | undefined
+    } | undefined
 }
 
 type AxiosRequestHeaders = {
@@ -19,8 +26,9 @@ interface Props<Req> {
     method?: string
     options?: {
         isNotRequest?: boolean,
-        params?: Req
-        headers?: AxiosRequestHeaders
+        data?: Req
+        headers?: AxiosRequestHeaders,
+        id?: string
     }
 }
 
@@ -29,13 +37,14 @@ const useRequest = <Res, Req>({url, method, options}: Props<Req>): [Res | null, 
     const [isLoading, setIsLoading] = useState(false)
     const [data, setData] = useState<Res | null>(null)
     const [isError, setIsError] = useState(false)
+    const [percentage, setPercentage] = useState<{ progress: number, uuid: string | undefined }>()
     const [errorRes, setErrorRes] = useState<AxiosError | null>(null)
+
     const navigate = useNavigate()
-    const axiosRequest = (data?: Req) => {
+    const axiosRequest = (data?: Req, optionsFn?: OptionsRequestFn) => {
         setIsLoading(true);
         setIsError(false);
         setData(null)
-
         axios({
             method,
             url,
@@ -43,6 +52,15 @@ const useRequest = <Res, Req>({url, method, options}: Props<Req>): [Res | null, 
             headers: {
                 Authorization: 'Bearer ' + localStorage.getItem('token'),
                 ...options?.headers
+            },
+            onUploadProgress: (progressEvent: any) => {
+                let percentComplete: number = progressEvent.loaded / progressEvent.total
+                percentComplete = percentComplete * 100;
+                setPercentage({
+                    uuid: optionsFn?.uuid,
+                    progress: percentComplete
+                })
+                console.log(percentComplete);
             }
         }).then(response => {
             setData(response.data)
@@ -61,16 +79,15 @@ const useRequest = <Res, Req>({url, method, options}: Props<Req>): [Res | null, 
         }).finally(() => {
             setIsLoading(false)
         });
-
     }
 
     useEffect(() => {
             if (!options?.isNotRequest)
-                axiosRequest(options?.params)
+                axiosRequest(options?.data)
         }
         , [])
 
-    return [data, {isLoading, isError, requestFn: axiosRequest, errorRes}]
+    return [data, {isLoading, isError, requestFn: axiosRequest, errorRes, percentage}]
 };
 
 export default useRequest;

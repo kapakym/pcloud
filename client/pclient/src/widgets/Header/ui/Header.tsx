@@ -1,5 +1,5 @@
 import React from 'react';
-import {} from '@heroicons/react/24/solid'
+
 import {useNavigate} from "react-router-dom";
 import MenuButton from "../../../shared/ui/MenuButton";
 
