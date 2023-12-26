@@ -9,6 +9,7 @@ export const uploadFile = (file: File, path: string, uuid: string) => (dispatch:
     try {
         const formData = new FormData()
         formData.append('file', file);
+        formData.append('filename', encodeURI(file.name))
         if (path) {
             formData.append('path', path);
         }

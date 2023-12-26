@@ -49,18 +49,19 @@ class FilesController {
     async uploadFile(req: any, res: Response, next: NextFunction) {
         try {
             const file = req.files.file
+            const filenameutf8 = decodeURI(req.body.filename)
             const resPath = FileUtils.buildPath(req.headers?.homefolder, req.body.path)
+
 
             if (!resPath) {
                 return res.status(400).json({
                     message: 'Ошибка загрузки файла'
                 })
             }
-            if (fs.existsSync(resPath + file.name)) {
+            if (fs.existsSync(resPath + filenameutf8)) {
                 return res.status(400).json({message: 'Файл с таким именем уже существует'})
             }
-
-            file.mv(resPath + file.name)
+            file.mv(resPath + filenameutf8)
             return res.status(200).json({filename: file.name})
 
         } catch (error: any) {
