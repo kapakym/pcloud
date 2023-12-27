@@ -69,7 +69,7 @@ class FilesController {
         }
     }
 
-    async createFolder(req: Request<{ newFolder: string }>, res: Response, next: NextFunction) {
+    async createFolder(req: Request<{ folderName: string, path: string }>, res: Response, next: NextFunction) {
         const resPath = FileUtils.buildPath(req.headers?.homefolder, req.body.path)
         const newFolder = req.body.folderName;
 
@@ -83,7 +83,7 @@ class FilesController {
         }
         try {
             fs.mkdirSync(resPath + newFolder)
-            res.status(200).json({newFolder})
+            res.status(200).json({folderName: newFolder})
         } catch (e) {
             return res.status(400).json({
                 message: 'Ошибка создания папки'

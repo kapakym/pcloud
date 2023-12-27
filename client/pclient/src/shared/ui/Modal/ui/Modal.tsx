@@ -7,14 +7,27 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
     height?: string
     buttons?: React.ReactNode
     isVisible?: boolean
+    onClose?: () => void
 }
 
-const Modal = ({title, width = '40%', height = '40%', children, buttons, isVisible = false}: Props) => {
+const Modal = ({
+                   title,
+                   width = '40%',
+                   height = '40%',
+                   children,
+                   buttons,
+                   isVisible = false,
+                   onClose
+               }: Props) => {
+
     return (
         <>
             {isVisible &&
                 <>
-                    <div className='fixed h-[100vh] w-[100vw] top-0 left-0 opacity-50 backdrop-blur-xl bg-white/30 border-[1px] border-solid border-red-500 z-10'></div>
+                    <div
+                        className='fixed h-[100vh] w-[100vw] top-0 left-0 opacity-50 backdrop-blur-xl bg-white/30 border-[1px] border-solid border-red-500 z-10'
+                        onClick={onClose}
+                    ></div>
                     <div
                         style={{width: width, height: height}}
                         className={`sm:w-[${width}] h-[${height}]  w-[95%]  flex flex-col rounded-xl fixed top-[50%] left-[50%] bg-app-bg-primary drop-shadow-2xl transform translate-x-[-50%] translate-y-[-50%]  max-h-[90%] z-10`}>
@@ -22,7 +35,10 @@ const Modal = ({title, width = '40%', height = '40%', children, buttons, isVisib
                             <div className=''>
                                 {title}
                             </div>
-                            <XMarkIcon className='h-6 w-6 cursor-pointer'/>
+                            <XMarkIcon
+                                className='h-6 w-6 cursor-pointer'
+                                onClick={onClose}
+                            />
                         </div>
                         <div className='p-4 h-[100%]'>
                             {children}

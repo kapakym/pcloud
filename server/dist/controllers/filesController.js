@@ -90,7 +90,7 @@ class FilesController {
             }
             try {
                 fs_1.default.mkdirSync(resPath + newFolder);
-                res.status(200).json({ newFolder });
+                res.status(200).json({ folderName: newFolder });
             }
             catch (e) {
                 return res.status(400).json({

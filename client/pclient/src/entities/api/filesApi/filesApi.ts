@@ -13,8 +13,23 @@ const filesApi = {
         }
     }),
 
-    UploadFile: (data?: FormData) => useRequest<{filename:string}, Partial<FormData>>({
+    UploadFile: (data?: FormData) => useRequest<{ filename: string }, Partial<FormData>>({
         url: '/api/files/upload',
+        method: 'post',
+        options: {
+            data,
+            isNotRequest: true,
+            headers: {
+                homeFolder: localStorage.getItem('folder') || 'error'
+            }
+        }
+    }),
+
+    CreateFolder: (data?: { path: string, folderName: string }) => useRequest<{ folderName: string }, Partial<{
+        path: string,
+        folderName: string
+    }>>({
+        url: '/api/files/createfolder',
         method: 'post',
         options: {
             data,
@@ -28,5 +43,6 @@ const filesApi = {
 
 export const {
     GetFilesFromPath: useGetFilesFromPath,
-    UploadFile: useUploadFile
+    UploadFile: useUploadFile,
+    CreateFolder: useCreateFolder,
 } = filesApi

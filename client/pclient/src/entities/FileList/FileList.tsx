@@ -11,6 +11,7 @@ import {ArrowDownTrayIcon, FolderPlusIcon} from "@heroicons/react/24/outline";
 import ToolBar from "../../shared/ui/ToolBar";
 import Separator from "../../shared/ui/Separator";
 import ButtonToolBar from "../../shared/ui/ButtonToolBar/ui/ButtonToolBar";
+import NewFolderModal from "../../widgets/modals/NewFolderModal/NewFolderModal";
 
 const FileList = () => {
     const dispatch = useAppDispatch();
@@ -53,6 +54,10 @@ const FileList = () => {
     }
     const handleAddFolder = () => {
         setIsVisibleAddFolder(true)
+    }
+
+    const handleCreateFolder = () => {
+        requestFn({path});
     }
 
     return (
@@ -100,7 +105,11 @@ const FileList = () => {
                     }
                 </div>
             </div>
-
+            <NewFolderModal
+                isVisible={isVisibleAddFolder}
+                onClose={()=>setIsVisibleAddFolder(false)}
+                onCreate={handleCreateFolder}
+            />
         </div>
 
     );

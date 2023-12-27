@@ -24,19 +24,6 @@ function App() {
                     </div>
                 </div>
                 <UploadWindow/>
-                <Modal buttons={
-                    <>
-                        <Button>Ok</Button>
-                        <Button>Ok</Button>
-                        <Button>Ok</Button>
-                    </>
-                }>
-                    asdfa sdasdf
-                    as df
-                    adsf
-                    asdf
-                    asdf
-                </Modal>
             </div>
         </div>
     )
