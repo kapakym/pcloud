@@ -8,9 +8,15 @@ interface Props {
     fileType: FileTypes
     onClick?: () => void
     size?: number
+    onDelete?: (names: string[]) => void
 }
 
-const FileItem = ({name, fileType, onClick, size}: Props) => {
+const FileItem = ({name, fileType, onClick, size, onDelete}: Props) => {
+    const handleDelete = () => {
+        if (onDelete) {
+            onDelete([name])
+        }
+    }
     return (
         <div
             className='odd:bg-app-bg-primary justify-between even:bg-app-bg-secondary sm:flex flex hover:bg-gray-500 hover:text-white cursor-pointer'
@@ -34,7 +40,8 @@ const FileItem = ({name, fileType, onClick, size}: Props) => {
                 <div className='flex space-x-2 min-w-[100px]'>
                     {fileType !== FileTypes.UP_DIR &&
                         <>
-                            <TrashIcon className='h-6 w-6 cursor-pointer hover:text-white'/>
+                            <TrashIcon onClick={handleDelete}
+                                       className='h-6 w-6 cursor-pointer hover:text-white'/>
                             <ShareIcon className='h-6 w-6 cursor-pointer hover:text-white'/>
                             <LinkIcon className='h-6 w-6 cursor-pointer hover:text-white'/>
                         </>

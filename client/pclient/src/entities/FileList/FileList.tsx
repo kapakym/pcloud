@@ -4,7 +4,7 @@ import {FileTypes} from "../../shared/consts/fileTypes";
 import FileItem from "../../shared/ui/FileItem";
 import Input from "../../shared/ui/Input";
 import Loader from "../../shared/loader";
-import {useAppDispatch} from "../../shared/store/redux";
+import {useAppDispatch, useAppSelector} from "../../shared/store/redux";
 import {v4 as uuidv4} from 'uuid';
 import {uploadFile} from "../../shared/store/reducers/ActionCreators";
 import {ArrowDownTrayIcon, FolderPlusIcon} from "@heroicons/react/24/outline";
@@ -12,6 +12,7 @@ import ToolBar from "../../shared/ui/ToolBar";
 import Separator from "../../shared/ui/Separator";
 import ButtonToolBar from "../../shared/ui/ButtonToolBar/ui/ButtonToolBar";
 import NewFolderModal from "../../widgets/modals/NewFolderModal/NewFolderModal";
+import DeleteFilesModal from "../../widgets/modals/DeleteFilessModal/DeleteFilesModal";
 
 const FileList = () => {
     const dispatch = useAppDispatch();
@@ -19,11 +20,21 @@ const FileList = () => {
     const [data, {isLoading, requestFn}] = useGetFilesFromPath({path});
     const [filter, setFilter] = useState("")
     const [isVisibleAddFolder, setIsVisibleAddFolder] = useState(false)
+    const [isVisibleDeleteFiles, setIsVisibleDeleteFiles] = useState(false)
+    const {isAllUploaded} = useAppSelector(state => state.filesReducer)
+    const [deleteFiles, setDeleteFiles] = useState<string[]>([])
 
 
     useEffect(() => {
         requestFn({path});
     }, [path]);
+
+    useEffect(() => {
+        if (!isAllUploaded) {
+            requestFn({path});
+        }
+
+    }, [isAllUploaded]);
 
     const changePath = (folder: string) => {
         setPath(prevState => prevState + '/' + folder)
@@ -60,6 +71,19 @@ const FileList = () => {
         requestFn({path});
     }
 
+    const handleDeleteFile = (files: string[]) => {
+        setDeleteFiles(files);
+        setIsVisibleDeleteFiles(true)
+    }
+
+    const handleCloseDeleteModal = () => {
+        setIsVisibleDeleteFiles(false)
+    }
+
+    const handleDelete = () => {
+        requestFn({path});
+    }
+
     return (
         <div className='w-full h-full flex flex-col space-y-2'>
 
@@ -91,24 +115,40 @@ const FileList = () => {
                     {isLoading && <Loader/>}
                     {(data && !!data.folders.length) &&
                         data.folders.filter(item => item.includes(filter)).map(item => (
-                            <FileItem name={item} fileType={FileTypes.DIR} key={item} onClick={() => {
+                            <FileItem
+                                name={item}
+                                fileType={FileTypes.DIR}
+                                key={item}
+                                onClick={() => {
                                 changePath(item)
-                            }}/>
+                            }}
+                                onDelete={handleDeleteFile}
+                            />
                         ))
 
                     }
                     {(data && !!data.files.length) &&
                         data.files.filter(item => item.name.includes(filter)).map(item => (
-                            <FileItem name={item.name} fileType={FileTypes.FILE} key={item.name}
-                                      size={item.size}/>
+                            <FileItem name={item.name}
+                                      fileType={FileTypes.FILE}
+                                      key={item.name}
+                                      size={item.size}
+                                      onDelete={handleDeleteFile}
+                            />
                         ))
                     }
                 </div>
             </div>
             <NewFolderModal
                 isVisible={isVisibleAddFolder}
-                onClose={()=>setIsVisibleAddFolder(false)}
+                onClose={() => setIsVisibleAddFolder(false)}
                 onCreate={handleCreateFolder}
+            />
+            <DeleteFilesModal
+                isVisible={isVisibleDeleteFiles}
+                files={deleteFiles}
+                onClose={handleCloseDeleteModal}
+                onDelete={handleDelete}
             />
         </div>
 

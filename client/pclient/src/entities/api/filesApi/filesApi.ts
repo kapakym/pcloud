@@ -38,6 +38,20 @@ const filesApi = {
                 homeFolder: localStorage.getItem('folder') || 'error'
             }
         }
+    }),
+    DeleteFiles: (data?: { files: string[], path: string }) => useRequest<{ deleteFiles: string[] }, Partial<{
+        files: string[],
+        path: string
+    }>>({
+        url: '/api/files/deletefile',
+        method: 'post',
+        options: {
+            data,
+            isNotRequest: true,
+            headers: {
+                homeFolder: localStorage.getItem('folder') || 'error'
+            }
+        }
     })
 }
 
@@ -45,4 +59,5 @@ export const {
     GetFilesFromPath: useGetFilesFromPath,
     UploadFile: useUploadFile,
     CreateFolder: useCreateFolder,
+    DeleteFiles: useDeleteFiles,
 } = filesApi

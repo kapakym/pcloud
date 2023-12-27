@@ -91,19 +91,20 @@ class FilesController {
         }
     }
 
-    async deleteFile(req: Request<{ fileName: string }>, res: Response, next: NextFunction) {
+    async deleteFile(req: Request<{ files: string[], path: string }>, res: Response, next: NextFunction) {
         const resPath = FileUtils.buildPath(req.headers?.homefolder, req.body.path)
-        const deleteFile = req.body.fileName;
+        const deleteFiles = req.body.files as string[];
 
-        if (!deleteFile || !resPath) {
+        if (!deleteFiles.length || !resPath) {
             return res.status(400).json({
                 message: 'Ошибка удаления файла'
             })
         }
-
         try {
-            fs.rmSync(resPath + deleteFile)
-            res.status(200).json({deleteFile})
+            deleteFiles.forEach(file=>{
+                fs.rmSync(resPath + file)
+            })
+            res.status(200).json({deleteFiles})
         } catch (e) {
             return res.status(400).json({
                 message: 'Ошибка удаления файла'

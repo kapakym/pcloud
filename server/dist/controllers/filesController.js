@@ -103,15 +103,17 @@ class FilesController {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const resPath = fileUtils_1.default.buildPath((_a = req.headers) === null || _a === void 0 ? void 0 : _a.homefolder, req.body.path);
-            const deleteFile = req.body.fileName;
-            if (!deleteFile || !resPath) {
+            const deleteFiles = req.body.files;
+            if (!deleteFiles.length || !resPath) {
                 return res.status(400).json({
                     message: 'Ошибка удаления файла'
                 });
             }
             try {
-                fs_1.default.rmSync(resPath + deleteFile);
-                res.status(200).json({ deleteFile });
+                deleteFiles.forEach(file => {
+                    fs_1.default.rmSync(resPath + file);
+                });
+                res.status(200).json({ deleteFiles });
             }
             catch (e) {
                 return res.status(400).json({

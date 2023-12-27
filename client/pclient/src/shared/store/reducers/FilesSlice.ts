@@ -14,11 +14,13 @@ interface UploadFiles {
 interface FilesState {
     files: Array<UploadFiles>,
     isVisible: boolean
+    isAllUploaded: boolean
 }
 
 const initialState: FilesState = {
     files: [],
     isVisible: false,
+    isAllUploaded: true
 }
 
 export const uploadFilesSlice = createSlice({
@@ -43,6 +45,7 @@ export const uploadFilesSlice = createSlice({
         addUploadFiles(state, action: PayloadAction<UploadFiles[]>) {
             state.files.push(...action.payload)
             state.isVisible = true;
+            state.isAllUploaded = false
         },
         removeUploadFile(state, action: PayloadAction<string>) {
             state.files = state.files.filter(item => item.id !== action.payload)
@@ -54,6 +57,7 @@ export const uploadFilesSlice = createSlice({
                 if (file.progress === 100) file!.isLoading = false;
                 else file!.isLoading = true;
             }
+            state.isAllUploaded = state.files.every(item=>!item.isLoading)
         }
 
     }
