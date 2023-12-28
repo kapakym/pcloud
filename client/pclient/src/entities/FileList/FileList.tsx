@@ -28,14 +28,13 @@ const FileList = () => {
     useEffect(() => {
         if (dataDownload && responseHeaders) {
             const filename = responseHeaders['content-disposition'].split('=')[1].replace(/["]/g, "")
-            const downloadUrl = window.URL.createObjectURL(dataDownload);
+            const url = window.URL.createObjectURL(new Blob([dataDownload]));
             const link = document.createElement('a');
-            link.href = downloadUrl;
-            link.name = filename;
-            document.body.appendChild(link)
+            link.href = url;
+            link.setAttribute('download', filename);
+            document.body.appendChild(link);
             link.click();
-            link.remove();
-            console.log(dataDownload, filename)
+            link.remove()
         }
     }, [dataDownload]);
 
