@@ -111,11 +111,18 @@ class FilesController {
             }
             try {
                 deleteFiles.forEach(file => {
-                    fs_1.default.rmSync(resPath + file);
+                    console.log(resPath, file);
+                    if (file.type === 'FILE') {
+                        fs_1.default.rmSync(resPath + file.name);
+                    }
+                    if (file.type === 'DIR') {
+                        fs_1.default.rmdirSync(resPath + file.name, { recursive: true });
+                    }
                 });
                 res.status(200).json({ deleteFiles });
             }
             catch (e) {
+                console.log(e);
                 return res.status(400).json({
                     message: 'Ошибка удаления файла'
                 });
@@ -126,16 +133,18 @@ class FilesController {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const resPath = fileUtils_1.default.buildPath((_a = req.headers) === null || _a === void 0 ? void 0 : _a.homefolder, req.body.path);
-            const downloadFile = req.body.fileName;
-            if (!downloadFile || !resPath) {
+            const downloadFiles = req.body.files;
+            if (!downloadFiles.length || !resPath) {
                 return res.status(400).json({
                     message: 'Ошибка загрузки файла'
                 });
             }
             try {
-                if (fs_1.default.existsSync(resPath + downloadFile)) {
-                    return res.download(resPath + downloadFile, downloadFile);
-                }
+                downloadFiles.forEach(file => {
+                    if (fs_1.default.existsSync(resPath + file.name)) {
+                        return res.download(resPath + file.name, file.name);
+                    }
+                });
             }
             catch (e) {
                 return res.status(400).json({ message: 'Ошибка загрузки файла' });

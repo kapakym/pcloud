@@ -1,6 +1,15 @@
 *, *::before, *::after {
     box-sizing: border-box;
 }
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes modal {
+    from {
+        width: 0%;
+        overflow-x: hidden;
+        display: block;
+    }
+}

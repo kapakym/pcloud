@@ -3,9 +3,10 @@ import {AppDispatch} from "../store";
 import axios, {AxiosError} from "axios";
 import {uploadFilesSlice} from "./FilesSlice";
 import {useUploadFile} from "../../../entities/api/filesApi/filesApi";
+import {IFile} from "../../types/FIles/fileTypes";
 
 export const uploadFile = (file: File, path: string, uuid: string) => (dispatch: AppDispatch) => {
-    const {addUploadFiles, setError,removeUploadFile, changeProgress} = uploadFilesSlice.actions
+    const {addUploadFiles, setError, removeUploadFile, changeProgress} = uploadFilesSlice.actions
     try {
         const formData = new FormData()
         formData.append('file', file);
@@ -59,4 +60,8 @@ export const uploadFile = (file: File, path: string, uuid: string) => (dispatch:
     } catch (e) {
 
     }
+}
+
+export async function downloadFile(files: IFile[], path: string) {
+    const response = await fetch('/api/files/downloadfile')
 }

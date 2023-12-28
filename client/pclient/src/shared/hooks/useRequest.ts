@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
-import axios, {AxiosError} from "axios";
+import axios, {AxiosError, AxiosResponseHeaders, ResponseType} from "axios";
 
 interface OptionsRequestFn {
     uuid?: string
@@ -14,7 +14,9 @@ interface Result<Req> {
     percentage: {
         progress: number,
         uuid: string | undefined
-    } | undefined
+    } | undefined,
+    responseHeaders: Partial<AxiosResponseHeaders> | null
+
 }
 
 type AxiosRequestHeaders = {
@@ -28,14 +30,16 @@ interface Props<Req> {
         isNotRequest?: boolean,
         data?: Req
         headers?: AxiosRequestHeaders,
-        id?: string
-    }
+        id?: string,
+    },
+    responseType?: ResponseType
 }
 
-const useRequest = <Res, Req>({url, method, options}: Props<Req>): [Res | null, Result<Req>] => {
+const useRequest = <Res, Req>({url, method, options, responseType}: Props<Req>): [Res | null, Result<Req>] => {
 
     const [isLoading, setIsLoading] = useState(false)
     const [data, setData] = useState<Res | null>(null)
+    const [responseHeaders, setResponseHeaders] = useState<Partial<AxiosResponseHeaders> | null>(null)
     const [isError, setIsError] = useState(false)
     const [percentage, setPercentage] = useState<{ progress: number, uuid: string | undefined }>()
     const [errorRes, setErrorRes] = useState<AxiosError | null>(null)
@@ -49,6 +53,7 @@ const useRequest = <Res, Req>({url, method, options}: Props<Req>): [Res | null, 
             method,
             url,
             data: data,
+            responseType,
             headers: {
                 Authorization: 'Bearer ' + localStorage.getItem('token'),
                 ...options?.headers
@@ -63,6 +68,7 @@ const useRequest = <Res, Req>({url, method, options}: Props<Req>): [Res | null, 
                 console.log(percentComplete);
             }
         }).then(response => {
+            setResponseHeaders(response.headers)
             setData(response.data)
         }).catch((error: Error | AxiosError) => {
             if (axios.isAxiosError(error)) {
@@ -87,7 +93,7 @@ const useRequest = <Res, Req>({url, method, options}: Props<Req>): [Res | null, 
         }
         , [])
 
-    return [data, {isLoading, isError, requestFn: axiosRequest, errorRes, percentage}]
+    return [data, {isLoading, isError, requestFn: axiosRequest, errorRes, percentage, responseHeaders}]
 };
 
 export default useRequest;

@@ -1,15 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import Modal from "../../../shared/ui/Modal";
 import Button from "../../../shared/ui/Button";
-import Input from "../../../shared/ui/Input";
-import {useCreateFolder, useDeleteFiles} from "../../../entities/api/filesApi/filesApi";
+import {useDeleteFiles} from "../../../entities/api/filesApi/filesApi";
+import {FileTypes, IFile} from "../../../shared/types/FIles/fileTypes";
 
 interface Props {
     isVisible: boolean;
     path?: string;
     onClose?: () => void
     onDelete?: () => void
-    files: string[]
+    files: IFile[]
 }
 
 const DeleteFilesModal = ({isVisible = false, onClose, path, onDelete, files}: Props) => {
@@ -46,7 +46,7 @@ const DeleteFilesModal = ({isVisible = false, onClose, path, onDelete, files}: P
             <div className='flex flex-col'>
                 {!!files.length &&
                     files.map(item => (<text>
-                        {item}
+                        {item.name} - {FileTypes[item.type]}
                     </text>))
                 }
             </div>

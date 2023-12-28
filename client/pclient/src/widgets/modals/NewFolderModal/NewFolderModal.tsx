@@ -34,7 +34,7 @@ const NewFolderModal = ({isVisible = false, onClose, path, onCreate}: Props) => 
         <Modal title={"Добавление папки"}
                height='auto'
                width='40%'
-               isVisible
+               isVisible={isVisible}
                onClose={onClose}
                buttons={(
                    <>

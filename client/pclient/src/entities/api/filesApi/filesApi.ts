@@ -1,5 +1,6 @@
 import useRequest from "../../../shared/hooks/useRequest";
 import {ResponseGetFiles} from "./types/filesTypes";
+import {IFile} from "../../../shared/types/FIles/fileTypes";
 
 const filesApi = {
     GetFilesFromPath: (data: { path: string }) => useRequest<ResponseGetFiles, { path: string }>({
@@ -39,12 +40,29 @@ const filesApi = {
             }
         }
     }),
-    DeleteFiles: (data?: { files: string[], path: string }) => useRequest<{ deleteFiles: string[] }, Partial<{
-        files: string[],
+    DeleteFiles: (data?: { files: IFile[], path: string }) => useRequest<{
+        deleteFiles: IFile[]
+    }, Partial<{
+        files: IFile[],
         path: string
     }>>({
         url: '/api/files/deletefile',
         method: 'post',
+        options: {
+            data,
+            isNotRequest: true,
+            headers: {
+                homeFolder: localStorage.getItem('folder') || 'error'
+            }
+        }
+    }),
+    DownloadFiles: (data?: { files: IFile[], path: string }) => useRequest<Blob, {
+        files: IFile[],
+        path: string
+    }>({
+        url: '/api/files/downloadfile',
+        method: 'post',
+        responseType: 'blob',
         options: {
             data,
             isNotRequest: true,
@@ -60,4 +78,5 @@ export const {
     UploadFile: useUploadFile,
     CreateFolder: useCreateFolder,
     DeleteFiles: useDeleteFiles,
+    DownloadFiles: useDownloadFiles,
 } = filesApi

@@ -1,6 +1,6 @@
 import React from 'react';
-import {FileTypes} from "../../../consts/fileTypes";
-import {LinkIcon, ShareIcon, TrashIcon, FolderIcon, DocumentIcon} from "@heroicons/react/24/outline";
+import {FileTypes, IFile, KeysFileTypes} from "../../../types/FIles/fileTypes";
+import {CloudArrowUpIcon, DocumentIcon, FolderIcon, ShareIcon, TrashIcon} from "@heroicons/react/24/outline";
 import {sizeFormat} from "../../../utils/files";
 
 interface Props {
@@ -8,15 +8,32 @@ interface Props {
     fileType: FileTypes
     onClick?: () => void
     size?: number
-    onDelete?: (names: string[]) => void
+    onDelete?: (names: IFile[]) => void
+    onDownload?: (names: IFile[]) => void
+
 }
 
-const FileItem = ({name, fileType, onClick, size, onDelete}: Props) => {
-    const handleDelete = () => {
+const FileItem = ({name, fileType, onClick, size, onDelete, onDownload}: Props) => {
+    const handleDelete = (e: React.MouseEvent<SVGSVGElement>) => {
+        e.stopPropagation()
         if (onDelete) {
-            onDelete([name])
+            onDelete([{
+                name: name,
+                type: Object.keys(FileTypes)[Object.values(FileTypes).indexOf(fileType)] as KeysFileTypes
+            }])
         }
     }
+
+    const handleDownload = (e: React.MouseEvent<SVGSVGElement>) => {
+        e.stopPropagation();
+        if (onDownload) {
+            onDownload([{
+                name: name,
+                type: Object.keys(FileTypes)[Object.values(FileTypes).indexOf(fileType)] as KeysFileTypes
+            }])
+        }
+    }
+
     return (
         <div
             className='odd:bg-app-bg-primary justify-between even:bg-app-bg-secondary sm:flex flex hover:bg-gray-500 hover:text-white cursor-pointer'
@@ -40,10 +57,11 @@ const FileItem = ({name, fileType, onClick, size, onDelete}: Props) => {
                 <div className='flex space-x-2 min-w-[100px]'>
                     {fileType !== FileTypes.UP_DIR &&
                         <>
-                            <TrashIcon onClick={handleDelete}
+                            <TrashIcon onClick={(event) => handleDelete(event)}
                                        className='h-6 w-6 cursor-pointer hover:text-white'/>
                             <ShareIcon className='h-6 w-6 cursor-pointer hover:text-white'/>
-                            <LinkIcon className='h-6 w-6 cursor-pointer hover:text-white'/>
+                            <CloudArrowUpIcon onClick={(event) => handleDownload(event)}
+                                              className='h-6 w-6 cursor-pointer hover:text-white'/>
                         </>
 
                     }

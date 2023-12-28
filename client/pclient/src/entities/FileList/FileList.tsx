@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {useGetFilesFromPath} from "../api/filesApi/filesApi";
-import {FileTypes} from "../../shared/consts/fileTypes";
+import {useDownloadFiles, useGetFilesFromPath} from "../api/filesApi/filesApi";
+import {FileTypes, IFile} from "../../shared/types/FIles/fileTypes";
 import FileItem from "../../shared/ui/FileItem";
 import Input from "../../shared/ui/Input";
 import Loader from "../../shared/loader";
 import {useAppDispatch, useAppSelector} from "../../shared/store/redux";
 import {v4 as uuidv4} from 'uuid';
-import {uploadFile} from "../../shared/store/reducers/ActionCreators";
-import {ArrowDownTrayIcon, FolderPlusIcon} from "@heroicons/react/24/outline";
+import {downloadFile, uploadFile} from "../../shared/store/reducers/thunkActionCreators";
+import {CloudArrowDownIcon, FolderPlusIcon} from "@heroicons/react/24/outline";
 import ToolBar from "../../shared/ui/ToolBar";
 import Separator from "../../shared/ui/Separator";
 import ButtonToolBar from "../../shared/ui/ButtonToolBar/ui/ButtonToolBar";
@@ -22,8 +22,22 @@ const FileList = () => {
     const [isVisibleAddFolder, setIsVisibleAddFolder] = useState(false)
     const [isVisibleDeleteFiles, setIsVisibleDeleteFiles] = useState(false)
     const {isAllUploaded} = useAppSelector(state => state.filesReducer)
-    const [deleteFiles, setDeleteFiles] = useState<string[]>([])
+    const [deleteFiles, setDeleteFiles] = useState<IFile[]>([])
+    const [dataDownload, {requestFn: requestFnDownload, responseHeaders}] = useDownloadFiles()
 
+    useEffect(() => {
+        if (dataDownload && responseHeaders) {
+            const filename = responseHeaders['content-disposition'].split('=')[1].replace(/["]/g, "")
+            const downloadUrl = window.URL.createObjectURL(dataDownload);
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.name = filename;
+            document.body.appendChild(link)
+            link.click();
+            link.remove();
+            console.log(dataDownload, filename)
+        }
+    }, [dataDownload]);
 
     useEffect(() => {
         requestFn({path});
@@ -71,7 +85,7 @@ const FileList = () => {
         requestFn({path});
     }
 
-    const handleDeleteFile = (files: string[]) => {
+    const handleDeleteFile = (files: IFile[]) => {
         setDeleteFiles(files);
         setIsVisibleDeleteFiles(true)
     }
@@ -82,6 +96,10 @@ const FileList = () => {
 
     const handleDelete = () => {
         requestFn({path});
+    }
+
+    const handleDownloadFiles = (files: IFile[]) => {
+        requestFnDownload({files, path})
     }
 
     return (
@@ -96,7 +114,7 @@ const FileList = () => {
             <ToolBar>
                 <ButtonToolBar>
                     <label htmlFor='uploadFileInput'
-                           className='cursor-pointer'><ArrowDownTrayIcon className='h-8 w-8'/></label>
+                           className='cursor-pointer'><CloudArrowDownIcon className='h-8 w-8'/></label>
                     <input multiple onChange={(event) => handleUploadFile(event)} type={'file'} className='hidden'
                            id='uploadFileInput'/>
                 </ButtonToolBar>
@@ -120,9 +138,10 @@ const FileList = () => {
                                 fileType={FileTypes.DIR}
                                 key={item}
                                 onClick={() => {
-                                changePath(item)
-                            }}
+                                    changePath(item)
+                                }}
                                 onDelete={handleDeleteFile}
+                                onDownload={handleDownloadFiles}
                             />
                         ))
 
@@ -134,6 +153,7 @@ const FileList = () => {
                                       key={item.name}
                                       size={item.size}
                                       onDelete={handleDeleteFile}
+                                      onDownload={handleDownloadFiles}
                             />
                         ))
                     }
