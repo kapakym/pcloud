@@ -11,16 +11,25 @@ interface UploadFiles {
     isLoading?: boolean
 }
 
+interface DownloadFiles {
+    name: string,
+    id: string,
+    path: string,
+    isLoading?: boolean
+}
+
 interface FilesState {
     files: Array<UploadFiles>,
     isVisible: boolean
     isAllUploaded: boolean
+    downloadFiles: DownloadFiles[]
 }
 
 const initialState: FilesState = {
     files: [],
     isVisible: false,
-    isAllUploaded: true
+    isAllUploaded: true,
+    downloadFiles: []
 }
 
 export const uploadFilesSlice = createSlice({
@@ -57,8 +66,17 @@ export const uploadFilesSlice = createSlice({
                 if (file.progress === 100) file!.isLoading = false;
                 else file!.isLoading = true;
             }
-            state.isAllUploaded = state.files.every(item=>!item.isLoading)
-        }
+            state.isAllUploaded = state.files.every(item => !item.isLoading)
+        },
+        addDownloadFile(state, action: PayloadAction<DownloadFiles[]>) {
+            state.downloadFiles.push(...action.payload)
+            console.log('start download',state.downloadFiles)
+        },
+        removeDownloadFile(state, action: PayloadAction<string>) {
+            state.downloadFiles = state.downloadFiles.filter(item => item.id !== action.payload)
+            console.log(' download',state.downloadFiles)
+        },
+
 
     }
 })

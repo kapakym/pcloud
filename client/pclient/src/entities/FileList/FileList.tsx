@@ -6,7 +6,7 @@ import Input from "../../shared/ui/Input";
 import Loader from "../../shared/loader";
 import {useAppDispatch, useAppSelector} from "../../shared/store/redux";
 import {v4 as uuidv4} from 'uuid';
-import {downloadFile, uploadFile} from "../../shared/store/reducers/thunkActionCreators";
+import {downloadFileAction, uploadFile} from "../../shared/store/reducers/thunkActionCreators";
 import {CloudArrowDownIcon, FolderPlusIcon} from "@heroicons/react/24/outline";
 import ToolBar from "../../shared/ui/ToolBar";
 import Separator from "../../shared/ui/Separator";
@@ -21,22 +21,10 @@ const FileList = () => {
     const [filter, setFilter] = useState("")
     const [isVisibleAddFolder, setIsVisibleAddFolder] = useState(false)
     const [isVisibleDeleteFiles, setIsVisibleDeleteFiles] = useState(false)
-    const {isAllUploaded} = useAppSelector(state => state.filesReducer)
+    const {isAllUploaded, downloadFiles} = useAppSelector(state => state.filesReducer)
     const [deleteFiles, setDeleteFiles] = useState<IFile[]>([])
-    const [dataDownload, {requestFn: requestFnDownload, responseHeaders}] = useDownloadFiles()
 
-    useEffect(() => {
-        if (dataDownload && responseHeaders) {
-            const filename = responseHeaders['content-disposition'].split('=')[1].replace(/["]/g, "")
-            const url = window.URL.createObjectURL(new Blob([dataDownload]));
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', filename);
-            document.body.appendChild(link);
-            link.click();
-            link.remove()
-        }
-    }, [dataDownload]);
+
 
     useEffect(() => {
         requestFn({path});
@@ -48,6 +36,7 @@ const FileList = () => {
         }
 
     }, [isAllUploaded]);
+
 
     const changePath = (folder: string) => {
         setPath(prevState => prevState + '/' + folder)
@@ -98,7 +87,8 @@ const FileList = () => {
     }
 
     const handleDownloadFiles = (files: IFile[]) => {
-        requestFnDownload({files, path})
+        // requestFnDownload({files, path})
+        dispatch(downloadFileAction(files[0], path, uuidv4()))
     }
 
     return (
@@ -141,6 +131,7 @@ const FileList = () => {
                                 }}
                                 onDelete={handleDeleteFile}
                                 onDownload={handleDownloadFiles}
+                                isDownload={!!downloadFiles.find(findItem=>findItem.name === item)}
                             />
                         ))
 
@@ -153,6 +144,7 @@ const FileList = () => {
                                       size={item.size}
                                       onDelete={handleDeleteFile}
                                       onDownload={handleDownloadFiles}
+                                      isDownload={!!downloadFiles.find(findItem=>findItem?.name === item.name)}
                             />
                         ))
                     }

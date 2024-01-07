@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {FileTypes, IFile, KeysFileTypes} from "../../../types/FIles/fileTypes";
 import {CloudArrowUpIcon, DocumentIcon, FolderIcon, ShareIcon, TrashIcon} from "@heroicons/react/24/outline";
 import {sizeFormat} from "../../../utils/files";
@@ -10,10 +10,11 @@ interface Props {
     size?: number
     onDelete?: (names: IFile[]) => void
     onDownload?: (names: IFile[]) => void
-
+    isDownload?: boolean
 }
 
-const FileItem = ({name, fileType, onClick, size, onDelete, onDownload}: Props) => {
+const FileItem = ({name, fileType, onClick, size, onDelete, onDownload, isDownload}: Props) => {
+
     const handleDelete = (e: React.MouseEvent<SVGSVGElement>) => {
         e.stopPropagation()
         if (onDelete) {
@@ -33,6 +34,11 @@ const FileItem = ({name, fileType, onClick, size, onDelete, onDownload}: Props) 
             }])
         }
     }
+
+    const showDownload = () => isDownload ? (<span className='loaderCircle h-6 w-6'></span>) : (
+        <CloudArrowUpIcon onClick={(event) => handleDownload(event)}
+                          className='h-6 w-6 cursor-pointer hover:text-white'/>
+    )
 
     return (
         <div
@@ -60,8 +66,7 @@ const FileItem = ({name, fileType, onClick, size, onDelete, onDownload}: Props) 
                             <TrashIcon onClick={(event) => handleDelete(event)}
                                        className='h-6 w-6 cursor-pointer hover:text-white'/>
                             <ShareIcon className='h-6 w-6 cursor-pointer hover:text-white'/>
-                            <CloudArrowUpIcon onClick={(event) => handleDownload(event)}
-                                              className='h-6 w-6 cursor-pointer hover:text-white'/>
+                            {showDownload()}
                         </>
 
                     }

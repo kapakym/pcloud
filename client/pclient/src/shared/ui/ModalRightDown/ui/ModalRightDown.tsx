@@ -9,16 +9,16 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
 const ModalRightDown = ({children, title, onClose}: Props) => {
     return (
         <div
-            className='transition-all fixed flex flex-col w-[97%] md:w-[20%] right-2 bottom-2 border-[1px] border-b-gray-300 h-[90%] bg-white md:h-[20%] drop-shadow-md rounded-xl'>
-            <div className='flex justify-between items-center p-2 border-b-gray-300 border-b-[1px] border-solid  '>
+            className='animate-[modal_500ms] fixed flex flex-col w-[97%] md:w-[50%] right-2 bottom-2 border-[1px] border-app-border h-[90%] bg-app-bg-primary md:h-[50%] drop-shadow-md rounded-xl translate-x-[-5%] translate-y-[-5%]'>
+            <div className='flex justify-between items-center p-2 border-b-app-border border-b-[1px] border-solid  text-app-text-primary'>
                 <div>
                     {title}
                 </div>
                 <div onClick={onClose} className='cursor-pointer'>
-                    <XMarkIcon className='w-6 h-6 color-black'/>
+                    <XMarkIcon className='w-6 h-6 color-black text-app-text-primary'/>
                 </div>
             </div>
-            <div className='p-2 overflow-y-auto mb-1 rounded-b-xl space-y-2'>
+            <div className='p-2 overflow-y-auto mb-2 rounded-b-xl space-y-2'>
                 {children}
             </div>
         </div>

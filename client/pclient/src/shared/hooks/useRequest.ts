@@ -16,6 +16,7 @@ interface Result<Req> {
         uuid: string | undefined
     } | undefined,
     responseHeaders: Partial<AxiosResponseHeaders> | null
+    requestData: Req | undefined
 
 }
 
@@ -45,11 +46,11 @@ const useRequest = <Res, Req>({url, method, options, responseType}: Props<Req>):
     const [errorRes, setErrorRes] = useState<AxiosError | null>(null)
 
     const navigate = useNavigate()
-    const axiosRequest = (data?: Req, optionsFn?: OptionsRequestFn) => {
+    const axiosRequest = (data?: Req, optionsFn?: OptionsRequestFn): Promise<any> => {
         setIsLoading(true);
         setIsError(false);
         setData(null)
-        axios({
+        return axios({
             method,
             url,
             data: data,
@@ -93,7 +94,15 @@ const useRequest = <Res, Req>({url, method, options, responseType}: Props<Req>):
         }
         , [])
 
-    return [data, {isLoading, isError, requestFn: axiosRequest, errorRes, percentage, responseHeaders}]
+    return [data, {
+        isLoading,
+        isError,
+        requestFn: axiosRequest,
+        errorRes,
+        percentage,
+        responseHeaders,
+        requestData: options?.data
+    }]
 };
 
 export default useRequest;

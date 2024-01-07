@@ -2,8 +2,11 @@
 import {AppDispatch} from "../store";
 import axios, {AxiosError} from "axios";
 import {uploadFilesSlice} from "./FilesSlice";
-import {useUploadFile} from "../../../entities/api/filesApi/filesApi";
+import {useDownloadFiles, useUploadFile} from "../../../entities/api/filesApi/filesApi";
 import {IFile} from "../../types/FIles/fileTypes";
+import App from "../../../app/App";
+import {useEffect} from "react";
+import requiestBuilder from "../requestBuilder";
 
 export const uploadFile = (file: File, path: string, uuid: string) => (dispatch: AppDispatch) => {
     const {addUploadFiles, setError, removeUploadFile, changeProgress} = uploadFilesSlice.actions
@@ -62,6 +65,45 @@ export const uploadFile = (file: File, path: string, uuid: string) => (dispatch:
     }
 }
 
-export async function downloadFile(files: IFile[], path: string) {
-    const response = await fetch('/api/files/downloadfile')
+export const downloadFileAction = (file: IFile, path: string, uuid: string) => async (dispatch: AppDispatch) => {
+    const {addDownloadFile, removeDownloadFile, setError, removeUploadFile, changeProgress} = uploadFilesSlice.actions
+    dispatch(addDownloadFile([{
+        name: file.name,
+        id: uuid,
+        path,
+        isLoading: true
+    }]))
+
+    try {
+        const response = await requiestBuilder<Blob, {
+            files: IFile[],
+            path: string
+        }>({
+            url: '/api/files/downloadfile',
+            method: 'post',
+            responseType: 'blob',
+            options: {
+                data: {
+                    files: [file],
+                    path
+                }
+            }
+        })()
+
+        if (response instanceof Blob) {
+            const url = window.URL.createObjectURL(new Blob([response]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', file.name);
+            document.body.appendChild(link);
+            link.click();
+            link.remove()
+        }
+
+        dispatch(removeDownloadFile(uuid))
+    } catch (e) {
+        console.log(e)
+    }
+
 }
+

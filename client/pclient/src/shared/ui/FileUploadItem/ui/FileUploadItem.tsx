@@ -18,8 +18,8 @@ const FileUploadItem = ({title, onClose, id, progress = 0, error}: Props) => {
 
 
     return (
-        <div className={`flex flex-col w-full ${error ? 'bg-red-500' : 'bg-gray-500'} text-white p-2 rounded-xl`}>
-            <div className='flex justify-between items-center w-full space-x-2'>
+        <div className={`flex flex-col w-full border-[1px] border-solid border-app-border  ${error ? 'bg-app-bg-danger' : 'bg-app-bg-secondary'} text-app-text-primary p-2 rounded-xl`}>
+            <div className='flex justify-between items-center w-full space-x-2 '>
                 <div className='overflow-x-auto overflow-ellipsis'>
                     {title}
                 </div>
@@ -36,7 +36,7 @@ const FileUploadItem = ({title, onClose, id, progress = 0, error}: Props) => {
                 {!error &&
                     <div className='w-full h-6 border-[1px] border-solid rounded-xl flex relative'>
                         <div className={`bg-green-600 rounded-xl`} style={{width: `${progress}%`}}></div>
-                        <div className='absolute left-[40%] '>{Math.trunc(progress)}%</div>
+                        <div className='h-full  absolute text-white w-full  text-center'>{Math.trunc(progress)}%</div>
                     </div>
                 }
 
