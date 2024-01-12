@@ -78,7 +78,7 @@ export const uploadFilesSlice = createSlice({
         },
 
 
-    }
+    },
 })
 
 export default uploadFilesSlice.reducer;

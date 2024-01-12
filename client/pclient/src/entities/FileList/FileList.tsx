@@ -13,6 +13,7 @@ import Separator from "../../shared/ui/Separator";
 import ButtonToolBar from "../../shared/ui/ButtonToolBar/ui/ButtonToolBar";
 import NewFolderModal from "../../widgets/modals/NewFolderModal/NewFolderModal";
 import DeleteFilesModal from "../../widgets/modals/DeleteFilessModal/DeleteFilesModal";
+import {useFilesStore} from "../../shared/store/zustand/useFilesStore";
 
 const FileList = () => {
     const dispatch = useAppDispatch();
@@ -21,9 +22,10 @@ const FileList = () => {
     const [filter, setFilter] = useState("")
     const [isVisibleAddFolder, setIsVisibleAddFolder] = useState(false)
     const [isVisibleDeleteFiles, setIsVisibleDeleteFiles] = useState(false)
-    const {isAllUploaded, downloadFiles} = useAppSelector(state => state.filesReducer)
+    const {isAllUploaded} = useAppSelector(state => state.filesReducer)
     const [deleteFiles, setDeleteFiles] = useState<IFile[]>([])
-
+    const downLoadFile = useFilesStore(state => state.downloadFileAction)
+    const downloadFiles = useFilesStore(state => state.downloadFiles)
 
 
     useEffect(() => {
@@ -88,7 +90,8 @@ const FileList = () => {
 
     const handleDownloadFiles = (files: IFile[]) => {
         // requestFnDownload({files, path})
-        dispatch(downloadFileAction(files[0], path, uuidv4()))
+        // dispatch(downloadFileAction(files[0], path, uuidv4()))
+        downLoadFile(files[0], path, uuidv4())
     }
 
     return (
