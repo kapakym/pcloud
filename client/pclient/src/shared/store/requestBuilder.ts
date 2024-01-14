@@ -1,4 +1,4 @@
-import axios, {AxiosError, AxiosResponse, AxiosResponseHeaders, ResponseType} from "axios";
+import axios, {AxiosResponse, AxiosResponseHeaders, ResponseType} from "axios";
 
 interface OptionsRequestFn {
     uuid?: string
@@ -32,14 +32,16 @@ interface Props<Req> {
         id?: string,
     },
     responseType?: ResponseType
+    progressFn?: (process: number) => void
 }
 
 const requestBuilder = <Res, Req>({
-                                       url,
-                                       method,
-                                       options,
-                                       responseType
-                                   }: Props<Req>): () => Promise<void | AxiosResponse<Res, any>> => {
+                                      url,
+                                      method,
+                                      options,
+                                      responseType,
+                                      progressFn
+                                  }: Props<Req>): () => Promise<void | AxiosResponse<Res, any>> => {
 
     return () => axios({
         method,
@@ -51,6 +53,13 @@ const requestBuilder = <Res, Req>({
             homeFolder: localStorage.getItem('folder') || 'error',
             ...options?.headers
         },
+        onUploadProgress: (progressEvent: any) => {
+            let percentComplete: number = progressEvent.loaded / progressEvent.total
+            percentComplete = percentComplete * 100;
+            if (progressFn) {
+                progressFn(percentComplete)
+            }
+        }
     }).then(response => {
         return response.data
     })

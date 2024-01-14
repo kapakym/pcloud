@@ -2,7 +2,6 @@ import {create} from 'zustand'
 import {immer} from "zustand/middleware/immer";
 import {IFile} from "../../types/FIles/fileTypes";
 import requiestBuilder from "../requestBuilder";
-import axios, {AxiosError} from "axios";
 
 interface UploadFiles {
     file: string,
@@ -54,54 +53,75 @@ export const useFilesStore = create<FilesState>()(immer((set) => ({
                 })
             })
 
-            axios({
-                method: 'post',
+            const progressFn = (percentComplete: number) => {
+                set(state => {
+                    const file = state.files.find(item => item.id === uuid);
+                    if (file) {
+                        file.progress = percentComplete
+                        if (file.progress === 100) file!.isLoading = false;
+                        else file!.isLoading = true;
+                    }
+                    state.isAllUploaded = state.files.every(item => !item.isLoading)
+                })
+            }
+
+            const response = await requiestBuilder<FormData, unknown>({
                 url: '/api/files/upload',
-                data: formData,
-                headers: {
-                    Authorization: 'Bearer ' + localStorage.getItem('token'),
-                    homeFolder: localStorage.getItem('folder') || 'error'
+                method: 'post',
+                options: {
+                    data: formData
                 },
-                onUploadProgress: (progressEvent: any) => {
-                    let percentComplete: number = progressEvent.loaded / progressEvent.total
-                    percentComplete = percentComplete * 100;
-                    set(state => {
-                        const file = state.files.find(item => item.id === uuid);
-                        if (file) {
-                            file.progress = percentComplete
-                            if (file.progress === 100) file!.isLoading = false;
-                            else file!.isLoading = true;
-                        }
-                        state.isAllUploaded = state.files.every(item => !item.isLoading)
-                    })
-                }
-            }).then(response => {
-                // setData(response.data)
-            }).catch((error: Error | AxiosError) => {
-                if (axios.isAxiosError(error)) {
-                    if (error?.response?.status === 400) {
-                        if (error?.response?.data?.message) {
-                            set(state => {
-                                const file = state.files.find(item => item.id === uuid)
-                                if (file) {
-                                    file!.isLoading = false;
-                                    file!.error = {
-                                        message: error?.response?.data?.message
-                                    }
-                                }
-                            })
-                        }
-                    }
-                    if (error?.response?.status === 401) {
-                        // navigate({
-                        //     pathname: '/login'
-                        // })
-                    }
-                }
-                // throw  new Error(error as any)
-            }).finally(() => {
-                // setIsLoading(false)
-            });
+                progressFn
+            })()
+
+            // axios({
+            //     method: 'post',
+            //     url: '/api/files/upload',
+            //     data: formData,
+            //     headers: {
+            //         Authorization: 'Bearer ' + localStorage.getItem('token'),
+            //         homeFolder: localStorage.getItem('folder') || 'error'
+            //     },
+            //     onUploadProgress: (progressEvent: any) => {
+            //         let percentComplete: number = progressEvent.loaded / progressEvent.total
+            //         percentComplete = percentComplete * 100;
+            //         set(state => {
+            //             const file = state.files.find(item => item.id === uuid);
+            //             if (file) {
+            //                 file.progress = percentComplete
+            //                 if (file.progress === 100) file!.isLoading = false;
+            //                 else file!.isLoading = true;
+            //             }
+            //             state.isAllUploaded = state.files.every(item => !item.isLoading)
+            //         })
+            //     }
+            // }).then(response => {
+            //     // setData(response.data)
+            // }).catch((error: Error | AxiosError) => {
+            //     if (axios.isAxiosError(error)) {
+            //         if (error?.response?.status === 400) {
+            //             if (error?.response?.data?.message) {
+            //                 set(state => {
+            //                     const file = state.files.find(item => item.id === uuid)
+            //                     if (file) {
+            //                         file!.isLoading = false;
+            //                         file!.error = {
+            //                             message: error?.response?.data?.message
+            //                         }
+            //                     }
+            //                 })
+            //             }
+            //         }
+            //         if (error?.response?.status === 401) {
+            //             // navigate({
+            //             //     pathname: '/login'
+            //             // })
+            //         }
+            //     }
+            //     // throw  new Error(error as any)
+            // }).finally(() => {
+            //     // setIsLoading(false)
+            // });
         } catch (e) {
 
         }
