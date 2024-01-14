@@ -1,20 +1,20 @@
 import React from 'react';
 import ModalRightDown from "../../../shared/ui/ModalRightDown/ui/ModalRightDown";
-import {useAppDispatch, useAppSelector} from "../../../shared/store/redux";
 import FileUploadItem from "../../../shared/ui/FileUploadItem";
-import {uploadFilesSlice} from "../../../shared/store/reducers/FilesSlice";
+import {useFilesStore} from "../../../shared/store/zustand/useFilesStore";
 
 const UploadWindow = () => {
-    const {files, isVisible} = useAppSelector(state => state.filesReducer)
-    const dispatch = useAppDispatch();
-    const {hide, removeUploadFile} = uploadFilesSlice.actions
-
+    // const { isVisible} = useAppSelector(state => state.filesReducer)
+    const removeUploadFile = useFilesStore(state => state.removeUploadFile)
+    const files = useFilesStore(state => state.files)
+    const isVisible = useFilesStore(state => state.isVisible)
+    const hide = useFilesStore(state => state.hide)
     const handleClose = () => {
-        dispatch(hide())
+        hide()
     }
     const handleRemoveItem = (uuid?: string) => {
         if (uuid) {
-            dispatch(removeUploadFile(uuid))
+            removeUploadFile(uuid)
         }
     }
     return (

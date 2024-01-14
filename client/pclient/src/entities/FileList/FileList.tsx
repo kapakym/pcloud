@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {useDownloadFiles, useGetFilesFromPath} from "../api/filesApi/filesApi";
+import {useGetFilesFromPath} from "../api/filesApi/filesApi";
 import {FileTypes, IFile} from "../../shared/types/FIles/fileTypes";
 import FileItem from "../../shared/ui/FileItem";
 import Input from "../../shared/ui/Input";
 import Loader from "../../shared/loader";
-import {useAppDispatch, useAppSelector} from "../../shared/store/redux";
+import {useAppSelector} from "../../shared/store/redux";
 import {v4 as uuidv4} from 'uuid';
-import {downloadFileAction, uploadFile} from "../../shared/store/reducers/thunkActionCreators";
 import {CloudArrowDownIcon, FolderPlusIcon} from "@heroicons/react/24/outline";
 import ToolBar from "../../shared/ui/ToolBar";
 import Separator from "../../shared/ui/Separator";
@@ -16,7 +15,6 @@ import DeleteFilesModal from "../../widgets/modals/DeleteFilessModal/DeleteFiles
 import {useFilesStore} from "../../shared/store/zustand/useFilesStore";
 
 const FileList = () => {
-    const dispatch = useAppDispatch();
     const [path, setPath] = useState('')
     const [data, {isLoading, requestFn}] = useGetFilesFromPath({path});
     const [filter, setFilter] = useState("")
@@ -25,8 +23,9 @@ const FileList = () => {
     const {isAllUploaded} = useAppSelector(state => state.filesReducer)
     const [deleteFiles, setDeleteFiles] = useState<IFile[]>([])
     const downLoadFile = useFilesStore(state => state.downloadFileAction)
+    const uploadFile = useFilesStore(state => state.uploadFileActions)
     const downloadFiles = useFilesStore(state => state.downloadFiles)
-
+    const show = useFilesStore(state => state.show)
 
     useEffect(() => {
         requestFn({path});
@@ -60,9 +59,10 @@ const FileList = () => {
         if (event.currentTarget.files?.length) {
             //@ts-ignore
             const files = [...event.currentTarget.files]
+            show()
             if (files.length) {
                 files.forEach(file => {
-                    dispatch(uploadFile(file, path, uuidv4()))
+                    uploadFile(file, path, uuidv4())
                 })
             }
         }
@@ -134,7 +134,7 @@ const FileList = () => {
                                 }}
                                 onDelete={handleDeleteFile}
                                 onDownload={handleDownloadFiles}
-                                isDownload={!!downloadFiles.find(findItem=>findItem.name === item)}
+                                isDownload={!!downloadFiles.find(findItem => findItem.name === item)}
                             />
                         ))
 
@@ -147,7 +147,7 @@ const FileList = () => {
                                       size={item.size}
                                       onDelete={handleDeleteFile}
                                       onDownload={handleDownloadFiles}
-                                      isDownload={!!downloadFiles.find(findItem=>findItem?.name === item.name)}
+                                      isDownload={!!downloadFiles.find(findItem => findItem?.name === item.name)}
                             />
                         ))
                     }

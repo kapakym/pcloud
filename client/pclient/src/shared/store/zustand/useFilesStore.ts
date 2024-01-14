@@ -26,7 +26,11 @@ interface FilesState {
     isVisible: boolean
     isAllUploaded: boolean
     downloadFiles: DownloadFiles[],
-    downloadFileAction: (ile: IFile, path: string, uuid: string) => void
+    downloadFileAction: (file: IFile, path: string, uuid: string) => void
+    uploadFileActions: (file: File, path: string, uuid: string) => void,
+    removeUploadFile: (uuid: string) => void,
+    show: () => void,
+    hide: () => void
 }
 
 export const useFilesStore = create<FilesState>()(immer((set) => ({
@@ -34,6 +38,18 @@ export const useFilesStore = create<FilesState>()(immer((set) => ({
     isVisible: false,
     isAllUploaded: true,
     downloadFiles: [],
+
+    show: () => set(state => {
+        state.isVisible = true;
+    }),
+
+    hide: () => set(state => {
+        state.isVisible = false;
+    }),
+
+    removeUploadFile: (uuid: string) => set(state => {
+        state.files = state.files.filter(item => item.id !== uuid)
+    }),
 
     uploadFileActions: async (file: File, path: string, uuid: string) => {
         try {
