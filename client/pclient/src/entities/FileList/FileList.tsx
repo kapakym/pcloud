@@ -26,6 +26,7 @@ const FileList = () => {
     const uploadFile = useFilesStore(state => state.uploadFileActions)
     const downloadFiles = useFilesStore(state => state.downloadFiles)
     const show = useFilesStore(state => state.show)
+    const [dragEnter, setDragEnter] = useState(false)
 
     useEffect(() => {
         requestFn({path});
@@ -65,6 +66,7 @@ const FileList = () => {
                     uploadFile(file, path, uuidv4())
                 })
             }
+            requestFn({path});
         }
     }
     const handleAddFolder = () => {
@@ -94,8 +96,43 @@ const FileList = () => {
         downLoadFile(files[0], path, uuidv4())
     }
 
+    function dragEnterHandler(event: React.DragEvent<HTMLDivElement>) {
+        event.preventDefault()
+        event.stopPropagation()
+        setDragEnter(true)
+    }
+
+    function dragLeaveHandler(event: React.DragEvent<HTMLDivElement>) {
+        event.preventDefault()
+        event.stopPropagation()
+        setDragEnter(false)
+    }
+
+    function dragDropHandler(event: React.DragEvent<HTMLDivElement>) {
+        event.preventDefault()
+        event.stopPropagation()
+        let files = [...event.dataTransfer.files]
+        show()
+        if (files.length) {
+            files.forEach(file => {
+                uploadFile(file, path, uuidv4())
+            })
+        }
+        requestFn({path});
+        setDragEnter(false)
+    }
+
+
+    if (dragEnter) return (
+        <div className='w-full h-full flex flex-col space-y-2 justify-center items-center text-5xl ' onDragEnter={dragEnterHandler}
+             onDragLeave={dragLeaveHandler} onDragOver={dragEnterHandler} onDrop={dragDropHandler}>
+            <div>Перетащите файлы сюда</div>
+        </div>
+    )
+
     return (
-        <div className='w-full h-full flex flex-col space-y-2'>
+        <div className='w-full h-full flex flex-col space-y-2' onDragEnter={dragEnterHandler}
+             onDragLeave={dragLeaveHandler} onDragOver={dragEnterHandler}>
 
             <div>
                 Путь: {data && data.path}
