@@ -26,11 +26,15 @@ interface FilesState {
     isVisible: boolean
     isAllUploaded: boolean
     downloadFiles: DownloadFiles[],
-    downloadFileAction: (file: IFile, path: string, uuid: string) => void
+    downloadFileAction: (file: IFile, path: string, uuid: string, mode?: string) => Promise<void>
     uploadFileActions: (file: File, path: string, uuid: string) => void,
     removeUploadFile: (uuid: string) => void,
     show: () => void,
-    hide: () => void
+    hide: () => void,
+    previewFile: {
+        src: string,
+        type: string
+    }
 }
 
 export const useFilesStore = create<FilesState>()(immer((set) => ({
@@ -38,6 +42,10 @@ export const useFilesStore = create<FilesState>()(immer((set) => ({
     isVisible: false,
     isAllUploaded: true,
     downloadFiles: [],
+    previewFile: {
+        src: '',
+        type: ''
+    },
 
     show: () => set(state => {
         state.isVisible = true;
@@ -90,60 +98,13 @@ export const useFilesStore = create<FilesState>()(immer((set) => ({
                 progressFn
             })()
 
-            // axios({
-            //     method: 'post',
-            //     url: '/api/files/upload',
-            //     data: formData,
-            //     headers: {
-            //         Authorization: 'Bearer ' + localStorage.getItem('token'),
-            //         homeFolder: localStorage.getItem('folder') || 'error'
-            //     },
-            //     onUploadProgress: (progressEvent: any) => {
-            //         let percentComplete: number = progressEvent.loaded / progressEvent.total
-            //         percentComplete = percentComplete * 100;
-            //         set(state => {
-            //             const file = state.files.find(item => item.id === uuid);
-            //             if (file) {
-            //                 file.progress = percentComplete
-            //                 if (file.progress === 100) file!.isLoading = false;
-            //                 else file!.isLoading = true;
-            //             }
-            //             state.isAllUploaded = state.files.every(item => !item.isLoading)
-            //         })
-            //     }
-            // }).then(response => {
-            //     // setData(response.data)
-            // }).catch((error: Error | AxiosError) => {
-            //     if (axios.isAxiosError(error)) {
-            //         if (error?.response?.status === 400) {
-            //             if (error?.response?.data?.message) {
-            //                 set(state => {
-            //                     const file = state.files.find(item => item.id === uuid)
-            //                     if (file) {
-            //                         file!.isLoading = false;
-            //                         file!.error = {
-            //                             message: error?.response?.data?.message
-            //                         }
-            //                     }
-            //                 })
-            //             }
-            //         }
-            //         if (error?.response?.status === 401) {
-            //             // navigate({
-            //             //     pathname: '/login'
-            //             // })
-            //         }
-            //     }
-            //     // throw  new Error(error as any)
-            // }).finally(() => {
-            //     // setIsLoading(false)
-            // });
+
         } catch (e) {
 
         }
     },
 
-    downloadFileAction: async (file: IFile, path: string, uuid: string) => {
+    downloadFileAction: async (file: IFile, path: string, uuid: string, mode: string = 'disk') => {
         set(state => {
             state.downloadFiles.push({
                 name: file.name,
@@ -169,7 +130,7 @@ export const useFilesStore = create<FilesState>()(immer((set) => ({
                 }
             })()
 
-            if (response instanceof Blob) {
+            if (response instanceof Blob && mode === 'disk') {
                 const url = window.URL.createObjectURL(new Blob([response]));
                 const link = document.createElement('a');
                 link.href = url;
@@ -177,6 +138,16 @@ export const useFilesStore = create<FilesState>()(immer((set) => ({
                 document.body.appendChild(link);
                 link.click();
                 link.remove()
+            }
+
+            if (response instanceof Blob && mode === 'preview') {
+                set(state => {
+                        console.log(response)
+                        state.previewFile.src = window.URL.createObjectURL(new Blob([response]))
+                        state.previewFile.type = response.type
+                    }
+                )
+
             }
 
             set(state => {

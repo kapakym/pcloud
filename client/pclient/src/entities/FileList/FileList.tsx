@@ -13,6 +13,7 @@ import ButtonToolBar from "../../shared/ui/ButtonToolBar/ui/ButtonToolBar";
 import NewFolderModal from "../../widgets/modals/NewFolderModal/NewFolderModal";
 import DeleteFilesModal from "../../widgets/modals/DeleteFilessModal/DeleteFilesModal";
 import {useFilesStore} from "../../shared/store/zustand/useFilesStore";
+import {PreviewFile} from "../../widgets/PreviewFile/ui/PreviewFile";
 
 const FileList = () => {
     const [path, setPath] = useState('')
@@ -27,6 +28,8 @@ const FileList = () => {
     const downloadFiles = useFilesStore(state => state.downloadFiles)
     const show = useFilesStore(state => state.show)
     const [dragEnter, setDragEnter] = useState(false)
+    const previewFile = useFilesStore(state => state.previewFile)
+    const [visiblePreviewModal, setVisiblePreviewModal] = useState(false)
 
     useEffect(() => {
         requestFn({path});
@@ -69,6 +72,8 @@ const FileList = () => {
             requestFn({path});
         }
     }
+
+
     const handleAddFolder = () => {
         setIsVisibleAddFolder(true)
     }
@@ -91,9 +96,12 @@ const FileList = () => {
     }
 
     const handleDownloadFiles = (files: IFile[]) => {
-        // requestFnDownload({files, path})
-        // dispatch(downloadFileAction(files[0], path, uuidv4()))
-        downLoadFile(files[0], path, uuidv4())
+        downLoadFile(files[0], path, uuidv4(), 'disk')
+    }
+
+    const previewHandler = async (files: IFile[]) => {
+        await downLoadFile(files[0], path, uuidv4(), 'preview')
+        setVisiblePreviewModal(true)
     }
 
     function dragEnterHandler(event: React.DragEvent<HTMLDivElement>) {
@@ -124,7 +132,8 @@ const FileList = () => {
 
 
     if (dragEnter) return (
-        <div className='w-full h-full flex flex-col space-y-2 justify-center items-center text-5xl ' onDragEnter={dragEnterHandler}
+        <div className='w-full h-full flex flex-col space-y-2 justify-center items-center text-5xl '
+             onDragEnter={dragEnterHandler}
              onDragLeave={dragLeaveHandler} onDragOver={dragEnterHandler} onDrop={dragDropHandler}>
             <div>Перетащите файлы сюда</div>
         </div>
@@ -154,7 +163,6 @@ const FileList = () => {
                 <Separator/>
             </ToolBar>
             <div className='w-full overflow-auto '>
-
                 <div className='grid grid-cols-1'>
                     <FileItem name={'..'} fileType={FileTypes.UP_DIR} onClick={() => {
                         upFolder()
@@ -185,6 +193,7 @@ const FileList = () => {
                                       onDelete={handleDeleteFile}
                                       onDownload={handleDownloadFiles}
                                       isDownload={!!downloadFiles.find(findItem => findItem?.name === item.name)}
+                                      onPreview={previewHandler}
                             />
                         ))
                     }
@@ -201,6 +210,7 @@ const FileList = () => {
                 onClose={handleCloseDeleteModal}
                 onDelete={handleDelete}
             />
+            <PreviewFile isVisible={visiblePreviewModal} onClose={() => setVisiblePreviewModal(false)}/>
         </div>
 
     );

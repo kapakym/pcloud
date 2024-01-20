@@ -11,9 +11,10 @@ interface Props {
     onDelete?: (names: IFile[]) => void
     onDownload?: (names: IFile[]) => void
     isDownload?: boolean
+    onPreview?: (names: IFile[]) => void
 }
 
-const FileItem = ({name, fileType, onClick, size, onDelete, onDownload, isDownload}: Props) => {
+const FileItem = ({name, fileType, onClick, size, onDelete, onDownload, isDownload, onPreview}: Props) => {
 
     const handleDelete = (e: React.MouseEvent<SVGSVGElement>) => {
         e.stopPropagation()
@@ -35,6 +36,16 @@ const FileItem = ({name, fileType, onClick, size, onDelete, onDownload, isDownlo
         }
     }
 
+    const handlePreview = (e: React.MouseEvent<HTMLDivElement>) => {
+        e.stopPropagation();
+        if (onPreview) {
+            onPreview([{
+                name: name,
+                type: Object.keys(FileTypes)[Object.values(FileTypes).indexOf(fileType)] as KeysFileTypes
+            }])
+        }
+    }
+
     const showDownload = () => isDownload ? (<span className='loaderCircle h-6 w-6'></span>) : (
         <CloudArrowUpIcon onClick={(event) => handleDownload(event)}
                           className='h-6 w-6 cursor-pointer hover:text-white'/>
@@ -49,7 +60,7 @@ const FileItem = ({name, fileType, onClick, size, onDelete, onDownload, isDownlo
                     {fileType === FileTypes.DIR && <FolderIcon className='h-6 w-6 cursor-pointer hover:text-white'/>}
                     {fileType === FileTypes.FILE && <DocumentIcon className='h-6 w-6 cursor-pointer hover:text-white'/>}
                 </div>
-                <div className=' break-all  text-ellipsis  overflow-x-auto'>
+                <div className=' break-all  text-ellipsis  overflow-x-auto' onClick={(e)=>handlePreview(e)}>
                     {name}
                 </div>
             </div>

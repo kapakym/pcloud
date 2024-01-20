@@ -40,7 +40,7 @@ const Modal = ({
                                 onClick={onClose}
                             />
                         </div>
-                        <div className='p-4 h-[100%]'>
+                        <div className=' p-4 h-full'>
                             {children}
                         </div>
                         <div
