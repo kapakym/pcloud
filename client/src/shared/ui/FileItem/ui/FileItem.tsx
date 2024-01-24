@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {FileTypes, IFile, KeysFileTypes} from "../../../types/FIles/fileTypes";
 import {CloudArrowUpIcon, DocumentIcon, FolderIcon, ShareIcon, TrashIcon} from "@heroicons/react/24/outline";
 import {sizeFormat} from "../../../utils/files";

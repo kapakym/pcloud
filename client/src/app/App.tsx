@@ -3,8 +3,6 @@ import Header from "../widgets/Header/ui/Header";
 import {Route, Routes} from "react-router-dom";
 import {mainRoutes} from "./routes/routes";
 import UploadWindow from "../widgets/UploadWindow";
-import Modal from "../shared/ui/Modal";
-import Button from "../shared/ui/Button";
 
 function App() {
     return (

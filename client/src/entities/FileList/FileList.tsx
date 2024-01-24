@@ -28,7 +28,6 @@ const FileList = () => {
     const downloadFiles = useFilesStore(state => state.downloadFiles)
     const show = useFilesStore(state => state.show)
     const [dragEnter, setDragEnter] = useState(false)
-    const previewFile = useFilesStore(state => state.previewFile)
     const [visiblePreviewModal, setVisiblePreviewModal] = useState(false)
 
     useEffect(() => {

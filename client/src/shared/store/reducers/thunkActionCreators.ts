@@ -2,10 +2,7 @@
 import {AppDispatch} from "../store";
 import axios, {AxiosError} from "axios";
 import {uploadFilesSlice} from "./FilesSlice";
-import {useDownloadFiles, useUploadFile} from "../../../entities/api/filesApi/filesApi";
 import {IFile} from "../../types/FIles/fileTypes";
-import App from "../../../app/App";
-import {useEffect} from "react";
 import requiestBuilder from "../requestBuilder";
 
 export const uploadFile = (file: File, path: string, uuid: string) => (dispatch: AppDispatch) => {
