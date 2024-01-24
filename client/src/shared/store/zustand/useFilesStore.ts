@@ -143,7 +143,7 @@ export const useFilesStore = create<FilesState>()(immer((set) => ({
             if (response instanceof Blob && mode === 'preview') {
                 set(state => {
                         console.log(response)
-                        state.previewFile.src = window.URL.createObjectURL(new Blob([response]))
+                        state.previewFile.src = window.URL.createObjectURL(new Blob([response], {type: response.type}))
                         state.previewFile.type = response.type
                     }
                 )

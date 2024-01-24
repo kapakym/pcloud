@@ -1,8 +1,7 @@
-import React from 'react';
+import React, {FC} from 'react';
 import Modal from "../../../shared/ui/Modal";
 import Button from "../../../shared/ui/Button";
 import {useFilesStore} from "../../../shared/store/zustand/useFilesStore";
-import {all} from "axios";
 
 export interface PreviewFileProps {
     isVisible: boolean;
@@ -17,12 +16,13 @@ export interface ShowContentProps {
 
 }
 
-export const PreviewFile = ({isVisible, onClose}: PreviewFileProps) => {
+export const PreviewFile: FC<PreviewFileProps> = ({isVisible, onClose}) => {
     const previewFile = useFilesStore(state => state.previewFile)
 
     const ShowContent = ({content}: ShowContentProps) => {
         const allowImages = ["image/png", "image/jpeg", "image/gif"]
         const allowVideo = ["video/mp4", 'video/quicktime']
+        const allowPdf = ['application/pdf']
 
         if (allowImages.includes(content.type)) {
             return (
@@ -32,8 +32,17 @@ export const PreviewFile = ({isVisible, onClose}: PreviewFileProps) => {
 
         if (allowVideo.includes(content.type)) {
             return (
-                <video src={content.src} className='w-full h-[60vh]' autoPlay={true} controls={true} />
+                <video src={content.src} className='w-full h-[60vh]' autoPlay={true} controls={true}/>
             )
+        }
+
+        if (allowPdf.includes(content.type)) {
+            console.log(content)
+            window.open(content.src)
+
+            return (<div>
+                PDF - файл открыт в новой вкладке
+            </div>)
         }
 
         return (
