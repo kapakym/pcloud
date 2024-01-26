@@ -1,0 +1,52 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:11.5-alpine
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=Pedan1982
+      - POSTGRES_DB=pclouddb
+    ports:
+      - 5433:5432
+    networks:
+      - shared-network
+    volumes:
+      - ./postgres-db:/var/lib/postgresql/data
+
+  server:
+    container_name: pcloud-server
+    restart: unless-stopped
+    image: pcloud-server:1
+    build:
+      context: ./server
+#      target: production
+      dockerfile: Dockerfile
+    ports:
+      - 8001:8001
+    networks:
+      - shared-network
+    depends_on:
+      - postgres
+    volumes:
+      - ./share:/var/share
+
+  client:
+    container_name: pcloud-client
+    restart: unless-stopped
+    image: pcloud-client:1
+    build:
+      context: ./client
+#      target: production
+      dockerfile: Dockerfile
+    ports:
+      - 4000:80
+    networks:
+      - shared-network
+    depends_on:
+      - server
+
+
+
+networks:
+  shared-network:

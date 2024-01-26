@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "compile": "tsc && node dist/index.js",
-    "dev": "./node_modules/nodemon/bin/nodemon.js -e ts  --exec \"npm run compile\""
+    "dev": "./node_modules/nodemon/bin/nodemon.js -e ts  --exec \"npm run compile\"",
+    "start": "node -r ./dist/index.js"
   },
   "keywords": [],
   "author": "",
