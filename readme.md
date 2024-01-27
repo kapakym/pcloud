@@ -33,7 +33,7 @@ pCloud - The application is designed for deployment on a home server, cloud file
 
 ### postgres - database for storing user accounts
 
-### RUN in homeserver
+### RUN on homeserver
     - To launch the application you will need docker and docker-compose https://docs.docker.com/compose/install/
     - clone repository - git clone https://github.com/kapakym/pcloud.git
     - create folder ./share - cloud storage
