@@ -22,7 +22,7 @@ pCloud - The application is designed for deployment on a home server, cloud file
 ### ./server - application for interacting with the database and file system of the server
     Functionality: 
         - upload files
-        - download files
+         - download files
         - delete files
         - add user in database
 
