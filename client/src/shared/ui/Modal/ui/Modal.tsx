@@ -25,22 +25,22 @@ const Modal = ({
             {isVisible &&
                 <>
                     <div
-                        className='fixed h-[100vh] w-[100vw] top-0 left-0 opacity-50 backdrop-blur-xl bg-white/30 border-[1px] border-solid border-red-500 z-10'
+                        className='fixed h-[100dvh] w-[100dvw] top-0 left-0 opacity-50 backdrop-blur-xl bg-white/30 border-[1px] border-solid border-red-500 z-10'
                         onClick={onClose}
                     ></div>
                     <div
                         style={{width: width, height: height}}
-                        className={`animate-[modal_500ms] whitespace-nowrap overflow-x-auto flex-col rounded-xl fixed top-[50%] left-[50%] bg-app-bg-primary drop-shadow-2xl translate-x-[-50%] translate-y-[-50%]  max-h-[90%] z-10 `}>
+                        className={`flex animate-[modal_500ms] whitespace-nowrap  flex-col rounded-xl fixed top-[50%] left-[50%] bg-app-bg-primary drop-shadow-2xl translate-x-[-50%] translate-y-[-50%] max-h-[90dvh] z-10 `}>
                         <div className=' flex justify-between border-b-app-border border-b-[1px] p-4 '>
                             <div className=''>
                                 {title}
                             </div>
                             <XMarkIcon
-                                className='h-6 w-6 cursor-pointer'
+                                className='h-6 w-6 cursor-pointer '
                                 onClick={onClose}
                             />
                         </div>
-                        <div className=' p-4 h-full'>
+                        <div className='p-4 overflow-auto'>
                             {children}
                         </div>
                         <div

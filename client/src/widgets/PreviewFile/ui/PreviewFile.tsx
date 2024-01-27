@@ -26,13 +26,13 @@ export const PreviewFile: FC<PreviewFileProps> = ({isVisible, onClose}) => {
 
         if (allowImages.includes(content.type)) {
             return (
-                <img src={content.src} alt=""/>
+                <img src={content.src} alt="" className='w-full max-h-[70dvh] object-contain'/>
             )
         }
 
         if (allowVideo.includes(content.type)) {
             return (
-                <video src={content.src} className='w-full h-[60vh]' autoPlay={true} controls={true}/>
+                <video src={content.src} className='w-full max-h-[70dvh] object-contain' autoPlay={true} controls={true}/>
             )
         }
 
@@ -56,7 +56,7 @@ export const PreviewFile: FC<PreviewFileProps> = ({isVisible, onClose}) => {
         <Modal
             title={`Просмотр файла`}
             height='auto'
-            width='auto'
+            width='80%'
             isVisible={isVisible}
             onClose={onClose}
             buttons={(

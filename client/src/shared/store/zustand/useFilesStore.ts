@@ -108,7 +108,7 @@ export const useFilesStore = create<FilesState>()(immer((set) => ({
             if (axios.isAxiosError(error)) {
                 set(state => {
                     const file = state.files.find(item => item.id === uuid);
-                    if (file) {
+                    if (file && error.response.data.message) {
                         file.isLoading = false
                         file.progress = 100
                         file!.error = {
