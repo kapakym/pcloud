@@ -2,6 +2,7 @@ import React from 'react';
 
 import {useNavigate} from "react-router-dom";
 import MenuButton from "../../../shared/ui/MenuButton";
+import {ArrowRightStartOnRectangleIcon} from "@heroicons/react/16/solid";
 
 const Header = () => {
     const navigate = useNavigate()
@@ -17,7 +18,7 @@ const Header = () => {
             <div className='space-x-2'>
                 {!!localStorage.getItem('token') &&
                     <MenuButton onClick={handleExit}>
-                        Выход
+                        <ArrowRightStartOnRectangleIcon className='h-6 w-6' />
                     </MenuButton>
                 }
             </div>
