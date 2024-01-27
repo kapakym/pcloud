@@ -36,5 +36,9 @@ pCloud - The application is designed for deployment on a home server, cloud file
 # RUN in homeserver
     - clone repository
     - create folder ./share - cloud storage
-    - sudo docker-compose build
-    - sudo docker-compose up -d
+    `sudo docker-compose build`
+    `sudo docker-compose up -d`
+    - use app in 4000 port
+
+![pCloud - application](./screen.png)
+
