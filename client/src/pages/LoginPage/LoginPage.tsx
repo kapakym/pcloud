@@ -19,7 +19,7 @@ const LoginPage = () => {
             localStorage.setItem('token', data.token)
             localStorage.setItem('role', data.role)
             localStorage.setItem('folder', data.folder)
-            navigate({pathname: '/'})
+            navigate({pathname: '/files_list'})
         }
     }, [data]);
 

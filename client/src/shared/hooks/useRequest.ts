@@ -78,7 +78,7 @@ const useRequest = <Res, Req>({url, method, options, responseType}: Props<Req>):
                 setErrorRes(error);
                 if (error?.response?.status === 401) {
                     navigate({
-                        pathname: '/login'
+                        pathname: '/'
                     })
                 }
             }

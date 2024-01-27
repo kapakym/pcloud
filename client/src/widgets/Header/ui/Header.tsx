@@ -7,7 +7,7 @@ const Header = () => {
     const navigate = useNavigate()
     const handleExit = () => {
         localStorage.removeItem('token');
-        navigate({pathname: '/login'})
+        navigate({pathname: '/'})
     }
     return (
         <div className='h-[50px] w-full border-b-[1px] border-b-solid border-b-app-border p-2 flex justify-between items-center'>

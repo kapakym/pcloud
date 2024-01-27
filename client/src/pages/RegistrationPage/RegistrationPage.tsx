@@ -30,7 +30,7 @@ const RegistrationPage = () => {
     }
 
     const handleNavigateLogin = () => {
-        navigate({pathname: '/login'})
+        navigate({pathname: '/'})
     }
 
 

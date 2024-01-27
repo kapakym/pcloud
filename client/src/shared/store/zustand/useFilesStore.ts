@@ -2,6 +2,7 @@ import {create} from 'zustand'
 import {immer} from "zustand/middleware/immer";
 import {IFile} from "../../types/FIles/fileTypes";
 import requiestBuilder from "../requestBuilder";
+import axios, {AxiosError} from "axios";
 
 interface UploadFiles {
     file: string,
@@ -75,6 +76,7 @@ export const useFilesStore = create<FilesState>()(immer((set) => ({
                     path,
                     progress: 0
                 })
+                state.isAllUploaded = false
             })
 
             const progressFn = (percentComplete: number) => {
@@ -85,7 +87,7 @@ export const useFilesStore = create<FilesState>()(immer((set) => ({
                         if (file.progress === 100) file!.isLoading = false;
                         else file!.isLoading = true;
                     }
-                    state.isAllUploaded = state.files.every(item => !item.isLoading)
+
                 })
             }
 
@@ -97,10 +99,24 @@ export const useFilesStore = create<FilesState>()(immer((set) => ({
                 },
                 progressFn
             })()
-
-
-        } catch (e) {
-
+            if (response) {
+                set(state => {
+                    state.isAllUploaded = state.files.every(item => !item.isLoading)
+                })
+            }
+        } catch (error: any | AxiosError) {
+            if (axios.isAxiosError(error)) {
+                set(state => {
+                    const file = state.files.find(item => item.id === uuid);
+                    if (file) {
+                        file.isLoading = false
+                        file.progress = 100
+                        file!.error = {
+                            message: error.response.data.message
+                        }
+                    }
+                })
+            }
         }
     },
 
@@ -142,14 +158,11 @@ export const useFilesStore = create<FilesState>()(immer((set) => ({
 
             if (response instanceof Blob && mode === 'preview') {
                 set(state => {
-                        console.log(response)
                         state.previewFile.src = window.URL.createObjectURL(new Blob([response], {type: response.type}))
                         state.previewFile.type = response.type
                     }
                 )
-
             }
-
             set(state => {
                 state.downloadFiles = state.downloadFiles.filter(item => item.id !== uuid)
             })

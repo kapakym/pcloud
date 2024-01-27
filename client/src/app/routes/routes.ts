@@ -4,12 +4,12 @@ import RegistrationPage from "../../pages/RegistrationPage/RegistrationPage";
 
 export const mainRoutes: any[] = [
     {
-        element: Main,
+        element: LoginPage,
         path: '/'
     },
     {
-        element: LoginPage,
-        path: '/login'
+        element: Main,
+        path: '/files_list'
     },
     {
         element: RegistrationPage,

@@ -4,7 +4,6 @@ import {FileTypes, IFile} from "../../shared/types/FIles/fileTypes";
 import FileItem from "../../shared/ui/FileItem";
 import Input from "../../shared/ui/Input";
 import Loader from "../../shared/loader";
-import {useAppSelector} from "../../shared/store/redux";
 import {v4 as uuidv4} from 'uuid';
 import {CloudArrowDownIcon, FolderPlusIcon} from "@heroicons/react/24/outline";
 import ToolBar from "../../shared/ui/ToolBar";
@@ -21,7 +20,7 @@ const FileList = () => {
     const [filter, setFilter] = useState("")
     const [isVisibleAddFolder, setIsVisibleAddFolder] = useState(false)
     const [isVisibleDeleteFiles, setIsVisibleDeleteFiles] = useState(false)
-    const {isAllUploaded} = useAppSelector(state => state.filesReducer)
+    const isAllUploaded = useFilesStore(state => state.isAllUploaded)
     const [deleteFiles, setDeleteFiles] = useState<IFile[]>([])
     const downLoadFile = useFilesStore(state => state.downloadFileAction)
     const uploadFile = useFilesStore(state => state.uploadFileActions)
@@ -35,10 +34,9 @@ const FileList = () => {
     }, [path]);
 
     useEffect(() => {
-        if (!isAllUploaded) {
+        if (isAllUploaded) {
             requestFn({path});
         }
-
     }, [isAllUploaded]);
 
 
