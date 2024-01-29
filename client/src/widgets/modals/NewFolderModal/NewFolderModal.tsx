@@ -20,6 +20,7 @@ const NewFolderModal = ({isVisible = false, onClose, path, onCreate}: Props) => 
             if (onCreate)  {
                 if (onClose) onClose()
                 onCreate()
+                setFolderName('')
             }
         }
     }, [data]);

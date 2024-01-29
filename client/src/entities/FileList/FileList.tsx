@@ -200,6 +200,7 @@ const FileList = () => {
                 isVisible={isVisibleAddFolder}
                 onClose={() => setIsVisibleAddFolder(false)}
                 onCreate={handleCreateFolder}
+                path={path}
             />
             <DeleteFilesModal
                 isVisible={isVisibleDeleteFiles}

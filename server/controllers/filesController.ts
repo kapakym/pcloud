@@ -72,7 +72,7 @@ class FilesController {
     async createFolder(req: Request<{ folderName: string, path: string }>, res: Response, next: NextFunction) {
         const resPath = FileUtils.buildPath(req.headers?.homefolder, req.body.path)
         const newFolder = req.body.folderName;
-
+        console.log(resPath)
         if (!newFolder || !resPath) {
             return res.status(400).json({
                 message: 'Ошибка создания папки'

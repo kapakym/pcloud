@@ -80,6 +80,7 @@ class FilesController {
         return __awaiter(this, void 0, void 0, function* () {
             const resPath = fileUtils_1.default.buildPath((_a = req.headers) === null || _a === void 0 ? void 0 : _a.homefolder, req.body.path);
             const newFolder = req.body.folderName;
+            console.log(resPath);
             if (!newFolder || !resPath) {
                 return res.status(400).json({
                     message: 'Ошибка создания папки'
