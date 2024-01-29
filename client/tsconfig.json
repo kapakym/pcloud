@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
     "baseUrl": "./src",
-    "target": "ES2020",
+    "target": "ESNext",
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
     ],
+    "types": ["vite/client"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,

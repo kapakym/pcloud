@@ -26,7 +26,7 @@ export const PreviewFile: FC<PreviewFileProps> = ({isVisible, onClose}) => {
 
         if (allowImages.includes(content.type)) {
             return (
-                <img src={content.src} alt="" className='w-full max-h-[70dvh] object-contain'/>
+                <img src={content.src} alt="" className='w-auto max-h-[70dvh] object-contain'/>
             )
         }
 
