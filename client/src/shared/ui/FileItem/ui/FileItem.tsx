@@ -1,6 +1,6 @@
 import React from 'react';
 import {FileTypes, IFile, KeysFileTypes} from "../../../types/FIles/fileTypes";
-import {CloudArrowUpIcon, DocumentIcon, FolderIcon, ShareIcon, TrashIcon} from "@heroicons/react/24/outline";
+import {CloudArrowUpIcon, DocumentIcon, FolderIcon, TrashIcon} from "@heroicons/react/24/outline";
 import {sizeFormat} from "../../../utils/files";
 
 interface Props {
@@ -56,12 +56,12 @@ const FileItem = ({name, fileType, onClick, size, onDelete, onDownload, isDownlo
         <div
             className='odd:bg-app-bg-primary justify-between even:bg-app-bg-secondary sm:flex flex hover:bg-gray-500 hover:text-white cursor-pointer'
             onClick={onClick}>
-            <div className='flex space-x-2 items-center w-full' onDoubleClick={(e)=>handlePreview(e)}>
+            <div className='flex space-x-2 items-center w-full' onDoubleClick={(e) => handlePreview(e)}>
                 <div>
                     {fileType === FileTypes.DIR && <FolderIcon className='h-6 w-6 cursor-pointer hover:text-white'/>}
                     {fileType === FileTypes.FILE && <DocumentIcon className='h-6 w-6 cursor-pointer hover:text-white'/>}
                 </div>
-                <div className=' break-all  text-ellipsis  overflow-x-auto' >
+                <div className=' break-all  text-ellipsis  overflow-x-auto'>
                     {name}
                 </div>
             </div>
@@ -78,7 +78,7 @@ const FileItem = ({name, fileType, onClick, size, onDelete, onDownload, isDownlo
                             <TrashIcon onClick={(event) => handleDelete(event)}
                                        className='h-6 w-6 cursor-pointer hover:text-white'/>
                             {/*<ShareIcon className='h-6 w-6 cursor-pointer hover:text-white'/>*/}
-                            {showDownload()}
+                            {fileType === FileTypes.FILE && showDownload()}
                         </>
 
                     }

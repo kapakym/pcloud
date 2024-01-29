@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {useGetFilesFromPath} from "../api/filesApi/filesApi";
 import {FileTypes, IFile} from "../../shared/types/FIles/fileTypes";
 import FileItem from "../../shared/ui/FileItem";
@@ -127,6 +127,19 @@ const FileList = () => {
         setDragEnter(false)
     }
 
+    const getMemoFolderList = useMemo(() => {
+        if (data) {
+            return data.folders.filter(item => item.includes(filter))
+        }
+        return []
+    }, [filter, data])
+
+    const getMemoFilesList = useMemo(() => {
+        if (data) {
+            return data.files.filter(item => item.name.includes(filter))
+        }
+        return []
+    }, [filter, data])
 
     if (dragEnter) return (
         <div className='w-full h-full flex flex-col space-y-2 justify-center items-center text-5xl '
@@ -166,7 +179,7 @@ const FileList = () => {
                     }}/>
                     {isLoading && <Loader/>}
                     {(data && !!data.folders.length) &&
-                        data.folders.filter(item => item.includes(filter)).map(item => (
+                        getMemoFolderList.map(item => (
                             <FileItem
                                 name={item}
                                 fileType={FileTypes.DIR}
@@ -182,7 +195,7 @@ const FileList = () => {
 
                     }
                     {(data && !!data.files.length) &&
-                        data.files.filter(item => item.name.includes(filter)).map(item => (
+                        getMemoFilesList.map(item => (
                             <FileItem name={item.name}
                                       fileType={FileTypes.FILE}
                                       key={item.name}
