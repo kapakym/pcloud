@@ -54,7 +54,7 @@ const FileItem = ({name, fileType, onClick, size, onDelete, onDownload, isDownlo
 
     return (
         <div
-            className='odd:bg-app-bg-primary justify-between even:bg-app-bg-secondary sm:flex flex hover:bg-gray-500 hover:text-white cursor-pointer'
+            className='p-2 odd:bg-app-bg-primary justify-between even:bg-app-bg-secondary sm:flex flex hover:bg-gray-500 hover:text-white cursor-pointer'
             onClick={onClick}>
             <div className='flex space-x-2 items-center w-full' onDoubleClick={(e) => handlePreview(e)}>
                 <div>
