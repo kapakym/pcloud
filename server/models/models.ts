@@ -1,7 +1,18 @@
+import exp from "constants";
+
 const sequelize = require('../db')
 const {DataTypes} = require('sequelize')
 
-const User = sequelize.define('user', {
+export interface IShareLink {
+    uuid: string,
+    type: string,
+    path: string,
+    name: string
+    timelive: string,
+    pincode: string,
+}
+
+export const User = sequelize.define('user', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     email: {type: DataTypes.STRING, unique: true},
     password: {type: DataTypes.STRING},
@@ -10,6 +21,17 @@ const User = sequelize.define('user', {
     homeFolder: {type: DataTypes.STRING, unique: true}
 })
 
+export const ShareLink = sequelize.define('sharelink', {
+    uuid: {type: DataTypes.STRING, primaryKey: true, unique: true, undefined: false},
+    type: {type: DataTypes.STRING, defaultValue: 'file'},
+    path: {type:DataTypes.STRING},
+    name: {type:DataTypes.STRING},
+    timelive: {type: DataTypes.DATE},
+    pincode: {type: DataTypes.STRING},
+})
+
 module.exports = {
-    User
+    User,
+    ShareLink
 }
+

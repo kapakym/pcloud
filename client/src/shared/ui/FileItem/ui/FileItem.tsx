@@ -1,7 +1,8 @@
 import React from 'react';
 import {FileTypes, IFile, KeysFileTypes} from "../../../types/FIles/fileTypes";
-import {CloudArrowUpIcon, DocumentIcon, FolderIcon, TrashIcon} from "@heroicons/react/24/outline";
+import {CloudArrowUpIcon, DocumentIcon, FolderIcon, ShareIcon, TrashIcon} from "@heroicons/react/24/outline";
 import {sizeFormat} from "../../../utils/files";
+import {IShareObject} from "../../../../widgets/modals/AddSharelinkModal/types/types";
 
 interface Props {
     name: string;
@@ -12,9 +13,21 @@ interface Props {
     onDownload?: (names: IFile[]) => void
     isDownload?: boolean
     onPreview?: (names: IFile[]) => void
+    onShare?: (shareObject: IShareObject) => void
 }
 
-const FileItem = ({name, fileType, onClick, size, onDelete, onDownload, isDownload, onPreview}: Props) => {
+const FileItem = (
+    {
+        name,
+        fileType,
+        onClick,
+        size,
+        onDelete,
+        onDownload,
+        isDownload,
+        onPreview,
+        onShare
+    }: Props) => {
 
     const handleDelete = (e: React.MouseEvent<SVGSVGElement>) => {
         e.stopPropagation()
@@ -44,6 +57,18 @@ const FileItem = ({name, fileType, onClick, size, onDelete, onDownload, isDownlo
                 name: name,
                 type: Object.keys(FileTypes)[Object.values(FileTypes).indexOf(fileType)] as KeysFileTypes
             }])
+        }
+    }
+
+    const handleShare = (e: React.MouseEvent<SVGSVGElement>) => {
+        e.stopPropagation()
+        e.preventDefault()
+        console.log(name)
+        if (onShare) {
+            onShare({
+                name,
+                type: Object.keys(FileTypes)[Object.values(FileTypes).indexOf(fileType)] as KeysFileTypes
+            })
         }
     }
 
@@ -77,7 +102,10 @@ const FileItem = ({name, fileType, onClick, size, onDelete, onDownload, isDownlo
                         <>
                             <TrashIcon onClick={(event) => handleDelete(event)}
                                        className='h-6 w-6 cursor-pointer hover:text-white'/>
-                            {/*<ShareIcon className='h-6 w-6 cursor-pointer hover:text-white'/>*/}
+                            <ShareIcon
+                                className='h-6 w-6 cursor-pointer hover:text-white'
+                                onClick={(event) => handleShare(event)}
+                            />
                             {fileType === FileTypes.FILE && showDownload()}
                         </>
 

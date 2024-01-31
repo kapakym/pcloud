@@ -13,6 +13,8 @@ import NewFolderModal from "../../widgets/modals/NewFolderModal/NewFolderModal";
 import DeleteFilesModal from "../../widgets/modals/DeleteFilessModal/DeleteFilesModal";
 import {useFilesStore} from "../../shared/store/zustand/useFilesStore";
 import {PreviewFile} from "../../widgets/PreviewFile/ui/PreviewFile";
+import {AddSharelinkModal} from "../../widgets/modals/AddSharelinkModal/ui/AddSharelinkModal";
+import {IShareObject} from "../../widgets/modals/AddSharelinkModal/types/types";
 
 const FileList = () => {
     const [path, setPath] = useState('')
@@ -28,6 +30,15 @@ const FileList = () => {
     const show = useFilesStore(state => state.show)
     const [dragEnter, setDragEnter] = useState(false)
     const [visiblePreviewModal, setVisiblePreviewModal] = useState(false)
+    const [visibleSharelinkModal, setVisibleSharelinkModal] = useState(false)
+    const [shareObject, setShareObject] = useState<IShareObject>()
+
+    useEffect(() => {
+        if (shareObject?.name) {
+
+            setVisibleSharelinkModal(true)
+        }
+    }, [shareObject]);
 
     useEffect(() => {
         requestFn({path});
@@ -190,6 +201,7 @@ const FileList = () => {
                                 onDelete={handleDeleteFile}
                                 onDownload={handleDownloadFiles}
                                 isDownload={!!downloadFiles.find(findItem => findItem.name === item)}
+                                onShare={setShareObject}
                             />
                         ))
 
@@ -204,6 +216,7 @@ const FileList = () => {
                                       onDownload={handleDownloadFiles}
                                       isDownload={!!downloadFiles.find(findItem => findItem?.name === item.name)}
                                       onPreview={previewHandler}
+                                      onShare={setShareObject}
                             />
                         ))
                     }
@@ -215,13 +228,29 @@ const FileList = () => {
                 onCreate={handleCreateFolder}
                 path={path}
             />
-            <DeleteFilesModal
-                isVisible={isVisibleDeleteFiles}
-                files={deleteFiles}
-                onClose={handleCloseDeleteModal}
-                onDelete={handleDelete}
-            />
-            <PreviewFile isVisible={visiblePreviewModal} onClose={() => setVisiblePreviewModal(false)}/>
+            {isVisibleDeleteFiles &&
+                <DeleteFilesModal
+                    isVisible={isVisibleDeleteFiles}
+                    files={deleteFiles}
+                    onClose={handleCloseDeleteModal}
+                    onDelete={handleDelete}
+                />
+            }
+
+            {visiblePreviewModal &&
+                <PreviewFile
+                    isVisible={visiblePreviewModal}
+                    onClose={() => setVisiblePreviewModal(false)}
+                />
+            }
+
+            {(shareObject && visibleSharelinkModal) &&
+                <AddSharelinkModal
+                    isVisible={visibleSharelinkModal}
+                    shareObject={{path, ...shareObject}}
+                    onClose={() => setVisibleSharelinkModal(false)}
+                />
+            }
         </div>
 
     );
