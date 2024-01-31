@@ -1,5 +1,3 @@
-import exp from "constants";
-
 const sequelize = require('../db')
 const {DataTypes} = require('sequelize')
 

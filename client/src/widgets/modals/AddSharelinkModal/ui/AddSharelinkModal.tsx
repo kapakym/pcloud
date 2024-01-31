@@ -5,7 +5,7 @@ import Button from "../../../../shared/ui/Button";
 import Input from "../../../../shared/ui/Input";
 import {IShareObject} from "../types/types";
 import {DatePicker} from "../../../../shared/ui/DatePicker/ui/DatePicker";
-import {ClipboardDocumentCheckIcon, ClipboardDocumentIcon, ClipboardIcon} from "@heroicons/react/24/outline";
+import {ClipboardDocumentIcon} from "@heroicons/react/24/outline";
 
 
 interface IShareObjectPath extends IShareObject {
