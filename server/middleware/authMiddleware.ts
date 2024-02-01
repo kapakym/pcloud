@@ -18,12 +18,12 @@ module.exports = function (req: RequestToken, res: Response, next: NextFunction)
             return res.status(401).json({message: 'Пользователь не авторизован'})
         }
         const decode = jwt.verify(token, process.env.SECRET_KEY)
+        console.log(decode)
 
         req.user = decode;
         next()
     } catch (error) {
         res.status(401).json({message: 'Пользователь не авторизован'})
-        next()
     }
 
 }

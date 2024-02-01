@@ -86,7 +86,7 @@ class UserController {
                 return next(ApiError.badRequest('Пользователь не активирован'));
             }
             const token = generateJwt(user.id, user.role, user.email);
-            return res.json({
+            return res.status(200).json({
                 token,
                 role: user.role,
                 folder: user.homeFolder

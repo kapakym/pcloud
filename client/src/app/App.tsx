@@ -12,10 +12,11 @@ function App() {
                 <div className='flex h-[calc(100%-50px)]'>
                     {/*<LeftBar/>*/}
                     <div className='h-full w-full'>
+
                         <Routes>
                             {!!mainRoutes?.length &&
                                 mainRoutes.map(item => (
-                                    <Route path={item.path} key={item.path} element={item.element()}/>
+                                    <Route path={item.path} key={item.path} element={item.element} />
                                 ))
                             }
                         </Routes>

@@ -7,7 +7,6 @@ import {IShareObject} from "../types/types";
 import {DatePicker} from "../../../../shared/ui/DatePicker/ui/DatePicker";
 import {ClipboardDocumentIcon} from "@heroicons/react/24/outline";
 
-
 interface IShareObjectPath extends IShareObject {
     path: string;
 }

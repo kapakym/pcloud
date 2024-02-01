@@ -95,7 +95,7 @@ class UserController {
         }
 
         const token = generateJwt(user.id, user.role, user.email);
-        return res.json({
+        return res.status(200).json({
             token,
             role: user.role,
             folder: user.homeFolder
