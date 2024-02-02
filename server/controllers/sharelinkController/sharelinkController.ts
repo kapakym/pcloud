@@ -5,7 +5,8 @@ import {IShareLink, ShareLink} from "../../models/models"
 import {v4 as uuidv4} from 'uuid';
 import bcrypt from 'bcrypt'
 import {IShareInfoReq, IShareInfoRes, ISharelinkAddReq, IShareLinkAddRes} from "./types/types";
-import {ApiError} from '../../error/ApiError'
+
+const ApiError = require('../../error/ApiError')
 import jwt from "jsonwebtoken";
 
 
@@ -86,47 +87,64 @@ class SharelinkController {
             patch
         } = req.body
 
-        const findLink = await ShareLink.findOne({uuid})
+        const findLink = await ShareLink.findOne({where: {uuid}})
         let currentToken = token
+        if (!findLink) {
+            return next(ApiError.errorRequest('Ссылка не найдена'));
+        }
 
+        console.log(findLink)
         if (findLink) {
 
             if (findLink.date_to && new Date() > findLink.date_to) {
                 return next(ApiError.errorRequest('Ссылка не найдена'));
             }
-            if (pincode && bcrypt.hash(pincode, 5) === findLink.pincode) {
+
+            if (pincode) {
+                if (!bcrypt.compareSync(pincode, findLink.pincode)) {
+                    res.status(400).json({
+                        message: 'Неверный пинкод',
+                        detail: 'BAD_PINCODE'
+                    })
+                    return
+                }
                 currentToken = jwt.sign({
                         name: findLink.name,
                         type: findLink.type,
                     },
-                    pincode,
+                    findLink.pincode,
                     {expiresIn: '24h'}
                 )
-            } else {
-                return next(ApiError.errorRequest('Неверный пинкод', 'BAD_PINCODE'))
             }
 
             if (findLink.pincode && !currentToken) {
-                return next(ApiError.errorRequest('Требуется пинкод', 'NEED_PINCODE'))
+                res.status(400).json({
+                    message: 'Требуется пинкод',
+                    detail: 'NEED_PINCODE'
+                })
+                return
             }
 
-            //
+
+
             if (findLink.pincode) {
                 try {
-                    const decode = jwt.verify(token, findLink.pincode)
+                    const decode = jwt.verify(currentToken, findLink.pincode)
                 } catch (e) {
                     return next(ApiError.badRequest('Ресурс не доступен'))
                 }
             }
 
 
-
             if (findLink.type === 'FILE') {
                 return res.status(200).json({
-                            path: findLink.path,
-                            folders: [],
-                            files: [findLink.name]
-                        })
+                    path: findLink.path,
+                    folders: [],
+                    files: [
+                        { name: findLink.name, type: '', size: 1200 }
+                        ],
+                    token: token ? undefined : currentToken
+                })
             }
 
             // try {

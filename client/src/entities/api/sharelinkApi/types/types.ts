@@ -12,3 +12,12 @@ export interface IShareLinkAddRes {
     uuid: string
     name: string
 }
+
+export type IShareLinkInfoRes = Omit<IShareLinkAddRes, 'pincode'>
+
+export interface IShareReq {
+    uuid: string
+    token?: string
+    pincode?: string
+    patch?: string
+}
