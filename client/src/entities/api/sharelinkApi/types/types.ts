@@ -19,5 +19,5 @@ export interface IShareReq {
     uuid: string
     token?: string
     pincode?: string
-    patch?: string
+    path?: string
 }

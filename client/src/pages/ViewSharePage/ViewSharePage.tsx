@@ -48,6 +48,13 @@ const ViewSharePage = () => {
         }
     }, [data]);
 
+    useEffect(() => {
+        console.log(path)
+        if (uuid && token) {
+            requestFn({uuid, token, path})
+        }
+    }, [path]);
+
     const handleClose = () => {
         setVisiblePinCodeModal(false)
     }
@@ -112,8 +119,6 @@ const ViewSharePage = () => {
                                 onClick={() => {
                                     changePath(item)
                                 }}
-                                // onDownload={handleDownloadFiles}
-                                // isDownload={!!downloadFiles.find(findItem => findItem.name === item)}
                             />
                         ))
 

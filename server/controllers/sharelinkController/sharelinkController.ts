@@ -8,10 +8,11 @@ import {IShareInfoReq, IShareInfoRes, ISharelinkAddReq, IShareLinkAddRes} from "
 
 const ApiError = require('../../error/ApiError')
 import jwt from "jsonwebtoken";
+import path from "path";
 
 
 class SharelinkController {
-    async addSharelink(req: Request<ISharelinkAddReq>, res: Response<IShareLinkAddRes>, next: NextFunction) {
+    async addSharelink(req: Request<ISharelinkAddReq>, res: Response<IShareLinkAddRes>) {
         const {
             type,
             pincode,
@@ -23,7 +24,7 @@ class SharelinkController {
         const findFile = await ShareLink.findOne({where: {name}})
         const uuid = uuidv4();
         if (findFile) {
-            const shareLink = await findFile.update(<IShareLink>{
+            await findFile.update(<IShareLink>{
                 path: resPath,
                 type,
                 pincode: pincode ? await bcrypt.hash(pincode, 5) : "",
@@ -84,7 +85,6 @@ class SharelinkController {
             uuid,
             token,
             pincode,
-            patch
         } = req.body
 
         const findLink = await ShareLink.findOne({where: {uuid}})
@@ -93,7 +93,6 @@ class SharelinkController {
             return next(ApiError.errorRequest('Ссылка не найдена'));
         }
 
-        console.log(findLink)
         if (findLink) {
 
             if (findLink.date_to && new Date() > findLink.date_to) {
@@ -126,10 +125,9 @@ class SharelinkController {
             }
 
 
-
             if (findLink.pincode) {
                 try {
-                    const decode = jwt.verify(currentToken, findLink.pincode)
+                    jwt.verify(currentToken, findLink.pincode)
                 } catch (e) {
                     return next(ApiError.badRequest('Ресурс не доступен'))
                 }
@@ -138,35 +136,41 @@ class SharelinkController {
 
             if (findLink.type === 'FILE') {
                 return res.status(200).json({
-                    path: findLink.path,
+                    path: '',
                     folders: [],
                     files: [
-                        { name: findLink.name, type: '', size: 1200 }
-                        ],
+                        {name: findLink.name, type: '', size: 1200}
+                    ],
                     token: token ? undefined : currentToken
                 })
             }
 
-            // try {
-            //     console.log(process.env.CLOUD_PATH)
-            //     const items = fs.readdirSync(resPath, {withFileTypes: true})
-            //     const folders = items.filter((item: any) => item.isDirectory()).map((item: any) => item.name)
-            //     const files = items.filter((item: any) => item.isFile()).map((item: any) => ({
-            //         name: item.name,
-            //         type: path.extname(item.name),
-            //         size: fs.statSync(resPath + '/' + item.name).size
-            //     }))
-            //     return res.status(200).json({
-            //         path: currPath,
-            //         folders, files
-            //     })
-            // } catch (error: any) {
-            //     return res.status(200).json({
-            //         path: '',
-            //         folders: [],
-            //         files: []
-            //     })
-            // }
+            const currPath = req.body?.path ? req.body?.path.replace('.', '') : ''
+            const resPath = findLink.path  + findLink.name + currPath
+            console.log(resPath)
+            try {
+
+                const items = fs.readdirSync(resPath, {withFileTypes: true})
+                const folders = items.filter((item: any) => item.isDirectory()).map((item: any) => item.name)
+                const files = items.filter((item: any) => item.isFile()).map((item: any) => ({
+                    name: item.name,
+                    type: path.extname(item.name),
+                    size: fs.statSync(resPath + '/' + item.name).size
+                }))
+                return res.status(200).json({
+                    path: currPath,
+                    folders,
+                    files,
+                    token: token ? undefined : currentToken
+                })
+            } catch (error: any) {
+                console.log(error)
+                return res.status(200).json({
+                    path: '',
+                    folders: [],
+                    files: []
+                })
+            }
 
         }
 
