@@ -4,7 +4,14 @@ import FileUtils from "../../utils/fileUtils";
 import {IShareLink, ShareLink} from "../../models/models"
 import {v4 as uuidv4} from 'uuid';
 import bcrypt from 'bcrypt'
-import {IShareInfoReq, IShareInfoRes, ISharelinkAddReq, IShareLinkAddRes} from "./types/types";
+import {
+    IGetShareReq,
+    IGetShareRes,
+    IShareInfoReq,
+    IShareInfoRes,
+    ISharelinkAddReq,
+    IShareLinkAddRes
+} from "./types/types";
 
 const ApiError = require('../../error/ApiError')
 import jwt from "jsonwebtoken";
@@ -80,12 +87,12 @@ class SharelinkController {
         return next(ApiError.badRequest('Ссылка не найдена'))
     }
 
-    async getShare(req: Request<any>, res: Response<any>, next: NextFunction) {
+    async getShare(req: Request<IGetShareReq>, res: Response<IGetShareRes>, next: NextFunction) {
         const {
             uuid,
             token,
             pincode,
-        } = req.body
+        } = req.body as IGetShareReq
 
         const findLink = await ShareLink.findOne({where: {uuid}})
         let currentToken = token
@@ -125,7 +132,7 @@ class SharelinkController {
             }
 
 
-            if (findLink.pincode) {
+            if (currentToken) {
                 try {
                     jwt.verify(currentToken, findLink.pincode)
                 } catch (e) {

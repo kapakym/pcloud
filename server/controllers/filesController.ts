@@ -5,10 +5,10 @@ import FileUtils from "../utils/fileUtils";
 
 const ApiError = require('../error/ApiError')
 
-interface ResponseGetFiles {
+export interface ResponseGetFiles {
     path: string,
     folders: string[]
-    files: Array<{ name: string, type: string }>
+    files: Array<{ name: string, type: string, size:number }>
 }
 
 class FilesController {

@@ -1,3 +1,5 @@
+import {ResponseGetFiles} from "../../filesController";
+
 export interface ISharelinkAddReq {
     path: string;
     type: string;
@@ -18,4 +20,17 @@ export interface IShareInfoReq {
 
 export interface IShareInfoRes extends Omit<ISharelinkAddReq, 'pincode'> {
     is_pincode: boolean
+}
+
+export interface IGetShareReq {
+    uuid: string,
+    token?: string,
+    pincode?: string
+    path?: string
+}
+
+export interface IGetShareRes extends Partial<ResponseGetFiles> {
+    message?: string
+    detail?: string;
+    token?: string
 }
