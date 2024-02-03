@@ -18,6 +18,7 @@ exports.ShareLink = sequelize.define('sharelink', {
     name: { type: DataTypes.STRING },
     timelive: { type: DataTypes.DATE },
     pincode: { type: DataTypes.STRING },
+    iduser: { type: DataTypes.INTEGER, undefined: false }
 });
 module.exports = {
     User: exports.User,

@@ -27,6 +27,9 @@ class SharelinkController {
             name
         } = req.body as ISharelinkAddReq
 
+        //@ts-ignore
+        const userId = req?.user.id
+
         const resPath = FileUtils.buildPath(req.headers?.homefolder, req.body.path)
         const findFile = await ShareLink.findOne({where: {name}})
         const uuid = uuidv4();
@@ -37,7 +40,8 @@ class SharelinkController {
                 pincode: pincode ? await bcrypt.hash(pincode, 5) : "",
                 timelive: date_to ? date_to : undefined,
                 uuid: uuid,
-                name
+                name,
+                iduser: userId
             })
 
             res.status(200).json({
@@ -54,7 +58,8 @@ class SharelinkController {
             pincode: pincode ? await bcrypt.hash(pincode, 5) : "",
             timelive: date_to ? date_to : undefined,
             uuid: uuid,
-            name
+            name,
+            iduser: userId
         } as IShareLink)
 
         if (shareLink) {
@@ -194,7 +199,7 @@ class SharelinkController {
         const findLink = await ShareLink.findOne({where: {uuid: req.body.uuid}})
 
         try {
-            if (findLink.type==="FILE") {
+            if (findLink.type === "FILE") {
                 if (fs.existsSync(findLink.path + findLink.name)) {
                     return res.download(findLink.path + findLink.name, findLink.name)
                 }
