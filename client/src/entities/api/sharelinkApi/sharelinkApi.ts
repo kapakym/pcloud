@@ -15,7 +15,7 @@ const SharelinkApi = {
         }
     }),
 
-    getInfoShareLink: (data: { uuid: string }) => useRequest<IShareLinkInfoRes, { uuid: string }>({
+    getInfoShareLink: (data?: { uuid: string }) => useRequest<IShareLinkInfoRes, { uuid: string }>({
         url: '/api/sharelink/info',
         method: 'post',
         options: {

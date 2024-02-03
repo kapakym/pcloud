@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {useAddSharelink} from "../../../../entities/api/sharelinkApi/sharelinkApi";
+import {useAddSharelink, useInfoSharelink} from "../../../../entities/api/sharelinkApi/sharelinkApi";
 import Modal from "../../../../shared/ui/Modal";
 import Button from "../../../../shared/ui/Button";
 import Input from "../../../../shared/ui/Input";
@@ -30,6 +30,10 @@ export const AddSharelinkModal = (
     const [dateTo, setDateTo] = useState("")
     const [link, setLink] = useState("")
     const [data, {requestFn}] = useAddSharelink();
+
+    useEffect(() => {
+
+    }, []);
 
     useEffect(() => {
         if (data?.uuid) {
@@ -63,7 +67,7 @@ export const AddSharelinkModal = (
                onClose={onClose}
                buttons={(
                    <>
-                       <Button onClick={handleCreate}>{!link  ? 'Создать' : 'Обновить'}</Button>
+                       <Button onClick={handleCreate}>{!link ? 'Создать' : 'Обновить'}</Button>
                        <Button onClick={onClose}>Закрыть</Button>
                    </>
                )}
@@ -83,9 +87,10 @@ export const AddSharelinkModal = (
                 <p>Ссылка для доступа:</p>
                 {link &&
                     <div className='flex justify-between'>
-                        <a className='hover:underline' href={`${location.protocol + '//' + location.host}/viewshare/${link}`}>{shareObject.name}</a>
+                        <a className='hover:underline'
+                           href={`${location.protocol + '//' + location.host}/viewshare/${link}`}>{shareObject.name}</a>
                         <ButtonToolBar onClick={handleCopyClipboard}>
-                            <ClipboardDocumentIcon className={'w-8 h-8'}  />
+                            <ClipboardDocumentIcon className={'w-8 h-8'}/>
                         </ButtonToolBar>
                     </div>
                 }
