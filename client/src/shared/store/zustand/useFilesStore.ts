@@ -22,12 +22,22 @@ interface DownloadFiles {
     isLoading?: boolean
 }
 
+interface IDownloadFileAction {
+    file: IFile;
+    path: string;
+    uuid: string;
+    mode?: string;
+    token?: string;
+    uuidShare?: string;
+    source?: string
+}
+
 interface FilesState {
     files: Array<UploadFiles>,
     isVisible: boolean
     isAllUploaded: boolean
     downloadFiles: DownloadFiles[],
-    downloadFileAction: (file: IFile, path: string, uuid: string, mode?: string) => Promise<void>
+    downloadFileAction: (options: IDownloadFileAction) => Promise<void>
     uploadFileActions: (file: File, path: string, uuid: string) => void,
     removeUploadFile: (uuid: string) => void,
     show: () => void,
@@ -120,12 +130,12 @@ export const useFilesStore = create<FilesState>()(immer((set) => ({
         }
     },
 
-    downloadFileAction: async (file: IFile, path: string, uuid: string, mode: string = 'disk') => {
+    downloadFileAction: async (options) => {
         set(state => {
             state.downloadFiles.push({
-                name: file.name,
-                id: uuid,
-                path,
+                name: options.file.name,
+                id: options.uuid,
+                path: options.path,
                 isLoading: true
             })
         })
@@ -133,30 +143,34 @@ export const useFilesStore = create<FilesState>()(immer((set) => ({
         try {
             const response = await requiestBuilder<Blob, {
                 files: IFile[],
-                path: string
+                path: string,
+                token?: string
+                uuid?: string
             }>({
-                url: '/api/files/downloadfile',
+                url: options.source === 'share' ? '/api/sharelink/downloadfile' : '/api/files/downloadfile',
                 method: 'post',
                 responseType: 'blob',
                 options: {
                     data: {
-                        files: [file],
-                        path
+                        files: [options.file],
+                        path:options.path,
+                        token: options.token,
+                        uuid: options.uuidShare
                     }
                 }
             })()
 
-            if (response instanceof Blob && mode === 'disk') {
+            if (response instanceof Blob && options.mode === 'disk') {
                 const url = window.URL.createObjectURL(new Blob([response]));
                 const link = document.createElement('a');
                 link.href = url;
-                link.setAttribute('download', file.name);
+                link.setAttribute('download', options.file.name);
                 document.body.appendChild(link);
                 link.click();
                 link.remove()
             }
 
-            if (response instanceof Blob && mode === 'preview') {
+            if (response instanceof Blob && options.mode === 'preview') {
                 set(state => {
                         state.previewFile.src = window.URL.createObjectURL(new Blob([response], {type: response.type}))
                         state.previewFile.type = response.type
@@ -164,7 +178,7 @@ export const useFilesStore = create<FilesState>()(immer((set) => ({
                 )
             }
             set(state => {
-                state.downloadFiles = state.downloadFiles.filter(item => item.id !== uuid)
+                state.downloadFiles = state.downloadFiles.filter(item => item.id !== options.uuid)
             })
         } catch (e) {
             console.log(e)

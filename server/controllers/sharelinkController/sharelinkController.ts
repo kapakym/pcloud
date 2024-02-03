@@ -95,8 +95,8 @@ class SharelinkController {
 
         if (findLink) {
 
-            if (findLink.date_to && new Date() > findLink.date_to) {
-                return next(ApiError.errorRequest('Ссылка не найдена'));
+            if (findLink.timelive && new Date() > findLink.timelive) {
+                return next(ApiError.errorRequest('Ссылка больше недоступна'));
             }
 
             if (pincode) {
@@ -146,8 +146,7 @@ class SharelinkController {
             }
 
             const currPath = req.body?.path ? req.body?.path.replace('.', '') : ''
-            const resPath = findLink.path  + findLink.name + currPath
-            console.log(resPath)
+            const resPath = findLink.path + findLink.name + currPath
             try {
 
                 const items = fs.readdirSync(resPath, {withFileTypes: true})
@@ -176,6 +175,47 @@ class SharelinkController {
 
         return next(ApiError.badRequest('Ссылка не найдена'))
 
+    }
+
+    async downloadFile(req: Request<{
+        file: { name: string, type: string },
+        uuid: string,
+        path: string,
+        token: string
+    }>, res: Response, next: NextFunction) {
+
+        const findLink = await ShareLink.findOne({where: {uuid: req.body.uuid}})
+
+        try {
+            if (findLink.type==="FILE") {
+                if (fs.existsSync(findLink.path + findLink.name)) {
+                    return res.download(findLink.path + findLink.name, findLink.name)
+                }
+            }
+        } catch (e) {
+            return res.status(400).json({message: 'Ошибка загрузки файла'})
+        }
+
+
+        const currPath = req.body?.path ? req.body?.path.replace('.', '') : ''
+        const resPath = findLink.path + findLink.name + currPath + '/'
+        const downloadFiles = req.body.files as { name: string, type: string }[];
+        if (!downloadFiles.length || !resPath) {
+            return res.status(400).json({
+                message: 'Ошибка загрузки файла'
+            })
+        }
+
+        try {
+            downloadFiles.forEach(file => {
+                if (fs.existsSync(resPath + file.name)) {
+                    return res.download(resPath + file.name, file.name)
+                }
+            })
+        } catch (e) {
+            console.log(e)
+            return res.status(400).json({message: 'Ошибка загрузки файла'})
+        }
     }
 }
 

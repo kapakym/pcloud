@@ -103,12 +103,24 @@ const FileList = () => {
         requestFn({path});
     }
 
-    const handleDownloadFiles = (files: IFile[]) => {
-        downLoadFile(files[0], path, uuidv4(), 'disk')
+    const handleDownloadFiles = async (files: IFile[]) => {
+        await downLoadFile({
+            file: files[0],
+            path,
+            uuid:uuidv4(),
+            mode:'disk',
+            source:'default'
+        })
     }
 
     const previewHandler = async (files: IFile[]) => {
-        await downLoadFile(files[0], path, uuidv4(), 'preview')
+        await downLoadFile({
+            file: files[0],
+            path,
+            uuid:uuidv4(),
+            mode:'preview',
+            source:'default'
+        })
         setVisiblePreviewModal(true)
     }
 

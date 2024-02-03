@@ -2,9 +2,12 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {useParams} from "react-router";
 import {useSharelink} from "../../entities/api/sharelinkApi/sharelinkApi";
 import {PinCodeModal} from "../../widgets/modals/PinCodeModal/PinCodeModal";
-import {FileTypes} from "../../shared/types/FIles/fileTypes";
+import {FileTypes, IFile} from "../../shared/types/FIles/fileTypes";
 import Loader from "../../shared/loader";
 import FileItemShare from "../../shared/ui/FileItemShare";
+import {v4 as uuidv4} from "uuid";
+import {useFilesStore} from "../../shared/store/zustand/useFilesStore";
+import {PreviewFile} from "../../widgets/PreviewFile/ui/PreviewFile";
 
 const ViewSharePage = () => {
     const {uuid} = useParams()
@@ -15,6 +18,9 @@ const ViewSharePage = () => {
     const [token, setToken] = useState("")
     const [filter, setFilter] = useState("")
     const [path, setPath] = useState("")
+    const downloadFiles = useFilesStore(state => state.downloadFiles)
+    const downLoadFile = useFilesStore(state => state.downloadFileAction)
+    const [visiblePreviewModal, setVisiblePreviewModal] = useState(false)
 
     useEffect(() => {
         if (errorRes) {
@@ -55,11 +61,23 @@ const ViewSharePage = () => {
         }
     }, [path]);
 
+    const previewHandler = async (files: IFile[]) => {
+        await downLoadFile({
+            file: files[0],
+            path,
+            uuid: uuidv4(),
+            mode: 'preview',
+            source: 'share',
+            token,
+            uuidShare: uuid
+        })
+        setVisiblePreviewModal(true)
+    }
     const handleClose = () => {
         setVisiblePinCodeModal(false)
     }
 
-    const handlePincode = (code:string) => {
+    const handlePincode = (code: string) => {
         if (uuid) {
             requestFn({uuid, pincode: code})
         }
@@ -91,6 +109,18 @@ const ViewSharePage = () => {
 
     const changePath = (folder: string) => {
         setPath(prevState => prevState + '/' + folder)
+    }
+
+    const handleDownloadFiles = async (files: IFile[]) => {
+        await downLoadFile({
+            file: files[0],
+            path,
+            uuid: uuidv4(),
+            mode: 'disk',
+            source: 'share',
+            token,
+            uuidShare: uuid
+        })
     }
 
     if (textError) {
@@ -126,12 +156,12 @@ const ViewSharePage = () => {
                     {(data && !!data.files.length) &&
                         getMemoFilesList.map(item => (
                             <FileItemShare name={item.name}
-                                      fileType={FileTypes.FILE}
-                                      key={item.name}
-                                      size={item.size}
-                                      // onDownload={handleDownloadFiles}
-                                      // isDownload={!!downloadFiles.find(findItem => findItem?.name === item.name)}
-                                      // onPreview={previewHandler}
+                                           fileType={FileTypes.FILE}
+                                           key={item.name}
+                                           size={item.size}
+                                           onDownload={handleDownloadFiles}
+                                           isDownload={!!downloadFiles.find(findItem => findItem?.name === item.name)}
+                                           onPreview={previewHandler}
                             />
                         ))
                     }
@@ -143,6 +173,12 @@ const ViewSharePage = () => {
                 onPincode={handlePincode}
                 errorLabel={labelError}
             />
+            {visiblePreviewModal &&
+                <PreviewFile
+                    isVisible={visiblePreviewModal}
+                    onClose={() => setVisiblePreviewModal(false)}
+                />
+            }
         </div>
     );
 };
