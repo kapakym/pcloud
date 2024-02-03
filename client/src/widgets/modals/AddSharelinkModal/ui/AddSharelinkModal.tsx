@@ -5,7 +5,8 @@ import Button from "../../../../shared/ui/Button";
 import Input from "../../../../shared/ui/Input";
 import {IShareObject} from "../types/types";
 import {DatePicker} from "../../../../shared/ui/DatePicker/ui/DatePicker";
-import {ClipboardDocumentIcon} from "@heroicons/react/24/outline";
+import {ClipboardDocumentIcon, FolderPlusIcon} from "@heroicons/react/24/outline";
+import ButtonToolBar from "../../../../shared/ui/ButtonToolBar/ui/ButtonToolBar";
 
 interface IShareObjectPath extends IShareObject {
     path: string;
@@ -32,6 +33,7 @@ export const AddSharelinkModal = (
 
     useEffect(() => {
         if (data?.uuid) {
+            console.log(data)
             setLink(data.uuid)
         }
     }, [data]);
@@ -47,6 +49,10 @@ export const AddSharelinkModal = (
             is_pincode: !!pincode,
             date_to: dateTo
         })
+    }
+
+    const handleCopyClipboard = () => {
+        navigator.clipboard.writeText(`${location.protocol + '//' + location.host}/viewshare/${link}`);
     }
 
     return (
@@ -77,8 +83,10 @@ export const AddSharelinkModal = (
                 <p>Ссылка для доступа:</p>
                 {link &&
                     <div className='flex justify-between'>
-                        <a className='hover:underline' href={`${location.protocol + '//' + location.host}/viewshare?uuid=${link}`}>{shareObject.name}</a>
-                        <ClipboardDocumentIcon className={'w-6 h-6'} />
+                        <a className='hover:underline' href={`${location.protocol + '//' + location.host}/viewshare/${link}`}>{shareObject.name}</a>
+                        <ButtonToolBar onClick={handleCopyClipboard}>
+                            <ClipboardDocumentIcon className={'w-8 h-8'}  />
+                        </ButtonToolBar>
                     </div>
                 }
             </div>

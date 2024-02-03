@@ -20,7 +20,7 @@ export const User = sequelize.define('user', {
 })
 
 export const ShareLink = sequelize.define('sharelink', {
-    uuid: {type: DataTypes.STRING, primaryKey: true, unique: true, undefined: false},
+    uuid: {type: DataTypes.STRING, unique: true, undefined: false},
     type: {type: DataTypes.STRING, defaultValue: 'file'},
     path: {type:DataTypes.STRING},
     name: {type:DataTypes.STRING},

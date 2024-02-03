@@ -12,7 +12,7 @@ exports.User = sequelize.define('user', {
     homeFolder: { type: DataTypes.STRING, unique: true }
 });
 exports.ShareLink = sequelize.define('sharelink', {
-    uuid: { type: DataTypes.STRING, primaryKey: true, unique: true, undefined: false },
+    uuid: { type: DataTypes.STRING, unique: true, undefined: false },
     type: { type: DataTypes.STRING, defaultValue: 'file' },
     path: { type: DataTypes.STRING },
     name: { type: DataTypes.STRING },

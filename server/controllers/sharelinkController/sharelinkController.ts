@@ -29,7 +29,7 @@ class SharelinkController {
                 type,
                 pincode: pincode ? await bcrypt.hash(pincode, 5) : "",
                 timelive: date_to ? date_to : undefined,
-                uuid: uuidv4(),
+                uuid: uuid,
                 name
             })
 
@@ -46,7 +46,7 @@ class SharelinkController {
             type,
             pincode: pincode ? await bcrypt.hash(pincode, 5) : "",
             timelive: date_to ? date_to : undefined,
-            uuid: uuidv4(),
+            uuid: uuid,
             name
         } as IShareLink)
 
