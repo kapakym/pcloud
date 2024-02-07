@@ -109,6 +109,17 @@ class UserController {
         }
 
     }
+
+    async getUserList(req: Request<any>, res: Response<any>) {
+        const users = await User.findAll()
+        const usersMap = users.map((user: typeof User) => ({
+            id: user.dataValues.id,
+            email: user.dataValues.email,
+            approve: user.dataValues.approve,
+            home_folder: user.dataValues.homeFolder
+        }));
+        res.status(200).json(usersMap)
+    }
 }
 
 module.exports = new UserController()

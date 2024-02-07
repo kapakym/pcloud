@@ -1,4 +1,5 @@
 import useRequest from "../../../shared/hooks/useRequest";
+import {IGetUsersRes} from "./types/types";
 
 interface LoginRequest {
     email: string,
@@ -23,10 +24,15 @@ const filesApi = {
             isNotRequest: true,
             data
         }
+    }),
+    GetUsers: () => useRequest<IGetUsersRes[], unknown>({
+        url:'/api/user/getusers',
+        method: 'get',
     })
 }
 
 export const {
     LoginUser: useLoginUser,
-    RegistrationUser: useRegistrationUser
+    RegistrationUser: useRegistrationUser,
+    GetUsers: useGetUsers
 } = filesApi

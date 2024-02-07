@@ -16,7 +16,7 @@ module.exports = async function (req: RequestToken, res: Response, next: NextFun
     try {
         const token = req.body.token
         console.log(req.body)
-        if (!token || !req.body.uuid) {
+        if (!token || req.body.uuid) {
             return res.status(401).json({message: 'Пользователь не авторизован'})
         }
 

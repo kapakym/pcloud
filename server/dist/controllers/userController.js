@@ -101,5 +101,17 @@ class UserController {
             }
         });
     }
+    getUserList(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const users = yield User.findAll();
+            const usersMap = users.map((user) => ({
+                id: user.dataValues.id,
+                email: user.dataValues.email,
+                approve: user.dataValues.approve,
+                home_folder: user.dataValues.homeFolder
+            }));
+            res.status(200).json(usersMap);
+        });
+    }
 }
 module.exports = new UserController();
