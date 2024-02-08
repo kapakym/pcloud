@@ -3,6 +3,7 @@ import Header from "../widgets/Header/ui/Header";
 import {Route, Routes} from "react-router-dom";
 import {mainRoutes} from "./routes/routes";
 import UploadWindow from "../widgets/UploadWindow";
+import {NotificationBuilder} from "../widgets/NotificationBuilder/ui/NotificationBuilder";
 
 function App() {
     return (
@@ -16,14 +17,16 @@ function App() {
                         <Routes>
                             {!!mainRoutes?.length &&
                                 mainRoutes.map(item => (
-                                    <Route path={item.path} key={item.path} element={item.element} />
+                                    <Route path={item.path} key={item.path} element={item.element}/>
                                 ))
                             }
                         </Routes>
+
                     </div>
                 </div>
                 <UploadWindow/>
             </div>
+            <NotificationBuilder/>
         </div>
     )
         ;

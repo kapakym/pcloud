@@ -62,7 +62,7 @@ export const AddSharelinkModal = (
     return (
         <Modal title={`Доступ к ${shareObject.name}`}
                height='auto'
-               width='40%'
+               width='90%'
                isVisible={isVisible}
                onClose={onClose}
                buttons={(

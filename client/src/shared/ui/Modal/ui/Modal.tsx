@@ -25,7 +25,7 @@ const Modal = ({
             {isVisible &&
                 <>
                     <div
-                        className='fixed h-[100dvh] w-[100dvw] top-0 left-0 opacity-50 backdrop-blur-xl bg-white/30 border-[1px] border-solid border-red-500 z-10'
+                        className='fixed h-[100dvh] w-[100dvw] top-[0px] left-0 opacity-50 backdrop-blur-xl bg-white/30 z-10'
                         onClick={onClose}
                     ></div>
                     <div

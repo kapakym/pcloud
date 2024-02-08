@@ -6,9 +6,11 @@ import Input from "../../shared/ui/Input";
 export const UsersPage = () => {
     const [data] = useGetUsers()
     const [filter, setFilter] = useState("")
+
     const handleChangeFilter = (e: React.FormEvent<HTMLInputElement>) => {
         setFilter(e.currentTarget.value)
     }
+
     return (
         <div className='w-auto h-full overflow-auto'>
             <div className='my-2 p-2'>
@@ -21,9 +23,11 @@ export const UsersPage = () => {
                         approve={item.approve}
                         homeFolder={item.home_folder}
                         id={item.id}
+                        key={item.id}
                     />
                 ))
             }
+
         </div>
     );
 };
