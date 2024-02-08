@@ -1,5 +1,5 @@
 import useRequest from "../../../shared/hooks/useRequest";
-import {IGetUsersRes} from "./types/types";
+import {IGetUsersRes, ISetApprove} from "./types/types";
 
 interface LoginRequest {
     email: string,
@@ -26,13 +26,23 @@ const filesApi = {
         }
     }),
     GetUsers: () => useRequest<IGetUsersRes[], unknown>({
-        url:'/api/user/getusers',
+        url: '/api/user/getusers',
         method: 'get',
+    }),
+
+    SetApprove: (data?: ISetApprove) => useRequest<{ message: string }, ISetApprove>({
+        url: '/api/user/approve',
+        method: 'post',
+        options: {
+            data,
+            isNotRequest: true
+        }
     })
 }
 
 export const {
     LoginUser: useLoginUser,
     RegistrationUser: useRegistrationUser,
-    GetUsers: useGetUsers
+    GetUsers: useGetUsers,
+    SetApprove: useSetApprove
 } = filesApi

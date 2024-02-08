@@ -1,4 +1,4 @@
-import {ResponseGetFiles} from "../../filesController";
+import {ResponseGetFiles} from "../../fileController/filesController";
 
 export interface ISharelinkAddReq {
     path: string;

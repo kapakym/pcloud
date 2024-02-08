@@ -1,9 +1,9 @@
 import fs from "fs";
 import {NextFunction, Request, Response} from "express";
 import path from 'path'
-import FileUtils from "../utils/fileUtils";
+import FileUtils from "../../utils/fileUtils";
 
-const ApiError = require('../error/ApiError')
+const ApiError = require('../../error/ApiError')
 
 export interface ResponseGetFiles {
     path: string,

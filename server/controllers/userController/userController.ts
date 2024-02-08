@@ -1,27 +1,14 @@
 import {NextFunction, Request, Response} from "express";
-import {RequestToken} from "../middleware/authMiddleware";
+import {RequestToken} from "../../middleware/authMiddleware";
 import {v4 as uuidv4} from 'uuid';
 import fs from "fs";
+import {IGetUserListRes, RequestUser, ResponseLoginUser, ResponseRegisterUser} from "./types/types";
 
-const ApiError = require('../error/ApiError')
-const {User} = require('../models/models')
+const ApiError = require('../../error/ApiError')
+const {User} = require('../../models/models')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
-interface ResponseRegisterUser {
-    message: string
-}
-
-interface ResponseLoginUser {
-    token: string
-    role: string
-    folder: string
-}
-
-interface RequestUser {
-    email: string;
-    password: string;
-}
 
 const generateJwt = (id: number, role: string, email: string) => {
     return jwt.sign({
@@ -110,15 +97,36 @@ class UserController {
 
     }
 
-    async getUserList(req: Request<any>, res: Response<any>) {
+    async getUserList(req: Request<unknown>, res: Response<IGetUserListRes[]>) {
         const users = await User.findAll()
-        const usersMap = users.map((user: typeof User) => ({
+        const usersMap: IGetUserListRes[] = users.map((user: typeof User) => ({
             id: user.dataValues.id,
             email: user.dataValues.email,
             approve: user.dataValues.approve,
             home_folder: user.dataValues.homeFolder
         }));
         res.status(200).json(usersMap)
+    }
+
+    async setApprove(req: Request<any>, res: Response<any>) {
+        const {id, approve} = req.body
+        console.log(approve)
+        if (String(id)) {
+            try {
+                const user = await User.findOne({where: {id}})
+                if (user) {
+                    if (user.role === 'admin') {
+                        return res.status(400).json({message: 'Данного пользователя нельзя деактивировать'})
+                    }
+                    await user.update({approve})
+                    return res.status(200).json({message: "OK"})
+                }
+                res.status(400).json({message: 'Ошибка'})
+            } catch (e) {
+                console.log(e)
+                res.status(400).json({message: 'Ошибка'})
+            }
+        }
     }
 }
 

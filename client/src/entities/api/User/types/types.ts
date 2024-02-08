@@ -4,3 +4,8 @@ export interface IGetUsersRes {
     "approve": boolean,
     "home_folder": string
 }
+
+export interface ISetApprove {
+    id: number
+    approve: boolean
+}

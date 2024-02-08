@@ -1,6 +1,6 @@
 const Router = require('express');
 const router = new Router();
-const filesController = require('../controllers/filesController')
+const filesController = require('../controllers/fileController/filesController')
 const authMiddleware = require('../middleware/authMiddleware')
 
 
