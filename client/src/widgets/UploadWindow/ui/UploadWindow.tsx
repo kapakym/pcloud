@@ -1,7 +1,7 @@
 import React from 'react';
 import ModalRightDown from "../../../shared/ui/ModalRightDown/ui/ModalRightDown";
 import FileUploadItem from "../../../shared/ui/FileUploadItem";
-import {useFilesStore} from "../../../shared/store/zustand/useFilesStore";
+import {useFilesStore} from "../../../shared/store/useFileStore/useFilesStore";
 
 const UploadWindow = () => {
     // const { isVisible} = useAppSelector(state => state.filesReducer)

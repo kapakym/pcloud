@@ -1,7 +1,7 @@
 import React, {FC} from 'react';
 import Modal from "../../../shared/ui/Modal";
 import Button from "../../../shared/ui/Button";
-import {useFilesStore} from "../../../shared/store/zustand/useFilesStore";
+import {useFilesStore} from "../../../shared/store/useFileStore/useFilesStore";
 
 export interface PreviewFileProps {
     isVisible: boolean;

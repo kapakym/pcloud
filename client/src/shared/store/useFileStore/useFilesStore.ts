@@ -3,50 +3,9 @@ import {immer} from "zustand/middleware/immer";
 import {IFile} from "../../types/FIles/fileTypes";
 import requiestBuilder from "../requestBuilder";
 import axios, {AxiosError} from "axios";
+import {FilesState} from "./types/types";
 
-interface UploadFiles {
-    file: string,
-    path: string,
-    id: string,
-    progress: number
-    error?: {
-        message: string
-    },
-    isLoading?: boolean
-}
 
-interface DownloadFiles {
-    name: string,
-    id: string,
-    path: string,
-    isLoading?: boolean
-}
-
-interface IDownloadFileAction {
-    file: IFile;
-    path: string;
-    uuid: string;
-    mode?: string;
-    token?: string;
-    uuidShare?: string;
-    source?: string
-}
-
-interface FilesState {
-    files: Array<UploadFiles>,
-    isVisible: boolean
-    isAllUploaded: boolean
-    downloadFiles: DownloadFiles[],
-    downloadFileAction: (options: IDownloadFileAction) => Promise<void>
-    uploadFileActions: (file: File, path: string, uuid: string) => void,
-    removeUploadFile: (uuid: string) => void,
-    show: () => void,
-    hide: () => void,
-    previewFile: {
-        src: string,
-        type: string
-    }
-}
 
 export const useFilesStore = create<FilesState>()(immer((set) => ({
     files: [],

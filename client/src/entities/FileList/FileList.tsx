@@ -11,7 +11,7 @@ import Separator from "../../shared/ui/Separator";
 import ButtonToolBar from "../../shared/ui/ButtonToolBar/ui/ButtonToolBar";
 import NewFolderModal from "../../widgets/modals/NewFolderModal/NewFolderModal";
 import DeleteFilesModal from "../../widgets/modals/DeleteFilessModal/DeleteFilesModal";
-import {useFilesStore} from "../../shared/store/zustand/useFilesStore";
+import {useFilesStore} from "../../shared/store/useFileStore/useFilesStore";
 import {PreviewFile} from "../../widgets/PreviewFile/ui/PreviewFile";
 import {AddSharelinkModal} from "../../widgets/modals/AddSharelinkModal/ui/AddSharelinkModal";
 import {IShareObject} from "../../widgets/modals/AddSharelinkModal/types/types";

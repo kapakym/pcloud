@@ -6,7 +6,7 @@ import {FileTypes, IFile} from "../../shared/types/FIles/fileTypes";
 import Loader from "../../shared/loader";
 import FileItemShare from "../../shared/ui/FileItemShare";
 import {v4 as uuidv4} from "uuid";
-import {useFilesStore} from "../../shared/store/zustand/useFilesStore";
+import {useFilesStore} from "../../shared/store/useFileStore/useFilesStore";
 import {PreviewFile} from "../../widgets/PreviewFile/ui/PreviewFile";
 
 const ViewSharePage = () => {
