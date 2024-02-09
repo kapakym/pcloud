@@ -34,3 +34,11 @@ export interface IGetShareRes extends Partial<ResponseGetFiles> {
     detail?: string;
     token?: string
 }
+
+export interface IGetSharedLinksRes {
+    uuid: string,
+    type: string,
+    path: string,
+    name: string,
+    timelive: string,
+}

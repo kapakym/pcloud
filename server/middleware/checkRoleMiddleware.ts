@@ -17,12 +17,11 @@ module.exports = function (role: string[]) {
             if (!process.env.SECRET_KEY) {
                 return res.status(500).json({message: 'Ошибка сервера'})
             }
-            const decode = jwt.verify(token, process.env.SECRET_KEY)
+            const decode: any = jwt.verify(token, process.env.SECRET_KEY)
             if (typeof decode === 'object' && !role.includes(decode.role)) {
                 return res.status(403).json({message: 'Нет доступа'})
             }
             req.user = decode;
-            console.log('ok')
             next()
         } catch (error) {
             res.status(401).json({message: 'Пользователь не авторизован'})

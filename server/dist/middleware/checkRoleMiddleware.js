@@ -23,7 +23,6 @@ module.exports = function (role) {
                 return res.status(403).json({ message: 'Нет доступа' });
             }
             req.user = decode;
-            console.log('ok');
             next();
         }
         catch (error) {

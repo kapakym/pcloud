@@ -21,3 +21,11 @@ export interface IShareReq {
     pincode?: string
     path?: string
 }
+
+export interface IGetSharedLinksRes {
+    uuid: string,
+    type: string,
+    path: string,
+    name: string,
+    timelive: string,
+}

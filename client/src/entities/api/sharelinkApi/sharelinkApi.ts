@@ -1,5 +1,5 @@
 import useRequest from "../../../shared/hooks/useRequest";
-import {ISharelinkAddReq, IShareLinkAddRes, IShareLinkInfoRes, IShareReq} from "./types/types";
+import {IGetSharedLinksRes, ISharelinkAddReq, IShareLinkAddRes, IShareLinkInfoRes, IShareReq} from "./types/types";
 import {ResponseGetFilesShare} from "../filesApi/types/filesTypes";
 
 const SharelinkApi = {
@@ -31,11 +31,20 @@ const SharelinkApi = {
             data,
             isNotRequest: true
         }
+    }),
+
+    getShareLinksLIst: () => useRequest<IGetSharedLinksRes[], unknown>({
+        url: '/api/sharelink/sharedlinkslist',
+        method: 'get',
+        options: {
+            // isNotRequest: true
+        }
     })
 }
 
 export const {
     AddSharelink: useAddSharelink,
     getInfoShareLink: useInfoSharelink,
-    getShare: useSharelink
+    getShare: useSharelink,
+    getShareLinksLIst: useSharedLinksList
 } = SharelinkApi

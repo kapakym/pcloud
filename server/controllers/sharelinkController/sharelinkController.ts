@@ -5,6 +5,7 @@ import {IShareLink, ShareLink} from "../../models/models"
 import {v4 as uuidv4} from 'uuid';
 import bcrypt from 'bcrypt'
 import {
+    IGetSharedLinksRes,
     IGetShareReq,
     IGetShareRes,
     IShareInfoReq,
@@ -16,6 +17,8 @@ import {
 const ApiError = require('../../error/ApiError')
 import jwt from "jsonwebtoken";
 import path from "path";
+import {DataTypes} from "sequelize";
+import {RequestToken} from "../../middleware/authMiddleware";
 
 
 class SharelinkController {
@@ -227,6 +230,29 @@ class SharelinkController {
         } catch (e) {
             console.log(e)
             return res.status(400).json({message: 'Ошибка загрузки файла'})
+        }
+    }
+
+    async getSharedLinks(req: RequestToken, res: Response<IGetSharedLinksRes | {
+        message: string
+    }>, next: NextFunction) {
+
+        console.log(req.user)
+        if (String(req.user?.id)) {
+            const sharedLinks = await ShareLink.findAll({where: {iduser: req.user?.id}})
+            if (sharedLinks) {
+                const sharedLinksMap = sharedLinks.map((link: typeof ShareLink) => ({
+                    uuid: link.dataValues.uuid,
+                    type: link.dataValues.type,
+                    path: link.dataValues.path,
+                    name: link.dataValues.name,
+                    timelive: link.dataValues.timelive,
+                }))
+                console.log(sharedLinksMap)
+                res.status(200).json(sharedLinksMap)
+            }
+        } else {
+            res.status(400).json({message: 'Укажите ID пользователя'})
         }
     }
 }

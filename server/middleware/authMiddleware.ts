@@ -4,7 +4,11 @@ import {JwtPayload} from "jsonwebtoken";
 const jwt = require('jsonwebtoken')
 
 export interface RequestToken extends Request {
-    user: JwtPayload | string
+    user: {
+        id: number,
+        role: string,
+        email: string
+    }
 }
 
 module.exports = function (req: RequestToken, res: Response, next: NextFunction) {
