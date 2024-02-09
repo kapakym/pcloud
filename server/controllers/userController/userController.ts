@@ -36,7 +36,7 @@ class UserController {
         }
         const hashPassword = await bcrypt.hash(password, 5);
         const uuid4Folder = uuidv4()
-        const user = await User.create({
+        await User.create({
             email,
             password: hashPassword,
             role: count ? 'user' : 'admin',
@@ -89,7 +89,7 @@ class UserController {
         })
     }
 
-    async check(req: RequestToken, res: Response<Omit<ResponseLoginUser, 'folder'>>, next: NextFunction) {
+    async check(req: RequestToken, res: Response<Omit<ResponseLoginUser, 'folder'>>) {
         if (typeof req.user === 'object') {
             const token = generateJwt(req.user.id, req.user.role, req.user.email)
             return res.json({token, role: req.user.role})
@@ -116,15 +116,15 @@ class UserController {
                 const user = await User.findOne({where: {id}})
                 if (user) {
                     if (user.role === 'admin') {
-                        return res.status(400).json({message: 'Данного пользователя нельзя деактивировать'})
+                        return res.status(400).json({message: 'This user cannot be disabled'})
                     }
                     await user.update({approve})
-                    return res.status(200).json({message: "OK"})
+                    return res.status(200).json({message: `User is ${approve ? 'enabled' : 'disabled'}`})
                 }
-                res.status(400).json({message: 'Ошибка'})
+                res.status(400).json({message: 'Error'})
             } catch (e) {
                 console.log(e)
-                res.status(400).json({message: 'Ошибка'})
+                res.status(500).json({message: 'Error server'})
             }
         }
     }
