@@ -12,6 +12,7 @@ export const NotificationBuilder =  () => {
                 <Notification
                     notice={item}
                     timeOut={2000}
+                    key={item.id}
                 />
             ))}
         </div>

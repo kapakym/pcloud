@@ -6,6 +6,7 @@ export enum NoticeType {
 export interface INotice {
     message: string
     type: NoticeType
+    id?: string
 }
 
 export interface NotificationsState {
