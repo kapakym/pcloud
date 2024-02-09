@@ -6,9 +6,12 @@ const authShareMiddleware = require('../middleware/authShareMiddleware')
 
 
 router.post('/add', authMiddleware, sharelinkController.addSharelink)
+router.post('/update', authMiddleware, sharelinkController.updateSharedLink)
+router.delete('/delete', authMiddleware, sharelinkController.deleteLink)
 router.post('/info', authMiddleware, sharelinkController.getInfoSharelink)
 router.post('/share', sharelinkController.getShare)
 router.post('/downloadfile', authShareMiddleware, sharelinkController.downloadFile)
 router.get('/sharedlinkslist', authMiddleware, sharelinkController.getSharedLinks)
+
 module.exports = router;
 export {}

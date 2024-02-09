@@ -11,14 +11,14 @@ import {
     IShareInfoReq,
     IShareInfoRes,
     ISharelinkAddReq,
-    IShareLinkAddRes
+    IShareLinkAddRes,
+    IUpdateSharedLink
 } from "./types/types";
-
-const ApiError = require('../../error/ApiError')
 import jwt from "jsonwebtoken";
 import path from "path";
-import {DataTypes} from "sequelize";
 import {RequestToken} from "../../middleware/authMiddleware";
+
+const ApiError = require('../../error/ApiError')
 
 
 class SharelinkController {
@@ -36,6 +36,7 @@ class SharelinkController {
         const resPath = FileUtils.buildPath(req.headers?.homefolder, req.body.path)
         const findFile = await ShareLink.findOne({where: {name}})
         const uuid = uuidv4();
+        console.log(req.body)
         if (findFile) {
             await findFile.update(<IShareLink>{
                 path: resPath,
@@ -79,20 +80,76 @@ class SharelinkController {
             uuid
         } = req.body as IShareInfoReq
 
-        const findLink = await ShareLink.findOne({uuid})
-
+        const findLink = await ShareLink.findOne({
+            where: {
+                uuid
+            }
+        })
+        console.log(findLink)
         if (findLink) {
             res.status(200).json({
                 name: findLink.name,
                 type: findLink.type,
-                date_to: findLink.date_to,
+                date_to: findLink.timelive,
                 path: findLink.path,
                 is_pincode: !!findLink.pincode
-
             })
             return;
         }
         return next(ApiError.badRequest('Ссылка не найдена'))
+    }
+
+    async updateSharedLink(req: Request<IUpdateSharedLink>, res: Response<{ message: string }>) {
+        const {
+            uuid,
+            pincode,
+            date_to
+        } = req.body as IUpdateSharedLink
+
+        try {
+            const updateLink = await ShareLink.findOne({
+                where: {
+                    uuid
+                }
+            })
+
+            if (updateLink) {
+                await updateLink.update({
+                    pincode: pincode ? await bcrypt.hash(pincode, 5) : "",
+                    timelive: date_to ? date_to : undefined,
+                })
+                return res.status(200).json({message: "Link update"})
+            } else {
+                return res.status(404).json({message: 'Link not found'})
+            }
+        } catch (e) {
+            res.status(500).json({message: 'Server error'})
+        }
+    }
+
+    async deleteLink(req: Request<{ uuid: string }>, res: Response<{ message: string }>) {
+        const {
+            uuid,
+        } = req.body
+
+        try {
+            const link = await ShareLink.findOne({
+                where: {
+                    uuid
+                }
+            })
+
+            console.log(link)
+            if (link) {
+                await link.destroy()
+                return res.status(200).json({message: "Link delete"})
+            } else {
+                return res.status(404).json({message: 'Link not found'})
+            }
+        } catch (e) {
+            console.log(e)
+            res.status(500).json({message: 'Server error'})
+        }
     }
 
     async getShare(req: Request<IGetShareReq>, res: Response<IGetShareRes>, next: NextFunction) {
@@ -197,7 +254,7 @@ class SharelinkController {
         uuid: string,
         path: string,
         token: string
-    }>, res: Response, next: NextFunction) {
+    }>, res: Response) {
 
         const findLink = await ShareLink.findOne({where: {uuid: req.body.uuid}})
 
@@ -235,7 +292,7 @@ class SharelinkController {
 
     async getSharedLinks(req: RequestToken, res: Response<IGetSharedLinksRes | {
         message: string
-    }>, next: NextFunction) {
+    }>) {
 
         console.log(req.user)
         if (String(req.user?.id)) {

@@ -1,5 +1,12 @@
 import useRequest from "../../../shared/hooks/useRequest";
-import {IGetSharedLinksRes, ISharelinkAddReq, IShareLinkAddRes, IShareLinkInfoRes, IShareReq} from "./types/types";
+import {
+    IGetSharedLinksRes,
+    ISharelinkAddReq,
+    IShareLinkAddRes,
+    IShareLinkInfoRes,
+    IShareReq,
+    IUpdateDareLinkReq
+} from "./types/types";
 import {ResponseGetFilesShare} from "../filesApi/types/filesTypes";
 
 const SharelinkApi = {
@@ -33,18 +40,37 @@ const SharelinkApi = {
         }
     }),
 
-    getShareLinksLIst: () => useRequest<IGetSharedLinksRes[], unknown>({
+    getShareLinksList: () => useRequest<IGetSharedLinksRes[], unknown>({
         url: '/api/sharelink/sharedlinkslist',
         method: 'get',
+    }),
+
+    updateShareLink: (data?: IUpdateDareLinkReq) => useRequest<{ message: string }, IUpdateDareLinkReq>({
+        url: '/api/sharelink/update',
+        method: 'post',
         options: {
-            // isNotRequest: true
+            data,
+            isNotRequest: true
+        }
+    }),
+
+    deleteShareLink: (data?: { uuid: string }) => useRequest<{ message: string }, { uuid: string }>({
+        url: '/api/sharelink/delete',
+        method: 'delete',
+        options: {
+            data,
+            isNotRequest: true
         }
     })
+
+
 }
 
 export const {
     AddSharelink: useAddSharelink,
     getInfoShareLink: useInfoSharelink,
     getShare: useSharelink,
-    getShareLinksLIst: useSharedLinksList
+    getShareLinksList: useSharedLinksList,
+    updateShareLink: useUpdateSharedLink,
+    deleteShareLink: useDeleteSharedLink
 } = SharelinkApi

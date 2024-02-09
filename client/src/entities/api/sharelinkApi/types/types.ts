@@ -13,7 +13,7 @@ export interface IShareLinkAddRes {
     name: string
 }
 
-export type IShareLinkInfoRes = Omit<IShareLinkAddRes, 'pincode'>
+export type IShareLinkInfoRes = Omit<ISharelinkAddReq, 'pincode'>
 
 export interface IShareReq {
     uuid: string
@@ -28,4 +28,8 @@ export interface IGetSharedLinksRes {
     path: string,
     name: string,
     timelive: string,
+}
+
+export interface IUpdateDareLinkReq extends Pick<ISharelinkAddReq, "pincode" | "date_to"> {
+    uuid: string
 }

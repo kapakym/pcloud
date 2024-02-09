@@ -7,7 +7,7 @@ export const NotificationBuilder =  () => {
     const notification = useNotifications(state => state.notifications)
 
     return (
-        <div className='fixed bottom-1 right-1 flex flex-col space-y-2'>
+        <div className='fixed bottom-1 right-1 flex flex-col space-y-2 z-40'>
             {notification && notification.map((item) => (
                 <Notification
                     notice={item}

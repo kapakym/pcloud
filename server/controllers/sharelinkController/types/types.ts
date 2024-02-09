@@ -42,3 +42,8 @@ export interface IGetSharedLinksRes {
     name: string,
     timelive: string,
 }
+
+export interface IUpdateSharedLink extends Omit<ISharelinkAddReq, 'path' | 'type' | 'name'> {
+    uuid: string
+}
+

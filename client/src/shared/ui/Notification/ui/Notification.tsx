@@ -27,7 +27,7 @@ export const Notification = ({
 
     return (
         <div
-            className={`${notice.type} transform animate-[animateNotification_500ms] flex p-4  border-[1px] border-app-border rounded-xl `}>
+            className={`${notice.type}  transform animate-[animateNotification_500ms] flex p-4  border-[1px] border-app-border rounded-xl `}>
             <div className='flex flex-col'>
                 <div className='flex w-full justify-end absolute right-1 top-0'>
                     <XMarkIcon className='w-6 h-6' onClick={handleCLose}/>
