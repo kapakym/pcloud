@@ -2,6 +2,8 @@ import React from 'react';
 import ModalRightDown from "../../../shared/ui/ModalRightDown/ui/ModalRightDown";
 import FileUploadItem from "../../../shared/ui/FileUploadItem";
 import {useFilesStore} from "../../../shared/store/useFileStore/useFilesStore";
+import Modal from "../../../shared/ui/Modal";
+import Button from "../../../shared/ui/Button";
 
 const UploadWindow = () => {
     // const { isVisible} = useAppSelector(state => state.filesReducer)
@@ -20,7 +22,18 @@ const UploadWindow = () => {
     return (
         <>
             {isVisible &&
-                <ModalRightDown title={'Загружаемые файлы...'} onClose={handleClose}>
+                <Modal
+                    title={'Загружаемые файлы...'}
+                    onClose={handleClose}
+                    isVisible={isVisible}
+                    height={'h-auto'}
+                    width={'w-[90%]'}
+                    buttons={(
+                        <>
+                            <Button onClick={handleClose}>Закрыть</Button>
+                        </>
+                    )}
+                >
                     {!!files.length &&
                         files.map(item => (
                             <FileUploadItem title={item.file}
@@ -32,7 +45,7 @@ const UploadWindow = () => {
                             />
                         ))
                     }
-                </ModalRightDown>
+                </Modal>
             }
         </>
     );

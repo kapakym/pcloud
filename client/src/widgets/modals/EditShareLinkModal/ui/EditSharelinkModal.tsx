@@ -27,7 +27,6 @@ export const EditShareLinkModal = (
     const [dateTo, setDateTo] = useState("")
     const [link, setLink] = useState<IShareLinkInfoRes>()
     const [data, {requestFn, isLoading}] = useInfoSharelink();
-    const pushNotification = useNotifications(state => state.pushNotification)
     const [dataUpdate, {
         requestFn: requestFnUpdate,
         errorRes: errorUpdate
@@ -47,18 +46,6 @@ export const EditShareLinkModal = (
         }
     }, [data]);
 
-    useEffect(() => {
-        if (dataUpdate) {
-            pushNotification({message: dataUpdate.message, type: NoticeType.PRIMARY})
-        }
-    }, [dataUpdate]);
-
-    useEffect(() => {
-        if (errorUpdate) {
-            pushNotification({message: errorUpdate.response.data.message, type: NoticeType.DANGER})
-        }
-    }, [errorUpdate]);
-
     if (!isVisible) return (<></>);
 
     const handleUpdate = () => {
@@ -74,7 +61,7 @@ export const EditShareLinkModal = (
     return (
         <Modal title={`Доступ к ${data?.name}`}
                height='auto'
-               width='90%'
+               width='w-[90%]'
                isVisible={isVisible}
                onClose={onClose}
                buttons={(

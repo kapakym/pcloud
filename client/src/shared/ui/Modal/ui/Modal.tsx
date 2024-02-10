@@ -12,8 +12,8 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
 
 const Modal = ({
                    title,
-                   width = '40%',
-                   height = '40%',
+                   width = 'w-[40%]',
+                   height = 'h-[40%]',
                    children,
                    buttons,
                    isVisible = false,
@@ -29,8 +29,7 @@ const Modal = ({
                         onClick={onClose}
                     ></div>
                     <div
-                        style={{width: width, height: height}}
-                        className={`flex animate-[modal_500ms] whitespace-nowrap  flex-col rounded-xl fixed top-[50%] left-[50%] bg-app-bg-primary drop-shadow-2xl translate-x-[-50%] translate-y-[-50%] max-h-[90dvh] z-10 `}>
+                        className={`${width} ${height} flex  whitespace-nowrap  flex-col rounded-xl fixed top-[50%] left-[50%] bg-app-bg-primary drop-shadow-2xl translate-x-[-50%] translate-y-[-50%] max-h-[90dvh] z-10 `}>
                         <div className=' flex justify-between border-b-app-border border-b-[1px] p-4 '>
                             <div className=''>
                                 {title}

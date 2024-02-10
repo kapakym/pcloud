@@ -13,13 +13,7 @@ interface IUserItemsProps {
 export const UserItem: FC<IUserItemsProps> = ({email, approve, homeFolder, id}) => {
     const [isApprove, setIsApprove] = useState(approve)
     const [data, {errorRes, requestFn, isLoading}] = useSetApprove()
-    const pushNotification = useNotifications(state => state.pushNotification)
 
-    useEffect(() => {
-        if (errorRes) {
-            pushNotification({message: errorRes.response.data.message, type: NoticeType.DANGER})
-        }
-    }, [errorRes]);
     const handleChangeApprove = (e: React.ChangeEvent<HTMLInputElement>) => {
         setIsApprove(e.target.checked)
         requestFn({id, approve: e.target.checked})

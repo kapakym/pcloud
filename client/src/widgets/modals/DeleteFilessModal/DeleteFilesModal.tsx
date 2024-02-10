@@ -33,7 +33,7 @@ const DeleteFilesModal = ({isVisible = false, onClose, path, onDelete, files}: P
     return (
         <Modal title={`Удаление файл${files.length > 1 ? 'ов' : 'а'}`}
                height='auto'
-               width='40%'
+               width='min-w-[40%]'
                isVisible
                onClose={onClose}
                buttons={(

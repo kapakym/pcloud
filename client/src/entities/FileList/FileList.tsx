@@ -5,7 +5,7 @@ import FileItem from "../../shared/ui/FileItem";
 import Input from "../../shared/ui/Input";
 import Loader from "../../shared/loader";
 import {v4 as uuidv4} from 'uuid';
-import {CloudArrowDownIcon, FolderPlusIcon} from "@heroicons/react/24/outline";
+import {ArrowDownTrayIcon, CloudArrowDownIcon, FolderPlusIcon} from "@heroicons/react/24/outline";
 import ToolBar from "../../shared/ui/ToolBar";
 import Separator from "../../shared/ui/Separator";
 import ButtonToolBar from "../../shared/ui/ButtonToolBar/ui/ButtonToolBar";
@@ -85,7 +85,9 @@ const FileList = () => {
     const handleAddFolder = () => {
         setIsVisibleAddFolder(true)
     }
-
+    const handleUploads = () => {
+        show()
+    }
     const handleCreateFolder = () => {
         requestFn({path});
     }
@@ -193,7 +195,11 @@ const FileList = () => {
                     <FolderPlusIcon className='h-8 w-8'/>
                 </ButtonToolBar>
 
+
                 <Separator/>
+                <ButtonToolBar onClick={handleUploads}>
+                    <ArrowDownTrayIcon className='h-8 w-8'/>
+                </ButtonToolBar>
             </ToolBar>
             <div className='w-full overflow-auto '>
                 <div className='grid grid-cols-1'>

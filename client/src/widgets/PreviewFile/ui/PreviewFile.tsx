@@ -55,8 +55,8 @@ export const PreviewFile: FC<PreviewFileProps> = ({isVisible, onClose}) => {
     return (
         <Modal
             title={`Просмотр файла`}
-            height='auto'
-            width='80%'
+            height='h-auto'
+            width='w-[90%] sm:w-auto'
             isVisible={isVisible}
             onClose={onClose}
             buttons={(

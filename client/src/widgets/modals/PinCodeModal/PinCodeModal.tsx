@@ -27,7 +27,7 @@ export const PinCodeModal = ({isVisible = false, onClose, errorLabel, onPincode}
     return (
         <Modal title={"Доступ"}
                height='auto'
-               width='40%'
+               width='min-w-[40%]'
                isVisible={isVisible}
                onClose={onClose}
                buttons={(
