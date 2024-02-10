@@ -1,9 +1,8 @@
 import fs from "fs";
-import {NextFunction, Request, Response} from "express";
+import {Request, Response} from "express";
 import path from 'path'
 import FileUtils from "../../utils/fileUtils";
 
-const ApiError = require('../../error/ApiError')
 
 export interface ResponseGetFiles {
     path: string,
@@ -12,7 +11,7 @@ export interface ResponseGetFiles {
 }
 
 class FilesController {
-    async getFiles(req: Request, res: Response<ResponseGetFiles>, next: NextFunction) {
+    async getFiles(req: Request, res: Response<ResponseGetFiles>) {
         const currPath = req.body.path.replace('.', '')
         const resPath = FileUtils.buildPath(req.headers?.homefolder, req.body.path)
 
@@ -46,7 +45,7 @@ class FilesController {
         }
     }
 
-    async uploadFile(req: any, res: Response, next: NextFunction) {
+    async uploadFile(req: any, res: Response) {
         try {
             const file = req.files.file
             const filenameutf8 = decodeURI(req.body.filename)
@@ -55,38 +54,38 @@ class FilesController {
 
             if (!resPath) {
                 return res.status(400).json({
-                    message: 'Ошибка загрузки файла'
+                    message: 'Error loading file'
                 })
             }
             if (fs.existsSync(resPath + filenameutf8)) {
-                return res.status(400).json({message: 'Файл с таким именем уже существует'})
+                return res.status(400).json({message: 'A file with the same name already exists'})
             }
             file.mv(resPath + filenameutf8)
             return res.status(200).json({filename: file.name})
 
         } catch (error: any) {
-            return res.status(400).json({message: 'Ошибка загрузки файла'})
+            return res.status(400).json({message: 'Error loading file'})
         }
     }
 
-    async createFolder(req: Request<{ folderName: string, path: string }>, res: Response, next: NextFunction) {
+    async createFolder(req: Request<{ folderName: string, path: string }>, res: Response) {
         const resPath = FileUtils.buildPath(req.headers?.homefolder, req.body.path)
         const newFolder = req.body.folderName;
         console.log(resPath)
         if (!newFolder || !resPath) {
             return res.status(400).json({
-                message: 'Ошибка создания папки'
+                message: 'Error create folder'
             })
         }
         if (fs.existsSync(resPath + newFolder)) {
-            return res.status(400).json({message: 'Папка с таким именем уже существует'})
+            return res.status(400).json({message: 'A folder with the same name already exists'})
         }
         try {
             fs.mkdirSync(resPath + newFolder)
             res.status(200).json({folderName: newFolder})
         } catch (e) {
             return res.status(400).json({
-                message: 'Ошибка создания папки'
+                message: 'Error create folder'
             })
         }
     }
@@ -94,12 +93,12 @@ class FilesController {
     async deleteFile(req: Request<{
         files: { name: string, type: string },
         path: string
-    }>, res: Response, next: NextFunction) {
+    }>, res: Response) {
         const resPath = FileUtils.buildPath(req.headers?.homefolder, req.body.path)
         const deleteFiles = req.body.files as { name: string, type: string }[];
         if (!deleteFiles.length || !resPath) {
             return res.status(400).json({
-                message: 'Ошибка удаления файла'
+                message: 'Error delete file'
             })
         }
         try {
@@ -118,7 +117,7 @@ class FilesController {
         } catch (e) {
             console.log(e)
             return res.status(400).json({
-                message: 'Ошибка удаления файла'
+                message: 'Error delete file'
             })
         }
     }
@@ -126,13 +125,13 @@ class FilesController {
     async downloadFile(req: Request<{
         files: { name: string, type: string },
         path: string
-    }>, res: Response, next: NextFunction) {
+    }>, res: Response) {
 
         const resPath = FileUtils.buildPath(req.headers?.homefolder, req.body.path)
         const downloadFiles = req.body.files as { name: string, type: string }[];
         if (!downloadFiles.length || !resPath) {
             return res.status(400).json({
-                message: 'Ошибка загрузки файла'
+                message: 'Error loading file'
             })
         }
 
@@ -144,7 +143,7 @@ class FilesController {
             })
 
         } catch (e) {
-            return res.status(400).json({message: 'Ошибка загрузки файла'})
+            return res.status(400).json({message: 'Error loading file'})
         }
     }
 }

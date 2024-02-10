@@ -22,17 +22,17 @@ const generateJwt = (id: number, role: string, email: string) => {
 }
 
 class UserController {
-    async registration(req: Request<RequestUser>, res: Response<ResponseRegisterUser>, next: NextFunction) {
+    async registration(req: Request<RequestUser>, res: Response<ResponseRegisterUser>) {
         const {email, password} = req.body
         if (!email || !password) {
-            return next(ApiError.badRequest('Ошибка регистрации'))
+            return res.status(400).json({message: 'Registration error'})
         }
         const count = await User.count();
         const candidate = await User.findOne({
             where: {email}
         })
         if (candidate) {
-            return next(ApiError.badRequest('Пользователь с таким именем уже существует'))
+            return res.status(400).json({message: 'A user with the same name already exists'})
         }
         const hashPassword = await bcrypt.hash(password, 5);
         const uuid4Folder = uuidv4()
@@ -50,35 +50,33 @@ class UserController {
             }
         } catch (err) {
             console.error(err);
-            return next(ApiError.badRequest('Не удалось создать папку для пользователя'))
+            return res.status(400).json({message: 'Failed to create folder for user'})
         }
         // const token = generateJwt(user.id, user.role, user.email)
-        return res.json({message: 'Сформирована заявка на регистрацию'})
+        return res.status(200).json({message: 'An application for registration has been generated'})
     }
 
-    async login(req: Request<RequestUser>, res: Response<ResponseLoginUser>, next: NextFunction) {
+    async login(req: Request<RequestUser>, res: Response<ResponseLoginUser | { message: string }>, next: NextFunction) {
         const {email, password} = req.body
         const all = await User.count()
         console.log(all, email, password)
         if (!password || !email) {
-            return next(ApiError.badRequest('Неверное имя пользователя или пароль'))
+            return res.status(400).json({message: 'The username or password you entered is incorrect'})
         }
         const user = await User.findOne({
             where: {email}
         })
-        console.log('*****', user, req.body)
         if (!user) {
-            return next(ApiError.badRequest('Неверное имя пользователя или пароль'))
+            return next(ApiError.badRequest('User not found'))
         }
 
         const comparePassword = bcrypt.compareSync(password, user.password)
-        console.log(comparePassword)
         if (!comparePassword) {
-            return next(ApiError.badRequest('Неверное имя пользователя или пароль'))
+            return res.status(400).json({message: 'The username or password you entered is incorrect'})
         }
 
         if (!user.approve) {
-            return next(ApiError.badRequest('Пользователь не активирован'))
+            return res.status(400).json({message: 'User not active'})
         }
 
         const token = generateJwt(user.id, user.role, user.email);

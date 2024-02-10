@@ -1,5 +1,5 @@
 import fs from "fs";
-import {NextFunction, Request, Response} from "express";
+import {Request, Response} from "express";
 import FileUtils from "../../utils/fileUtils";
 import {IShareLink, ShareLink} from "../../models/models"
 import {v4 as uuidv4} from 'uuid';
@@ -18,9 +18,6 @@ import jwt from "jsonwebtoken";
 import path from "path";
 import {RequestToken} from "../../middleware/authMiddleware";
 
-const ApiError = require('../../error/ApiError')
-
-
 class SharelinkController {
     async addSharelink(req: Request<ISharelinkAddReq>, res: Response<IShareLinkAddRes>) {
         const {
@@ -36,7 +33,7 @@ class SharelinkController {
         const resPath = FileUtils.buildPath(req.headers?.homefolder, req.body.path)
         const findFile = await ShareLink.findOne({where: {name}})
         const uuid = uuidv4();
-        console.log(req.body)
+
         if (findFile) {
             await findFile.update(<IShareLink>{
                 path: resPath,
@@ -49,7 +46,7 @@ class SharelinkController {
             })
 
             res.status(200).json({
-                message: "Ссылка обновлена",
+                message: "Link updated",
                 uuid,
                 name: name
             })
@@ -68,14 +65,16 @@ class SharelinkController {
 
         if (shareLink) {
             res.status(200).json({
-                message: "Ссылка создана",
+                message: "Link created",
                 uuid,
                 name: resPath
             })
         }
     }
 
-    async getInfoSharelink(req: Request<IShareInfoReq>, res: Response<IShareInfoRes>, next: NextFunction) {
+    async getInfoSharelink(req: Request<IShareInfoReq>, res: Response<IShareInfoRes | {
+        message: string
+    }>) {
         const {
             uuid
         } = req.body as IShareInfoReq
@@ -96,7 +95,7 @@ class SharelinkController {
             })
             return;
         }
-        return next(ApiError.badRequest('Ссылка не найдена'))
+        return res.status(404).json({message: 'Link not found'})
     }
 
     async updateSharedLink(req: Request<IUpdateSharedLink>, res: Response<{ message: string }>) {
@@ -152,7 +151,7 @@ class SharelinkController {
         }
     }
 
-    async getShare(req: Request<IGetShareReq>, res: Response<IGetShareRes>, next: NextFunction) {
+    async getShare(req: Request<IGetShareReq>, res: Response<IGetShareRes>) {
         const {
             uuid,
             token,
@@ -162,19 +161,19 @@ class SharelinkController {
         const findLink = await ShareLink.findOne({where: {uuid}})
         let currentToken = token
         if (!findLink) {
-            return next(ApiError.errorRequest('Ссылка не найдена'));
+            return res.status(404).json({message: 'Link not found'})
         }
 
         if (findLink) {
 
             if (findLink.timelive && new Date() > findLink.timelive) {
-                return next(ApiError.errorRequest('Ссылка больше недоступна'));
+                return res.status(400).json({message: 'Link broken'})
             }
 
             if (pincode) {
                 if (!bcrypt.compareSync(pincode, findLink.pincode)) {
                     res.status(400).json({
-                        message: 'Неверный пинкод',
+                        message: 'Bad pincode',
                         detail: 'BAD_PINCODE'
                     })
                     return
@@ -190,7 +189,7 @@ class SharelinkController {
 
             if (findLink.pincode && !currentToken) {
                 res.status(400).json({
-                    message: 'Требуется пинкод',
+                    message: 'Need pincode',
                     detail: 'NEED_PINCODE'
                 })
                 return
@@ -201,7 +200,7 @@ class SharelinkController {
                 try {
                     jwt.verify(currentToken, findLink.pincode)
                 } catch (e) {
-                    return next(ApiError.badRequest('Ресурс не доступен'))
+                    return res.status(403).json({message: 'Resource not available'})
                 }
             }
 
@@ -245,7 +244,7 @@ class SharelinkController {
 
         }
 
-        return next(ApiError.badRequest('Ссылка не найдена'))
+        return res.status(404).json({message: 'Link not found'})
 
     }
 
@@ -265,7 +264,7 @@ class SharelinkController {
                 }
             }
         } catch (e) {
-            return res.status(400).json({message: 'Ошибка загрузки файла'})
+            return res.status(400).json({message: 'Error loading file'})
         }
 
 
@@ -274,7 +273,7 @@ class SharelinkController {
         const downloadFiles = req.body.files as { name: string, type: string }[];
         if (!downloadFiles.length || !resPath) {
             return res.status(400).json({
-                message: 'Ошибка загрузки файла'
+                message: 'Error loading file'
             })
         }
 
@@ -286,7 +285,7 @@ class SharelinkController {
             })
         } catch (e) {
             console.log(e)
-            return res.status(400).json({message: 'Ошибка загрузки файла'})
+            return res.status(400).json({message: 'Error loading file'})
         }
     }
 
@@ -309,7 +308,7 @@ class SharelinkController {
                 res.status(200).json(sharedLinksMap)
             }
         } else {
-            res.status(400).json({message: 'Укажите ID пользователя'})
+            res.status(400).json({message: 'Need ID user'})
         }
     }
 }
