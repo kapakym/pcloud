@@ -14,18 +14,21 @@ module.exports = async function (req: RequestToken, res: Response, next: NextFun
     }
 
     try {
-        const token = req.body.token
-        console.log(req.body)
-        if (!token || req.body.uuid) {
-            return res.status(401).json({message: 'Пользователь не авторизован'})
+        const findLink = await ShareLink.findOne({where: {uuid: req.body.uuid}})
+
+        if (findLink.pincode) {
+            const token = req.body.token
+            if (!token || !req.body.uuid) {
+                return res.status(401).json({message: 'Bad pincode'})
+            }
+
+            jwt.verify(token, findLink.pincode)
         }
 
-        const findLink = await ShareLink.findOne({where: {uuid: req.body.uuid}})
-        jwt.verify(token, findLink.pincode)
 
         next()
     } catch (error) {
-        return res.status(401).json({message: 'Пользователь не авторизован'})
+        return res.status(401).json({message: 'Bad pincode'})
     }
 
 }
