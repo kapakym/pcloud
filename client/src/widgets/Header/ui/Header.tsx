@@ -26,7 +26,9 @@ const Header = () => {
     return (
         <div className='h-[50px] w-full border-b-[1px] border-b-solid border-b-app-border p-2 flex justify-between items-center'>
             <div>
-                pCloud
+                <a href={'https://github.com/kapakym/pcloud'} target={"_blank"}>
+                    pCloud
+                </a>
             </div>
             <div className=''>
                 {!!localStorage.getItem('token') &&

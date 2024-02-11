@@ -26,7 +26,6 @@ export const SharedLinksPage = () => {
     const handleCloseDelete = () => {
         setVisibleModalDelete(false)
         requestFn({})
-
     }
 
 
