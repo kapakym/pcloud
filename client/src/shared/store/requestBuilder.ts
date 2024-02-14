@@ -32,7 +32,8 @@ interface Props<Req> {
         id?: string,
     },
     responseType?: ResponseType
-    progressFn?: (process: number) => void
+    progressFnUp?: (process: number) => void
+    progressFnDw?: (process: number) => void
 }
 
 const requestBuilder = <Res, Req>({
@@ -40,7 +41,8 @@ const requestBuilder = <Res, Req>({
                                       method,
                                       options,
                                       responseType,
-                                      progressFn
+                                      progressFnUp,
+                                      progressFnDw
                                   }: Props<Req>): () => Promise<void | AxiosResponse<Res, any>> => {
 
     return () => axios({
@@ -56,8 +58,15 @@ const requestBuilder = <Res, Req>({
         onUploadProgress: (progressEvent: any) => {
             let percentComplete: number = progressEvent.loaded / progressEvent.total
             percentComplete = percentComplete * 100;
-            if (progressFn) {
-                progressFn(percentComplete)
+            if (progressFnUp) {
+                progressFnUp(percentComplete)
+            }
+        },
+        onDownloadProgress: (progressEvent: any) => {
+            let percentComplete: number = progressEvent.loaded / progressEvent.total
+            percentComplete = percentComplete * 100;
+            if (progressFnDw) {
+                progressFnDw(percentComplete)
             }
         }
     }).then(response => {

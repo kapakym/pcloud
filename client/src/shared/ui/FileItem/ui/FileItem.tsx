@@ -11,9 +11,9 @@ interface Props {
     size?: number
     onDelete?: (names: IFile[]) => void
     onDownload?: (names: IFile[]) => void
-    isDownload?: boolean
     onPreview?: (names: IFile[]) => void
     onShare?: (shareObject: IShareObject) => void
+    progressDownload?: number
 }
 
 const FileItem = (
@@ -24,9 +24,9 @@ const FileItem = (
         size,
         onDelete,
         onDownload,
-        isDownload,
         onPreview,
-        onShare
+        onShare,
+        progressDownload
     }: Props) => {
 
     const handleDelete = (e: React.MouseEvent<SVGSVGElement>) => {
@@ -72,7 +72,9 @@ const FileItem = (
         }
     }
 
-    const showDownload = () => isDownload ? (<span className='loaderCircle h-8 w-8'></span>) : (
+    const showDownload = () => progressDownload ? (<><span className='loaderCircle h-8 w-8'></span>
+        <div>{progressDownload.toFixed(1)}%</div>
+    </>) : (
         <CloudArrowUpIcon onClick={(event) => handleDownload(event)}
                           className='h-8 w-8 cursor-pointer hover:text-app-bg-primary'/>
     )

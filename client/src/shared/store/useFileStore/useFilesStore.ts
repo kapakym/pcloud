@@ -66,7 +66,7 @@ export const useFilesStore = create<FilesState>()(immer((set) => ({
                 options: {
                     data: formData
                 },
-                progressFn
+                progressFnUp: progressFn
             })()
             if (response) {
                 set(state => {
@@ -95,10 +95,23 @@ export const useFilesStore = create<FilesState>()(immer((set) => ({
                 name: options.file.name,
                 id: options.uuid,
                 path: options.path,
-                isLoading: true
+                isLoading: true,
+                progress:0
             })
         })
 
+        const progressFn = (percentComplete: number) => {
+            console.log(percentComplete)
+            set(state => {
+                const file = state.downloadFiles.find(item => item.name === options.file.name);
+                if (file) {
+                    file.progress = percentComplete
+                    if (file.progress === 100) file!.isLoading = false;
+                    else file!.isLoading = true;
+                }
+
+            })
+        }
         try {
             const response = await requiestBuilder<Blob, {
                 files: IFile[],
@@ -116,7 +129,8 @@ export const useFilesStore = create<FilesState>()(immer((set) => ({
                         token: options.token,
                         uuid: options.uuidShare
                     }
-                }
+                },
+                progressFnDw: progressFn
             })()
 
             if (response instanceof Blob && options.mode === 'disk') {

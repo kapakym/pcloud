@@ -15,7 +15,11 @@ export interface DownloadFiles {
     name: string,
     id: string,
     path: string,
+    error?: {
+        message: string
+    },
     isLoading?: boolean
+    progress: number
 }
 
 export interface IDownloadFileAction {

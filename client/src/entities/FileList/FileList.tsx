@@ -232,9 +232,9 @@ const FileList = () => {
                                       size={item.size}
                                       onDelete={handleDeleteFile}
                                       onDownload={handleDownloadFiles}
-                                      isDownload={!!downloadFiles.find(findItem => findItem?.name === item.name)}
                                       onPreview={previewHandler}
                                       onShare={setShareObject}
+                                      progressDownload={downloadFiles.find(findItem => findItem?.name === item.name)?.progress}
                             />
                         ))
                     }
