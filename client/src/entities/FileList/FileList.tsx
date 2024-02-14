@@ -218,7 +218,6 @@ const FileList = () => {
                                 }}
                                 onDelete={handleDeleteFile}
                                 onDownload={handleDownloadFiles}
-                                isDownload={!!downloadFiles.find(findItem => findItem.name === item)}
                                 onShare={setShareObject}
                             />
                         ))
