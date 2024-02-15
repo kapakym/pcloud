@@ -4,7 +4,8 @@ import {IFile} from "../../types/FIles/fileTypes";
 import requiestBuilder from "../requestBuilder";
 import axios, {AxiosError} from "axios";
 import {FilesState} from "./types/types";
-
+import {useNotifications} from "../useNotifications/useNotifications";
+import {NoticeType} from "../useNotifications/types/types";
 
 
 export const useFilesStore = create<FilesState>()(immer((set) => ({
@@ -16,6 +17,7 @@ export const useFilesStore = create<FilesState>()(immer((set) => ({
         src: '',
         type: ''
     },
+
 
     show: () => set(state => {
         state.isVisible = true;
@@ -90,13 +92,14 @@ export const useFilesStore = create<FilesState>()(immer((set) => ({
     },
 
     downloadFileAction: async (options) => {
+        const pushNotification = useNotifications.getState().pushNotification
         set(state => {
             state.downloadFiles.push({
                 name: options.file.name,
                 id: options.uuid,
                 path: options.path,
                 isLoading: true,
-                progress:0
+                progress: 0
             })
         })
 
@@ -106,8 +109,9 @@ export const useFilesStore = create<FilesState>()(immer((set) => ({
                 const file = state.downloadFiles.find(item => item.name === options.file.name);
                 if (file) {
                     file.progress = percentComplete
-                    if (file.progress === 100) file!.isLoading = false;
-                    else file!.isLoading = true;
+                    if (file.progress === 100) {
+                        file!.isLoading = false;
+                    } else file!.isLoading = true;
                 }
 
             })
@@ -125,7 +129,7 @@ export const useFilesStore = create<FilesState>()(immer((set) => ({
                 options: {
                     data: {
                         files: [options.file],
-                        path:options.path,
+                        path: options.path,
                         token: options.token,
                         uuid: options.uuidShare
                     }
@@ -153,8 +157,17 @@ export const useFilesStore = create<FilesState>()(immer((set) => ({
             set(state => {
                 state.downloadFiles = state.downloadFiles.filter(item => item.id !== options.uuid)
             })
-        } catch (e) {
+            if (response && 'message' in response.data) {
+                pushNotification({message: response?.data?.message as string, type: NoticeType.DANGER})
+            }
+        } catch (e: any) {
             console.log(e)
+            if (e && 'message' in e.response.data) {
+                pushNotification({message: e.response.data.message, type: NoticeType.DANGER})
+            }
+            set(state => {
+                state.downloadFiles = state.downloadFiles.filter(item => item.id !== options.uuid)
+            })
         }
     }
 
