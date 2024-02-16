@@ -38,7 +38,7 @@ const RegistrationPage = () => {
         <div className='w-full h-full justify-center items-center flex'>
             <div className='w-auto border-app-border drop-shadow-xl border-[1px] h-auto p-4 space-y-2 rounded-xl shadow-xl'>
                 <div className='w-full text-center'>
-                    Регистрация в pCloud
+                    Register in pCloud
                 </div>
                 {isLoading && <Loader/>}
                 {!isLoading &&
@@ -46,9 +46,9 @@ const RegistrationPage = () => {
                         <Input placeholder={'Email'} value={email} onChange={handleChangeEmail}/>
                         <Input placeholder='Пароль' type='password' value={password} onChange={handleChangePassword}/>
                         <div className='w-full flex justify-center'>
-                            <Button onClick={handleRegistration}>Отправить запрос</Button>
+                            <Button onClick={handleRegistration}>Send request</Button>
                         </div>
-                        <div className='hover:underline cursor-pointer' onClick={handleNavigateLogin}>Войти</div>
+                        <div className='hover:underline cursor-pointer' onClick={handleNavigateLogin}>Login</div>
                     </>
                 }
                 {errorRes?.response?.data?.message &&

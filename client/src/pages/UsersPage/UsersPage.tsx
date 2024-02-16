@@ -14,7 +14,7 @@ export const UsersPage = () => {
     return (
         <div className='w-auto h-full overflow-auto'>
             <div className='my-2 p-2'>
-                <Input label={'Фильтр'} value={filter} onChange={handleChangeFilter}/>
+                <Input label={'Filter'} value={filter} onChange={handleChangeFilter}/>
             </div>
             {data &&
                 data.filter(fItem => fItem.email.includes(filter)).map(item => (

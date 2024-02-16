@@ -52,18 +52,18 @@ const LoginPage = () => {
             <div
                 className='w-auto h-auto p-4 space-y-2 rounded-xl shadow-xl drop-shadow-xl border-[1px] border-solid border-app-border'>
                 <div className='w-full text-center'>
-                    Авторизация pCloud
+                    Authorization in pCloud
                 </div>
                 {isLoading && <Loader/>}
                 {!isLoading &&
                     <>
                         <Input placeholder={'Email'} value={email} onChange={handleChangeEmail}/>
-                        <Input placeholder='Пароль' type='password' value={password} onChange={handleChangePassword}/>
+                        <Input placeholder='Password' type='password' value={password} onChange={handleChangePassword}/>
                         <div className='w-full flex justify-center'>
-                            <Button onClick={handleLogin}>Вход</Button>
+                            <Button onClick={handleLogin}>Login</Button>
                         </div>
                         <div className='hover:underline cursor-pointer'
-                             onClick={handleNavigateRegistration}>Регистрация
+                             onClick={handleNavigateRegistration}>Registration
                         </div>
                     </>
                 }

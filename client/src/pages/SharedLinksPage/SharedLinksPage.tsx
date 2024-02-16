@@ -32,11 +32,11 @@ export const SharedLinksPage = () => {
     return (
         <div>
             <div className='grid-cols-5 grid items-center bg-app-button-primary p-2'>
-                <div>Имя</div>
-                <div>Годен до</div>
-                <div>Тип</div>
-                <div>Путь</div>
-                <div>Инструменты</div>
+                <div>Name</div>
+                <div>Allow to</div>
+                <div>Type</div>
+                <div>Path</div>
+                <div>Tools</div>
 
 
             </div>

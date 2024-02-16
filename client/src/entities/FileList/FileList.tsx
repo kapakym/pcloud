@@ -109,9 +109,9 @@ const FileList = () => {
         await downLoadFile({
             file: files[0],
             path,
-            uuid:uuidv4(),
-            mode:'disk',
-            source:'default'
+            uuid: uuidv4(),
+            mode: 'disk',
+            source: 'default'
         })
     }
 
@@ -119,9 +119,9 @@ const FileList = () => {
         await downLoadFile({
             file: files[0],
             path,
-            uuid:uuidv4(),
-            mode:'preview',
-            source:'default'
+            uuid: uuidv4(),
+            mode: 'preview',
+            source: 'default'
         })
         setVisiblePreviewModal(true)
     }
@@ -179,10 +179,10 @@ const FileList = () => {
              onDragLeave={dragLeaveHandler} onDragOver={dragEnterHandler}>
 
             <div>
-                Путь: {data && data.path}
+                Path: {data && data.path}
             </div>
             <div>
-                <Input label={'Фильтр'} value={filter} onChange={handleChangeFilter}/>
+                <Input label={'Filter'} value={filter} onChange={handleChangeFilter}/>
             </div>
             <ToolBar>
                 <ButtonToolBar>
@@ -268,6 +268,11 @@ const FileList = () => {
                     onClose={() => setVisibleSharelinkModal(false)}
                 />
             }
+            <div className='w-full border-[1px] border-app-border rounded-xl p-2'>
+                <div>
+                    Items: {data?.folders?.length + data?.files?.length}
+                </div>
+            </div>
         </div>
 
     );
