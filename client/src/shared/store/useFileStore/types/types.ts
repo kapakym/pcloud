@@ -45,5 +45,6 @@ export interface FilesState {
     previewFile: {
         src: string,
         type: string
+        data?: Blob | undefined
     }
 }
