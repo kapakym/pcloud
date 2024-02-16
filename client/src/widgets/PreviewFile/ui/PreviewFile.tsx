@@ -20,8 +20,8 @@ export const PreviewFile: FC<PreviewFileProps> = ({isVisible, onClose}) => {
     const previewFile = useFilesStore(state => state.previewFile)
 
     const ShowContent = ({content}: ShowContentProps) => {
-        const allowImages = ["image/png", "image/jpeg", "image/gif"]
-        const allowVideo = ["video/mp4", 'video/quicktime']
+        const allowImages = ["image/png", "image/jpeg", "image/gif", 'image/svg+xml']
+        const allowVideo = ["video/mp4", 'video/quicktime', 'video/x-flv', 'video/3gpp', 'video/x-msvideo', 'video/x-ms-wmv']
         const allowPdf = ['application/pdf']
 
         if (allowImages.includes(content.type)) {
