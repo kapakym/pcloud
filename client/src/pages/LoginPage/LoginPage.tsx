@@ -48,9 +48,10 @@ const LoginPage = () => {
     }
 
     return (
-        <div className='w-full h-full justify-center items-center flex'>
+        <div className='w-full  h-full justify-center items-center flex relative'>
+            <img src="/cloud.webp" alt="" className='w-full h-full absolute top-0 left-0'/>
             <div
-                className='w-auto h-auto p-4 space-y-2 rounded-xl shadow-xl drop-shadow-xl border-[1px] border-solid border-app-border'>
+                className='bg-app-bg-primary w-auto h-auto p-4 space-y-2 rounded-xl shadow-xl drop-shadow-xl border-[1px] border-solid border-app-border'>
                 <div className='w-full text-center'>
                     Authorization in pCloud
                 </div>
