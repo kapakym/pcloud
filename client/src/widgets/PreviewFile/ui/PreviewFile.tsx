@@ -36,6 +36,7 @@ export const PreviewFile: FC<PreviewFileProps> = ({isVisible, onClose}) => {
             )
         }
 
+        console.log(content)
         if (allowPdf.includes(content.type)) {
             console.log(content)
             window.open(content.src)

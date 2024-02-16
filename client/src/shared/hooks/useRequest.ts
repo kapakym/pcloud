@@ -3,6 +3,7 @@ import {useNavigate} from "react-router-dom";
 import axios, {AxiosError, AxiosResponseHeaders, ResponseType} from "axios";
 import {useNotifications} from "../store/useNotifications/useNotifications";
 import {NoticeType} from "../store/useNotifications/types/types";
+import requestBuilder from "../store/requestBuilder";
 
 interface OptionsRequestFn {
     uuid?: string
@@ -13,10 +14,7 @@ interface Result<Req> {
     isError: boolean
     errorRes: any
     requestFn: (data: Req, optionsFn?: OptionsRequestFn) => void;
-    percentage: {
-        progress: number,
-        uuid: string | undefined
-    } | undefined,
+
     responseHeaders: Partial<AxiosResponseHeaders> | null
     requestData: Req | undefined
 
@@ -43,7 +41,6 @@ const useRequest = <Res, Req>({url, method, options, responseType}: Props<Req>):
     const [data, setData] = useState<Res | null>(null)
     const [responseHeaders, setResponseHeaders] = useState<Partial<AxiosResponseHeaders> | null>(null)
     const [isError, setIsError] = useState(false)
-    const [percentage, setPercentage] = useState<{ progress: number, uuid: string | undefined }>()
     const [errorRes, setErrorRes] = useState<AxiosError | null>(null)
     const navigate = useNavigate()
     useEffect(() => {
@@ -53,29 +50,18 @@ const useRequest = <Res, Req>({url, method, options, responseType}: Props<Req>):
         , [])
 
     const pushNotification = useNotifications(state => state.pushNotification)
-    const axiosRequest = (data?: Req, optionsFn?: OptionsRequestFn): Promise<any> => {
+    const axiosRequest = (data?: Req): Promise<any> => {
         setIsLoading(true);
         setIsError(false);
         setData(null)
-        return axios({
-            method,
+        return requestBuilder({
             url,
-            data: data,
-            responseType,
-            headers: {
-                Authorization: 'Bearer ' + localStorage.getItem('token'),
-                ...options?.headers
+            method,
+            options: {
+                data
             },
-            onUploadProgress: (progressEvent: any) => {
-                let percentComplete: number = progressEvent.loaded / progressEvent.total
-                percentComplete = percentComplete * 100;
-                setPercentage({
-                    uuid: optionsFn?.uuid,
-                    progress: percentComplete
-                })
-                console.log(percentComplete);
-            }
-        }).then(response => {
+            responseType,
+        })().then(response => {
             if ('message' in response.data) {
                 pushNotification({message: response.data.message, type: NoticeType.PRIMARY})
             }
@@ -101,13 +87,11 @@ const useRequest = <Res, Req>({url, method, options, responseType}: Props<Req>):
         });
     }
 
-
     return [data, {
         isLoading,
         isError,
         requestFn: axiosRequest,
         errorRes,
-        percentage,
         responseHeaders,
         requestData: options?.data
     }]

@@ -70,12 +70,14 @@ export const useFilesStore = create<FilesState>()(immer((set) => ({
                 },
                 progressFnUp: progressFn
             })()
+            console.log(response)
             if (response) {
                 set(state => {
                     state.isAllUploaded = state.files.every(item => !item.isLoading)
                 })
             }
         } catch (error: any | AxiosError) {
+            console.log(error)
             if (axios.isAxiosError(error)) {
                 set(state => {
                     const file = state.files.find(item => item.id === uuid);
@@ -136,8 +138,7 @@ export const useFilesStore = create<FilesState>()(immer((set) => ({
                 },
                 progressFnDw: progressFn
             })()
-
-            if (response instanceof Blob && options.mode === 'disk') {
+            if (response.data instanceof Blob && options.mode === 'disk') {
                 const url = window.URL.createObjectURL(new Blob([response]));
                 const link = document.createElement('a');
                 link.href = url;
@@ -146,11 +147,10 @@ export const useFilesStore = create<FilesState>()(immer((set) => ({
                 link.click();
                 link.remove()
             }
-
-            if (response instanceof Blob && options.mode === 'preview') {
+            if (response.data instanceof Blob && options.mode === 'preview') {
                 set(state => {
-                        state.previewFile.src = window.URL.createObjectURL(new Blob([response], {type: response.type}))
-                        state.previewFile.type = response.type
+                        state.previewFile.src = window.URL.createObjectURL(new Blob([response.data], {type: response?.data?.type}))
+                        state.previewFile.type = response?.data?.type
                     }
                 )
             }

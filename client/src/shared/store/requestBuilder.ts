@@ -1,5 +1,4 @@
-import axios, {AxiosResponse, AxiosResponseHeaders, ResponseType} from "axios";
-import {useNotifications} from "./useNotifications/useNotifications";
+import axios, {AxiosResponseHeaders, ResponseType} from "axios";
 
 interface OptionsRequestFn {
     uuid?: string
@@ -44,9 +43,9 @@ const requestBuilder = <Res, Req>({
                                       responseType,
                                       progressFnUp,
                                       progressFnDw
-                                  }: Props<Req>): () => Promise<void | AxiosResponse<Res, any>> => {
+                                  }: Props<Req>): ()=>Promise<any> => {
 
-    return () => axios({
+    return ()=>axios({
         method,
         url,
         data: options?.data,
@@ -70,8 +69,6 @@ const requestBuilder = <Res, Req>({
                 progressFnDw(percentComplete)
             }
         }
-    }).then(response => {
-        return response.data
     })
 
 };
