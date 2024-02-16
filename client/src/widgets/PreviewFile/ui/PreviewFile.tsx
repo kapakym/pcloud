@@ -26,6 +26,7 @@ export const PreviewFile: FC<PreviewFileProps> = ({isVisible, onClose}) => {
         const allowVideo = ["video/mp4", 'video/quicktime', 'video/x-flv', 'video/3gpp', 'video/x-msvideo', 'video/x-ms-wmv']
         const allowPdf = ['application/pdf']
         const allowText = ['text/plain']
+        const allowOffice = ['application/vnd.openxmlformats-officedocument.wordprocessingml.document']
 
         if (allowImages.includes(content.type)) {
             return (
@@ -51,9 +52,7 @@ export const PreviewFile: FC<PreviewFileProps> = ({isVisible, onClose}) => {
             )
         }
 
-        console.log(content)
         if (allowPdf.includes(content.type)) {
-            console.log(content)
             window.open(content.src)
 
             return (<div>
