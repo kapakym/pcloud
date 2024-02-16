@@ -139,7 +139,7 @@ export const useFilesStore = create<FilesState>()(immer((set) => ({
                 progressFnDw: progressFn
             })()
             if (response.data instanceof Blob && options.mode === 'disk') {
-                const url = window.URL.createObjectURL(new Blob([response]));
+                const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
                 link.href = url;
                 link.setAttribute('download', options.file.name);
