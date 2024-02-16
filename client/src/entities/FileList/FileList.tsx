@@ -269,9 +269,12 @@ const FileList = () => {
                 />
             }
             <div className='w-full border-[1px] border-app-border rounded-xl p-2'>
-                <div>
+                {data &&
+                    <div>
                     Items: {data?.folders?.length + data?.files?.length}
-                </div>
+                    </div>
+                }
+
             </div>
         </div>
 
