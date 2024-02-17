@@ -45,4 +45,4 @@ pCloud - The application is designed for deployment on a home server, cloud file
     - the first user does not require confirmation when registering
 
 ![pCloud - application](./screen.png)
-
+![pCloud - application](./screen2.png)
