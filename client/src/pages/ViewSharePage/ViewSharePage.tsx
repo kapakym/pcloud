@@ -160,8 +160,8 @@ const ViewSharePage = () => {
                                            key={item.name}
                                            size={item.size}
                                            onDownload={handleDownloadFiles}
-                                           isDownload={!!downloadFiles.find(findItem => findItem?.name === item.name)}
                                            onPreview={previewHandler}
+                                           progressDownload={downloadFiles.find(findItem => findItem?.name === item.name)?.progress}
                             />
                         ))
                     }

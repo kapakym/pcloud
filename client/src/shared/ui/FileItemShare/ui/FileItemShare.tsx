@@ -1,6 +1,6 @@
 import React from 'react';
 import {FileTypes, IFile, KeysFileTypes} from "../../../types/FIles/fileTypes";
-import {CloudArrowUpIcon, DocumentIcon, FolderIcon} from "@heroicons/react/24/outline";
+import {CloudArrowUpIcon, DocumentIcon, EyeIcon, FolderIcon} from "@heroicons/react/24/outline";
 import {sizeFormat} from "../../../utils/files";
 import {IShareObject} from "../../../../widgets/modals/AddSharelinkModal/types/types";
 
@@ -14,6 +14,7 @@ interface Props {
     isDownload?: boolean
     onPreview?: (names: IFile[]) => void
     onShare?: (shareObject: IShareObject) => void
+    progressDownload?: number
 }
 
 const FileItemShare = (
@@ -23,8 +24,8 @@ const FileItemShare = (
         onClick,
         size,
         onDownload,
-        isDownload,
         onPreview,
+        progressDownload
     }: Props) => {
 
 
@@ -38,7 +39,7 @@ const FileItemShare = (
         }
     }
 
-    const handlePreview = (e: React.MouseEvent<HTMLDivElement>) => {
+    const handlePreview = (e: React.MouseEvent<SVGSVGElement>) => {
         e.stopPropagation();
         e.preventDefault()
         if (onPreview) {
@@ -49,16 +50,18 @@ const FileItemShare = (
         }
     }
 
-    const showDownload = () => isDownload ? (<span className='loaderCircle h-6 w-6'></span>) : (
+    const showDownload = () => progressDownload ? (<><span className='loaderCircle h-8 w-8'></span>
+        <div>{progressDownload.toFixed(1)}%</div>
+    </>) : (
         <CloudArrowUpIcon onClick={(event) => handleDownload(event)}
-                          className='h-6 w-6 cursor-pointer hover:text-white'/>
+                          className='h-8 w-8 cursor-pointer hover:text-app-bg-primary'/>
     )
 
     return (
         <div
             className='p-2 odd:bg-app-bg-primary justify-between even:bg-app-bg-secondary sm:flex flex hover:bg-gray-500 hover:text-white cursor-pointer'
             onClick={onClick}>
-            <div className='flex space-x-2 items-center w-full' onDoubleClick={(e) => handlePreview(e)}>
+            <div className='flex space-x-2 items-center w-full'>
                 <div>
                     {fileType === FileTypes.DIR && <FolderIcon className='h-6 w-6 cursor-pointer hover:text-white'/>}
                     {fileType === FileTypes.FILE && <DocumentIcon className='h-6 w-6 cursor-pointer hover:text-white'/>}
@@ -71,13 +74,22 @@ const FileItemShare = (
             <div className='flex space-x-2 p-1 items-center'>
                 <div className='hidden sm:flex space-x-2'>
                     <div>
-                        {size && sizeFormat(size)}
+                        {/*{size && sizeFormat(size)}*/}
                     </div>
                 </div>
                 <div className='flex space-x-2 min-w-[100px]'>
                     {fileType !== FileTypes.UP_DIR &&
                         <>
-                            {fileType === FileTypes.FILE && showDownload()}
+
+                            {fileType === FileTypes.FILE &&
+                                <>
+                                    <EyeIcon className='h-8 w-8 cursor-pointer hover:text-app-bg-primary'
+                                             onClick={(e) => handlePreview(e)}/>
+                                    {showDownload()}
+
+                                </>
+                            }
+
                         </>
                     }
 
