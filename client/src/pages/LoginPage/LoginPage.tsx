@@ -8,7 +8,7 @@ import {useNavigate} from "react-router-dom";
 const LoginPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("")
-    const [data, {requestFn, isError, isLoading, errorRes}] = useLoginUser({
+    const [data, {requestFn,  isLoading, errorRes}] = useLoginUser({
         password: "",
         email: ""
     })
@@ -47,6 +47,12 @@ const LoginPage = () => {
         navigate({pathname: '/registration'})
     }
 
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            handleLogin()
+        }
+    }
+
     return (
         <div className='w-full  h-full justify-center items-center flex relative'>
             <img src="/cloud.webp" alt="" className='w-full h-full absolute top-0 left-0'/>
@@ -59,7 +65,13 @@ const LoginPage = () => {
                 {!isLoading &&
                     <>
                         <Input placeholder={'Email'} value={email} onChange={handleChangeEmail}/>
-                        <Input placeholder='Password' type='password' value={password} onChange={handleChangePassword}/>
+                        <Input
+                            placeholder='Password'
+                            type='password'
+                            value={password}
+                            onChange={handleChangePassword}
+                            onKeyDown={handleKeyDown}
+                        />
                         <div className='w-full flex justify-center'>
                             <Button onClick={handleLogin}>Login</Button>
                         </div>

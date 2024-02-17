@@ -8,7 +8,7 @@
 
 @keyframes modal {
     from {
-        width: 0%;
+        width: 0;
         overflow-x: hidden;
         display: block;
     }
@@ -25,7 +25,7 @@
     content: "";
     box-sizing: border-box;
     position: absolute;
-    inset: 0px;
+    inset: 0;
     border-radius: 50%;
     border: 5px solid #FFF;
     animation: prixClipFix 2s linear infinite ;
@@ -46,4 +46,26 @@
 @keyframes animateNotification {
     0% {transform: translateX(150%);}
     100% {transform: translateX(0);}
+}
+
+
+
+.loader2 {
+    width: 100px;
+    height: 100px;
+    border: 15px solid;
+    border-color: #a1a1aa transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation2 1s linear infinite;
+}
+
+@keyframes rotation2 {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }

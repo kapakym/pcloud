@@ -4,9 +4,11 @@ import {useNavigate} from "react-router-dom";
 import MenuButton from "../../../shared/ui/MenuButton";
 import {ArrowRightStartOnRectangleIcon} from "@heroicons/react/16/solid";
 import {FolderIcon, ShareIcon, UsersIcon} from "@heroicons/react/24/outline";
+import {useLocation} from "react-router";
 
 const Header = () => {
     const navigate = useNavigate()
+    const location = useLocation();
     const handleExit = () => {
         localStorage.removeItem('token');
         navigate({pathname: '/'})
@@ -22,7 +24,7 @@ const Header = () => {
     const handleNavigateToSharedlinksList = () => {
         navigate({pathname: '/sharedlinkslist'})
     }
-
+    console.log()
     return (
         <div className='h-[50px] w-full border-b-[1px] border-b-solid border-b-app-border p-2 flex justify-between items-center'>
             <div>
@@ -31,7 +33,7 @@ const Header = () => {
                 </a>
             </div>
             <div className=''>
-                {!!localStorage.getItem('token') &&
+                {(!!localStorage.getItem('token') && location.pathname!=='/') &&
                     <div className='flex w-auto space-x-2 '>
                         <MenuButton onClick={handleNavigateToFileList}>
                             <FolderIcon className='h-6 w-6' />
