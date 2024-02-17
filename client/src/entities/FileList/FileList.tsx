@@ -99,9 +99,6 @@ const FileList = () => {
 
     const handleCloseDeleteModal = () => {
         setIsVisibleDeleteFiles(false)
-    }
-
-    const handleDelete = () => {
         requestFn({path});
     }
 
@@ -250,7 +247,6 @@ const FileList = () => {
                     isVisible={isVisibleDeleteFiles}
                     files={deleteFiles}
                     onClose={handleCloseDeleteModal}
-                    onDelete={handleDelete}
                 />
             }
 

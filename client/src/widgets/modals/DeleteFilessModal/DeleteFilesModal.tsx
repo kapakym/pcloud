@@ -8,19 +8,15 @@ interface Props {
     isVisible: boolean;
     path?: string;
     onClose?: () => void
-    onDelete?: () => void
     files: IFile[]
 }
 
-const DeleteFilesModal = ({isVisible = false, onClose, path, onDelete, files}: Props) => {
+const DeleteFilesModal = ({isVisible = false, onClose, path, files}: Props) => {
     const [data, {requestFn}] = useDeleteFiles();
 
     useEffect(() => {
         if (data?.deleteFiles.length) {
-            if (onDelete) {
-                if (onClose) onClose()
-                onDelete()
-            }
+            if (onClose) onClose()
         }
     }, [data]);
 
